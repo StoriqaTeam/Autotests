@@ -105,8 +105,8 @@ print create_user.text
 #Получение токена пользователя
 user_token = {"query": "mutation getJWTByEmail($input: CreateJWTEmailInput!) {getJWTByEmail (input: $input) {token}}",
 	"variables": {"input": {"clientMutationId": "1", 
-		"email": "test%s@test.test"%(n), 
-		"password": "tester11" }} }
+		"email": "tester@test.test",
+		"password": "qwe123QWE+" }} }
 get_user_token = request(user_token, '')
 token = get_user_token.json()['data']['getJWTByEmail']['token']
 print 'User token is: %s' % (token)
@@ -125,7 +125,7 @@ update_user = {"query": "mutation updateUser($input:  UpdateUserInput!) {updateU
 		"id": id, 
 		"phone": "89095754585", 
 		"firstName": "Testoviy", 
-		"lastName": "User", 
+		"lastName": "User"+n,
 		"middleName": "epta", 
 		"gender": "MALE", 
 		"birthdate": "1987-04-04" }} }
@@ -216,16 +216,16 @@ get_baseProducts = request(baseProducts, token_admin)
 print get_baseProducts.text
 
 #Выключение товара
-''' deactivate_product = {"query": "mutation deactivateProduct($input: DeactivateProductInput!) {deactivateProduct(input: $input) {id, name, isActive}}",
+deactivate_product = {"query": "mutation deactivateProduct($input: DeactivateProductInput!) {deactivateProduct(input: $input) {id, isActive}}",
 	"variables": {"input" :{"clientMutationId": "1","id": product_id}} }
 get_deactivate_product = request(deactivate_product, token_headers)
-print get_deactivate_product.text '''
+print get_deactivate_product.text
 
 #Выключение магазина
-''' deactivate_store = {"query": "mutation deactivateStore($input:  DeactivateStoreInput!) {deactivateStore(input: $input) {id, name, isActive}}",
+deactivate_store = {"query": "mutation deactivateStore($input:  DeactivateStoreInput!) {deactivateStore(input: $input) {id, isActive}}",
 	"variables": {"input" :{"clientMutationId": "1","id": store_id}} }
 get_deactivate_store = request(deactivate_store, token_headers)
-print get_deactivate_store.text '''
+print get_deactivate_store.text
 
 #Выключение пользователя
 ''' deactivate_user = {"query": "mutation deactivateUser($input:  DeactivateUserInput!) {deactivateUser(input: $input){id, isActive}}",
