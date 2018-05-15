@@ -1,3 +1,4 @@
+#!/usr/bin/env Python3
 # -*- coding: utf-8 -*-
 import requests
 import json
@@ -12,15 +13,15 @@ if os.getenv('GRAPHQL_URL'):
 else: url = 'http://nightly.stq.cloud:60088/graphql'
 #url = 'http://nightly.stq.cloud:60088/graphql'
 
-def request(json, headers):
-    r = requests.post(url, json=json, headers=headers)
+def request(json_query, headers):
+    r = requests.post(url, json=json_query, headers=headers)
     return r
 
 
 #Проверка версии
 version = {"query": "query {apiVersion}"}
 request_version = request(version, '')
-print request_version.text
+print (request_version.text)
 
 #Получение токена админа
 admin_token = {"query":
@@ -30,21 +31,21 @@ admin_token = {"query":
                             "password": "bqF5BkdsCS"
                             }} }
 get_admin_token = request(admin_token, '')
-print get_admin_token.text
+print (get_admin_token.text)
 token = get_admin_token.json()['data']['getJWTByEmail']['token']
 token_admin = {'Authorization': 'Bearer '+token}
-print 'Admin token is: %s' % (token)
+print ('Admin token is: %s' % token)
 
 #Создание категории
 category = {"query":
                 "mutation createCategory($input: CreateCategoryInput!) {createCategory(input: $input) {id rawId name {lang text}}}",
     "variables": {"input": {"clientMutationId": "1",
                             "name": [{"lang": "DE", "text": "test"},
-                                     {"lang": "RU", "text": "тест%s"%(n)}],
+                                     {"lang": "RU", "text": "тест%s" % n}],
                             "level": 1
                             }} }
 create_category = request(category, token_admin)
-print create_category.text
+print (create_category.text)
 cat_id = create_category.json()['data']['createCategory']['id']
 cat_rawid = create_category.json()['data']['createCategory']['rawId']
 
@@ -54,10 +55,10 @@ category = {"query":
                 "mutation updateCategory($input: UpdateCategoryInput!) {updateCategory(input: $input) {id}}",
     "variables": {"input" : {"id": cat_id,
                              "clientMutationId": "1",
-                             "name": [{"lang": "EN", "text": "test%s"%(n)}]
+                             "name": [{"lang": "EN", "text": "test%s"% n}]
                              }} }
 update_category = request(category, token_admin)
-print update_category.text
+print (update_category.text)
 
 #Создание атрибута
 attribute = {"query":
@@ -68,7 +69,7 @@ attribute = {"query":
                              "metaField": { "values": ["ebatb"], "uiElement": "COMBOBOX"}
                              }} }
 get_create_attr = request(attribute, token_admin)
-print get_create_attr.text
+print (get_create_attr.text)
 attr_id = get_create_attr.json()['data']['createAttribute']['id']
 attr_rawid = get_create_attr.json()['data']['createAttribute']['rawId']
 
@@ -79,10 +80,10 @@ attribute = {"query":
                  "mutation updateAttribute($input: UpdateAttributeInput!) {updateAttribute(input: $input) {id}}",
              "variables": {"input" : {"clientMutationId": "1",
                                       "id":  attr_id,
-                                      "name": [{"text": "test%s"%(n), "lang": "EN"}],
+                                      "name": [{"text": "test%s"%n, "lang": "EN"}],
                                       }} }
 get_update_attr = request(attribute, token_admin)
-print get_update_attr.text
+print (get_update_attr.text)
 
 #Добавление атрибута к категории
 add_attr = {"query":
@@ -92,7 +93,7 @@ add_attr = {"query":
                             "attrId": attr_rawid
                             }} }
 get_add_attr = request(add_attr, token_admin)
-print get_add_attr.text
+print (get_add_attr.text)
 
 #Удаление атрибута у категории
 del_attr = {"query":
@@ -102,7 +103,7 @@ del_attr = {"query":
                             "attrId": attr_rawid
                             }} }
 get_del_attr = request(del_attr, token_admin)
-print get_del_attr.text
+print (get_del_attr.text)
 
 #Создание пользователя
 user = {"query":
@@ -111,7 +112,7 @@ user = {"query":
                             "email": regmail,
                             "password": "tester11" }},"operationName": "createUser"}
 create_user = request(user, '')
-print create_user.text
+print (create_user.text)
 
 #Получение токена пользователя
 user_token = {"query":
@@ -122,14 +123,14 @@ user_token = {"query":
                             }} }
 get_user_token = request(user_token, '')
 token = get_user_token.json()['data']['getJWTByEmail']['token']
-print 'User token is: %s' % (token)
+print ('User token is: %s' % token)
 token_headers = {'Authorization': 'Bearer '+token}
 
 #Получаение ID пользователя
 user_id = {"query":
                "query {me {id, rawId, isActive}}"}
 get_user_id = request(user_id, token_headers)
-print get_user_id.text
+print (get_user_id.text)
 id = get_user_id.json()['data']['me']['id']
 rawId = get_user_id.json()['data']['me']['rawId']
 
@@ -146,7 +147,7 @@ update_user = {"query":
                             "birthdate": "1987-04-04"
                             }} }
 get_update_user = request(update_user, token_headers)
-print get_update_user.text
+print (get_update_user.text)
 
 #Создание магазина
 create_store = {"query":
@@ -162,7 +163,7 @@ create_store = {"query":
                             "address": "test street 5"
                             }} }
 get_create_store = request(create_store, token_headers)
-print get_create_store.text
+print (get_create_store.text)
 store_rawid = get_create_store.json()['data']['createStore']['rawId']
 store_id = get_create_store.json()['data']['createStore']['id']
 
@@ -180,7 +181,7 @@ update_store = {"query":
                             "address": "example 3"
                             }} }
 get_update_store = request(update_store, token_headers)
-print get_update_store.text
+print (get_update_store.text)
 
 #Создание базового товара
 create_bproduct = {"query":
@@ -194,7 +195,7 @@ create_bproduct = {"query":
                              "slug": "bptest"+n,
                              "shortDescription": [{"lang": "EN", "text": "test"}] }} }
 get_create_bproduct = request(create_bproduct, token_headers)
-print get_create_bproduct.text
+print (get_create_bproduct.text)
 base_product_id = get_create_bproduct.json()['data']['createBaseProduct']['id']
 base_product_rawid = get_create_bproduct.json()['data']['createBaseProduct']['rawId']
 
@@ -206,7 +207,7 @@ update_base_product = {"query":
                              "currencyId": 2
                              }} }
 get_update_base_product = request(update_base_product, token_headers)
-print get_update_base_product.text
+print (get_update_base_product.text)
 
 #Создание товара с атрибутами
 create_product = {"query":
@@ -220,7 +221,7 @@ create_product = {"query":
                                              "metaField": "dfasfas",}]
                              }} }
 get_create_product = request(create_product, token_headers)
-print get_create_product.text
+print (get_create_product.text)
 product_id = get_create_product.json()['data']['createProduct']['id']
 product_rawid = get_create_product.json()['data']['createProduct']['rawId']
 
@@ -234,13 +235,13 @@ update_product = {"query":
                             "attributes": []
                             }} }
 get_update_product = request(update_product, token_headers)
-print get_update_product.text
+print (get_update_product.text)
 
 #Получение базовых товаров
 baseProducts = {"query":
                     "{me {baseProducts {edges {node {id rawId}}}}}"}
 get_baseProducts = request(baseProducts, token_admin)
-print get_baseProducts.text
+print (get_baseProducts.text)
 
 #Выключение товара
 deactivate_product = {"query":
@@ -249,7 +250,7 @@ deactivate_product = {"query":
                             "id": product_id
                             }} }
 get_deactivate_product = request(deactivate_product, token_headers)
-print get_deactivate_product.text
+print (get_deactivate_product.text)
 
 #Выключение магазина
 deactivate_store = {"query":
@@ -258,7 +259,7 @@ deactivate_store = {"query":
                             "id": store_id
                             }} }
 get_deactivate_store = request(deactivate_store, token_headers)
-print get_deactivate_store.text
+print (get_deactivate_store.text)
 
 #Выключение пользователя
 '''deactivate_user = {"query":
@@ -266,4 +267,4 @@ print get_deactivate_store.text
     "variables": {"input": {"clientMutationId": "1",
                             "id": id}}  }
 get_deactivate_user = request(deactivate_user, token_headers)
-print get_deactivate_userl, get_deactivate_user.text'''
+print (get_deactivate_user.text)'''

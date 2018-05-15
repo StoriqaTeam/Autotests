@@ -1,3 +1,4 @@
+#!/usr/bin/env Python3
 # -*- coding: utf-8 -*-
 import requests
 import json
@@ -13,15 +14,15 @@ if os.getenv('GRAPHQL_URL'):
 else: url = 'http://nightly.stq.cloud:60088/graphql'
 #url = 'http://nightly.stq.cloud:60088/graphql'
 
-def request(json, headers):
-    r = requests.post(url, json=json, headers=headers)
+def request(json_query, headers):
+    r = requests.post(url, json=json_query, headers=headers)
     return r
 
 
 #Проверка версии
 version = {"query": "query {apiVersion}"}
 request_version = request(version, '')
-print request_version.text
+print (request_version.text)
 
 #Получение токена админа
 admin_token = {"query":
@@ -33,7 +34,7 @@ admin_token = {"query":
 get_admin_token = request(admin_token, '')
 token = get_admin_token.json()['data']['getJWTByEmail']['token']
 token_admin = {'Authorization': 'Bearer '+token}
-print 'Admin token is: %s' % (token)
+print ('Admin token is: %s' % token)
 
 #Создание пользователя
 user = {"query":
@@ -43,7 +44,7 @@ user = {"query":
 	                        "password": "qwe123QWE" }},
 	    "operationName": "createUser"}
 create_user = request(user, '')
-print create_user.text
+print (create_user.text)
 
 #Получение токена пользователя
 user_token = {"query":
@@ -54,14 +55,14 @@ user_token = {"query":
 	                        }} }
 get_user_token = request(user_token, '')
 token = get_user_token.json()['data']['getJWTByEmail']['token']
-print 'User token is: %s' % (token)
+print ('User token is: %s' % token)
 token_headers = {'Authorization': 'Bearer '+token}
 
 #Получаение ID пользователя
 user_id = {"query":
 	           "query {me {id, rawId, isActive}}"}
 get_user_id = request(user_id, token_headers)
-print get_user_id.text
+print (get_user_id.text)
 id = get_user_id.json()['data']['me']['id']
 rawId = get_user_id.json()['data']['me']['rawId']
 
@@ -77,7 +78,7 @@ update_user = {"query":
 	                        "birthdate": "1987-04-04"
 	                        }} }
 get_update_user = request(update_user, token_headers)
-print get_update_user.text
+print (get_update_user.text)
 
 #Отправка подтверждения емейл
 send_email = {"query":
@@ -86,7 +87,7 @@ send_email = {"query":
 	                        "email": regmail
 	                        }} }
 get_send_email = request(send_email, '')
-print get_send_email.text
+print (get_send_email.text)
 
 #Запрос сброса пароля
 pass_reset = {"query":
@@ -95,7 +96,7 @@ pass_reset = {"query":
 	                        "email": regmail
 	                        }} }
 get_pass_reset = request(pass_reset, '')
-print get_pass_reset.text
+print (get_pass_reset.text)
 
 #Выключение пользователя
 '''deactivate_user = {"query": "mutation deactivateUser($input:  DeactivateUserInput!) {deactivateUser(input: $input){id, isActive}}",
@@ -103,4 +104,4 @@ print get_pass_reset.text
 	                        "id": id
 	                        }}  }
 get_deactivate_user = request(deactivate_user, token_headers)
-print get_deactivate_user.text'''
+print (get_deactivate_user.text)'''
