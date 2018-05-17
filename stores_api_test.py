@@ -1,4 +1,4 @@
-#!/usr/bin/env Python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import requests
 import json
@@ -11,8 +11,8 @@ regmail = 'test' + n + '@test.test'
 
 if os.getenv('GRAPHQL_URL'):
     url = os.environ['GRAPHQL_URL']
-else: url = 'http://nightly.stq.cloud:60088/graphql'
-#url = 'http://nightly.stq.cloud:60088/graphql'
+else: url = 'http://nightly.stq.cloud/graphql'
+#url = 'http://nightly.stq.cloud/graphql'
 
 def request(json_query, headers):
     r = requests.post(url, json=json_query, headers=headers)
