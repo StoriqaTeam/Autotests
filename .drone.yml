@@ -1,0 +1,14 @@
+pipeline:
+  package:
+    image: plugins/docker
+    repo: storiqateam/apitests
+    tags:
+    - ${DRONE_BRANCH//\//_}
+    - ${DRONE_BRANCH//\//_}${DRONE_BUILD_NUMBER}
+    secrets:
+    - docker_username
+    - docker_password
+    when:
+      event:
+      - push
+      - tag
