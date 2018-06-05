@@ -10,8 +10,8 @@ regmail = 'test' + n + '@test.test'
 
 if os.getenv('GRAPHQL_URL'):
     url = os.environ['GRAPHQL_URL']
-else: url = 'http://nightly.stq.cloud/graphql'
-#url = 'http://nightly.stq.cloud/graphql'
+else: url = 'https://nightly.stq.cloud/graphql'
+#url = 'https://nightly.stq.cloud/graphql'
 
 def request(json_query, headers):
     r = requests.post(url, json=json_query, headers=headers)
@@ -231,7 +231,7 @@ update_product = {"query":
                       "mutation updateProduct($input: UpdateProductWithAttributesInput!) {updateProduct(input: $input) {id}}",
     "variables": {"input": {"clientMutationId": "1",
                             "id": product_id,
-                            "product": {"discount": 5.0},
+                            "product": {"discount": 1.0},
                             "attributes": []
                             }} }
 get_update_product = request(update_product, token_headers)

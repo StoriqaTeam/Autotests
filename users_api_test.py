@@ -40,6 +40,8 @@ print ('Admin token is: %s' % token)
 user = {"query":
 	        "mutation createUser($input: CreateUserInput!) {createUser(input: $input) {id}}",
 	"variables": {"input": {"clientMutationId": "1",
+                            "firstName": "tester",
+                            "lastName": "testoviy",
 	                        "email": regmail,
 	                        "password": "qwe123QWE" }},
 	    "operationName": "createUser"}

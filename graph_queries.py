@@ -121,6 +121,8 @@ queries = {
 	"variables": {
 	    "input": {
 	        "clientMutationId": "1",
+	        "firstName": "tester",
+	        "lastName": "testoviy",
 	        "email": "%(regmail)s",
 	        "password": "qwe123QWE" 
 	    }
@@ -197,7 +199,7 @@ queries = {
 
 'deleteUserDeliveryAddress' : '''
 {"query":
-    "mutation deleteUserDeliveryAddress {deleteUserDeliveryAddress(id: %(addr_rawid)i) {id, rawId}}",
+    "mutation deleteUserDeliveryAddress {deleteUserDeliveryAddress(id: %(addr_rawid)i) {id, rawId}}"
 }
 ''',
 
