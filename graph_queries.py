@@ -16,7 +16,7 @@ queries = {
                  "query {categories{id, rawId, name{text}, level, parentId}}"}''',
 
 'currencyExchange' : '''{"query":
-                        "query {currencyExchange{stq{rouble}}}"}''',
+                        "query {currencyExchange{stq{rouble, dollar}, dollar{stq}}}"}''',
 
 'adm_token' : '''{
 "query":
