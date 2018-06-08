@@ -13,7 +13,7 @@ if os.getenv('GRAPHQL_URL'):
     url = os.environ['GRAPHQL_URL']
 else: url = 'https://nightly.stq.cloud/graphql'
 
-
+#dfggdf
 def request(json_query, headers):
     r = requests.post(url, json=json_query, headers=headers)
     return r
