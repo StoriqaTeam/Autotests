@@ -216,7 +216,7 @@ queries = {
             "slug": "test%(n)s",
             "phone": "89091112233",
             "email": "teststore@test.test",
-            "address": "test street 5"
+            "addressFull": {"value": "gdeto", "country": "Canada", "postalCode": "111111"}
         }
     }
 }
@@ -235,7 +235,7 @@ queries = {
             "slug": "xxx%(n)s",
             "phone": "89093335522",
             "email": "ssss@test.test",
-            "address": "example 3"
+            "addressFull": {"value": "tamto", "country": "Canada", "postalCode": "111222"}
             
         }
     }
