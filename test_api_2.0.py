@@ -20,7 +20,6 @@ def action(dictq):
     token_headers = ''
     errors = {}
     count = 0
-    answer = ''
     context = {
         'n': datetime.strftime(datetime.now(), "%m%d%H%M%S"),
     }
