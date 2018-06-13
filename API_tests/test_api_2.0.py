@@ -7,13 +7,11 @@ import graph_queries as q
 from datetime import datetime
 
 
-
-
 if os.getenv('GRAPHQL_URL'):
     url = os.environ['GRAPHQL_URL']
 else: url = 'https://nightly.stq.cloud/graphql'
 
-#dfggdf
+
 def request(json_query, headers):
     r = requests.post(url, json=json_query, headers=headers)
     return r
@@ -58,12 +56,13 @@ def action(dictq):
                 context['prod_rawid'] = answer.json()['data']['createProduct']['rawId']
             print(answer.json())
             if 'errors' in answer.text:
-                error_message = 'ЕСТЬ ОШИБКА В ЗАПРОСЕ: ' + str(i)
+                error_message = 'ЕСТЬ ОШИБКА В ЗАПРОСЕ: ' + str(i) + answer.text
                 errors['message'+str(count)] = error_message
                 count += 1
         except Exception as e:
-            errors['except'+str(count)] = str(e) + ' In query: ' + str(i)
+            errors['except'+str(count)] = 'ИСКЛЮЧЕНИЕ В ЗАПРОСЕ ' + str(i) + '\n' + answer.text + '\n' + str(e)
             count += 1
+            break
     if count > 0:
         for i in errors:
             print ('\n', '\n', errors[i])

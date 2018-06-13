@@ -37,7 +37,7 @@ class Registration(unittest.TestCase):
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, user)))
 
     ''' def tearDown(self):
-		self.driver.close() '''
+        self.driver.close() '''
 
 
 if __name__ == "__main__":

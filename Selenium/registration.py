@@ -1,55 +1,61 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import unittest
-
-from selenium.webdriver.chrome.webdriver import WebDriver
-
-from locators import *
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException
 import time
+from locators import *
+import main as m
+from selenium.common.exceptions import NoSuchElementException
+from selenium import webdriver
 
 
-class Registration(unittest.TestCase):
-    print ('Registration test')
-    # driver = webdriver.PhantomJS()
-    # driver = webdriver.Firefox()
-    driver = webdriver.Chrome()
+# click on object
+def tap(adr):
+    try:
+        m.driver.find_element_by_xpath(adr).click()
+    except NoSuchElementException as e:
+        print(e)
+        return False
+    return True
 
-    # Проверка регистрации
-    def test_reg(self):
-        driver = self.driver
-        # Заходим на сайт и открываем форму регистрации
-        driver.get(testdev)
-        driver.implicitly_wait(5)
-        self.assertIn(u"Storiqa", driver.title)
-        driver.find_element_by_xpath(user).click()
-        driver.find_element_by_xpath(signup).click()
+
+# write text in field
+def write(adr, char):
+    try:
+        elem = m.driver.find_element_by_xpath(adr)
+    except NoSuchElementException as e:
+        print(e)
+        return False
+    elem.click()
+    elem.send_keys(char)
+    return True
+
+
+class Registration:
+
+    def __init__(self, fname, lname, mail, pas):
+        self.fname = fname
+        self.lname = lname
+        self.mail = mail
+        self.pas = pas
+
+    test_name = 'registration'
+
+    def reg(self):
+        tap(signup)
         time.sleep(1)
-        elem = driver.find_element_by_xpath(login)
-        elem.click()
-        elem.send_keys('Tester')
-        elem = driver.find_element_by_xpath(email)
-        elem.click()
-        elem.send_keys(regmail)
-        elem = driver.find_element_by_xpath(pwd)
-        elem.click()
-        elem.send_keys('qwe123QWE')
-        # elem = driver.find_element_by_xpath (pwd_conf)
-        # elem.click()
-        # elem.send_keys('qwe123QWE+')
-        driver.find_element_by_xpath(submitUP).click()
+        write(firstname, self.fname)
+        write(lastname, self.lname)
+        write(email, self.mail)
+        write(pwd, self.pas)
+        tap(submitUP)
         time.sleep(1)
-        alert = driver.switch_to.alert
-        alert.accept()
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, user)))
-
-    ''' def tearDown(self):
-		self.driver.close() '''
+        assert m.driver.find_element_by_xpath(signup)
 
 
 if __name__ == "__main__":
-    unittest.main()
+    driver = webdriver.Chrome()
+    driver.get(testdev)
+    driver.implicitly_wait(5)
+    assert "Storiqa" in driver.title
+
+    test_registration = Registration('tester', 'testoviy', regmail, 'qwe123QWE')
+    test_registration.reg
