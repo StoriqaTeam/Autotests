@@ -20,7 +20,7 @@ def action(dictq):
     token_headers = ''
     errors = {}
     count = 0
-    answer = ''
+    answer: json
     context = {
         'n': datetime.strftime(datetime.now(), "%m%d%H%M%S"),
     }
@@ -61,7 +61,7 @@ def action(dictq):
                 errors['message'+str(count)] = error_message
                 count += 1
         except Exception as e:
-            errors['except'+str(count)] = 'ИСКЛЮЧЕНИЕ В ЗАПРОСЕ ' + str(i) + '\n' + answer.text + '\n' + str(e)
+            errors['except'+str(count)] = 'ИСКЛЮЧЕНИЕ В ЗАПРОСЕ ' + i + '\n' + answer.text + '\n' + str(e)
             count += 1
             break
     if count > 0:
