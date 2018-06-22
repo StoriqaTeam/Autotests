@@ -21,7 +21,6 @@ def action(dictq):
     errors = {}
     answer: json
     count = 0
-    answer = json.dumps({"str" : "null"})
     context = {
         'n': datetime.strftime(datetime.now(), "%m%d%H%M%S"),
     }
