@@ -19,6 +19,7 @@ def request(json_query, headers):
 def action(dictq):
     token_headers = ''
     errors = {}
+    answer: json
     count = 0
     answer = json.dumps({"str" : "null"})
     context = {
@@ -57,7 +58,7 @@ def action(dictq):
                 context['prod_rawid'] = answer.json()['data']['createProduct']['rawId']
             print(answer.json())
             if 'errors' in answer.text:
-                error_message = 'ЕСТЬ ОШИБКА В ЗАПРОСЕ: ' + str(i)
+                error_message = 'ЕСТЬ ОШИБКА В ЗАПРОСЕ: ' + str(i) + answer.text
                 errors['message'+str(count)] = error_message
                 count += 1
         except Exception as e:
