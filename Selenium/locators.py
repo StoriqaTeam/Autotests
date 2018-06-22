@@ -1,64 +1,133 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-unic = datetime.strftime(datetime.now(), "%m%d%H%M%S")
-regmail = 'tester' + unic + '@test.test'
-testmail = 'tester@test.test'
-testdev = "https://nightly.stq.cloud/"
-testprod = "https://storiqa.com/start"
 
-# Определение локаторов на STORIQA.COM
+# Служебные переменные
+unic = datetime.strftime(datetime.now(), "%m%d%H%M%S") # Уникальная переменная
+regmail = 'tester' + unic + '@test.test' # Адрес электронной почты для регистраций
+regname = 'test' + unic # Имена для магазинов и товаров
+testmail = 'tester@storiqa.com' # Логин тестового пользователя
+testdev = "https://nightly.stq.cloud/" # Адрес тестового стенда
+testprod = "https://storiqa.com/start" # Адрес продакшена
+
+''' Определение локаторов на STORIQA.COM '''
 
 # ШАПКА САЙТА:
-logo = 'a.logo'  # driver.find_element_by_css_selector ('a.logo')	#Кнопка на главную
-search = "//input [@class='search']"  # driver.find_element_by_xpath ("//input [@class='search']")	#Поиск по сайту
-user = "//div [@class='UserDropdown__avatar___3nspF']"
-
+logo = "//a[@data-test='logoLink']"  # Логотип Сторика
+select = "//div[@class='Select__icon___QSozW']" # Выбор продукты или магазины
+search = "//input [@data-test='searchInput']" # Поиск по сайту
+user = "//div [@data-test='userDropdownButton']" # Открыть меню юзера
+currency = "//div [@data-test='headerСurrenciesSelect']" # Выбор валюты
+currencies = "//div[@data-test='']"
+lang = "//div [@data-test='headerLanguagesSelect']" # Выбор языка
+langs = "//div[@data-test='']"
+helpp = "//a [@href='']" # Помощь
+wizard = "//a [@href='/manage/wizard']" # Создание магазина
+cart = "//a[@href='/cart]" # Корзина
 
 # АВТОРИЗАЦИЯ: (/signin /signup)
-signup = "//div [@data-test='headerSignUpButton']"
-firstname = "//input [@data-test='firstname']"
-lastname = "//input [@data-test='lastname']"
-email = "//input [@data-test='email']"
-pwd = "//input [@data-test='password']"
-submitUP = "//button[@data-test='signUpButton']"
-signin = "//div [@data-test='headerSignInButton']"
-fb = "//button [@class='button facebook']"  # driver.find_element_by_xpath ("//button [@class='button facebook']")	#фейсбук
-gg = ""  # google
-fg_pwd = u'Forgot?'  # driver.find_element_by_link_text(u'Регистрация')	#забыли
-submitIN = "//button[@data-test='signInButton']"
+signup = "//div [@data-test='headerSignUpButton']" # Регистрация
+firstname = "//input [@data-test='firstName']" # Имя
+lastname = "//input [@data-test='lastName']" # Фамилия
+email = "//input [@data-test='email']" # Електронная почта
+pwd = "//input [@data-test='password']" # Пароль
+submitUP = "//button[@data-test='signUpButton']" # Кнопка подтвердить регитсрацию
+signin = "//div [@data-test='headerSignInButton']"# Авторизация
+fb = "//a [@data-test='authFacebookButton']"  # Авторизация через фейсбук
+gg = "//a[@data-test='authGoogleButton']"  # Афторизация через google
+fg_pwd = ''  # Забыли пароль
+submitIN = "//button[@data-test='signInButton']" # Кнопка подтвердить авторизацию
 
+# МЕНЮ ЮЗЕРА
+messages = "" #
+profile = "//a[@data-test='header-user-menu-profileLink']" # Профиль пользователя
+history = "" #
+myshops = "" #
+logout = "//a[@data-test='header-user-menu-logoutLink']" # Логаут
 
-# ГЛАВНАЯ СТРАНИЦА: (/)
-start_selling = "//a [@data-test='headerStartSellingButton']"
+# ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ
+# Персональные данные
+userFname = "//input[@data-test='firstName']" # Имя
+userLname = "//input[@data-test='lastName']" # Фамилия
+gender = "//div[@data-test='profileGenderSelect']" # Пол
+genders = "//div[@data-test='profileGenderSelect_items']" # Все элементы списка пол
+birthdate = {
+    'year' : "//class[@data-test='yearSelectBirthdateProfile']",
+    'month' : "//class[@data-test='monthSelectBirthdateProfile']",
+    'day' : "//class[@data-test='daySelectBirthdateProfile']"
+            } # Дата рождения
+years = "//div[@data-test='']"
+months = "//div[@data-test='']"
+days = "//div[@data-test='']"
+phone = "//input[@data-test='phone']" # Телефон
+save_profile = "//button[@data-test='saveButton']" # Сохранить
+# Адреса доставки
+adresses = "//a[@href='/profile/shipping-addresses']" # Выбор меню адресов доставки
+userCountry = "//div[@data-test='AddressFormSelect']" # Страна пользователя
+countries = "//div[@data-test='AddressFormSelect_items']" # Список стран
+userAdress = "//input[@data-test='autocompleteAddress']" # Адрес пользователя
+userSuite = "//input[@data-test='streetNumber']" # Сокращение
+userStreet = "//input[@data-test='route']" # Улица
+userCity = "//input[@data-test='locality']" # Город
+userRegion = "//input[@data-test='administrativeAreaLevel2']" # Регион
+userArea = "//input[@data-test='administrativeAreaLevel1']" # Зона
+userPostalcode = "//input[@data-test='postalCode']" # Почтовый код
+priority = "//input[@data-test='priority']" # Приоритетность адреса
+saveAdress = "//button[@data-test='addShippingAddressButton']" # Кнопка сохранить адрес
+addAdress =  "" # Добавить адрес
+dellAdress = "" # Удалить адрес
 
+# Безопасность
+# KYC
 
-# СЩХДАНИЕ МАГАЗИНА(/manage/store/new)
-store_name = "//input[@data-test='name']"
-slogan = "//input[@data-test='slogan']"
-slug = "//input[@data-test='slug']"
-short_desc = "//textarea[@data-test='shortDescription']"
-long_desc = "//textarea[@data-test='longDescription']"
-save_store = "//button[@class='SpinnerButton__container___1_OzA']"
+# СОЗДАНИЕ МАГАЗИНА(/manage/wizard)
+# wizard
+first_step = "//div[contains(text(), 'Give your store a name')]" # Определение первого шага
+store_name = "//input[@data-test='name']" # Имя магазина
+storeSlug = "//input[@data-test='slug']" # Слуг
+short_desc = "//textarea[@data-test='shortDescription']" # Краткое описание
+nextstep = "//button[@data-test='wizardBackButton']" # Кнопка некст степ
+two_step = "//div[contains(text(), 'Set up store')]" # Определение второго шага
+mainlanguage = "//div[@data-test='wizardLanguagesSelect']" # Язык магазинга
+languages = "//div[@data-test='wizardLanguagesSelect_items']" # Список языков
+ru = "//div[@data-test='RU']" # Русский язык
+storeCountry = "//div[@data-test='AddressFormSelect']" # Страна магазина
+frame_country = "//div[@class='Select__itemsWrap___2oJi_']" # Окно со списком
+countries # Список стран
+russia = "//div/div/div[@id='RU']" # Россия
+storeAdress = "//input[@data-test='autocompleteAddress']"  # Адрес магазина
+storeSubmitAdress = "//div[@class='AddressForm__items___3Wr7L']"
+storeSuite = "//div[@data-test='streetNumber']" # Сокращение
+storeStreet = "//div[@data-test='route']" # Улица
+storeCity = "//div[@data-test='locality']" # Город
+storeRegion = "//div[@data-test='administrativeAreaLevel2']" # Регион \ штат
+storeArea = "//div[@data-test='administrativeAreaLevel1']" # Зона
+storePostalcode = "//div[@data-test='postalCode']" # Почтовый индекс
+three_step = "//div[contains(text(), 'Fill your store with goods')]" # Определение третьего шага
+addFproduct = "//button[@data-test='wizardUploaderProductFotoFirst']" # Кнопка добавить продукт
+productName =  "//input [@data-test='name']" #
+short_desc
+category = ""
+vendorCode = "//input[@data-test='vendorCode']"
+price = "//input[@data-test='price']"
+saveProduct = "//button[@data-test='wizardSaveProductButton']"
+
+slogan = "//input[@data-test='slogan']" #
+long_desc = "//textarea[@data-test='longDescription']" #
+save_store = "//button[@class='SpinnerButton__container___1_OzA']" #
 
 # СОЗДАНИЕ ТОВАРА: (/product/tovar_name)
-product_name = "//input [@data-test='name']"
 seo_title = ""
 seo_desc = ""
-short_desc
+
 full_desc = ""
-category = ""
-save_product = ""
-
-#Самовывоз
-#Итого
-cart_add = "//div/button [@class='button']"
-#Купить в 2 клика
-#Описание
-#Доставка
-#Отзывы
-#Гарантии
-#Возврат
 
 
+
+# КОРЗИНА
+plusquantityincart = ""
+minusquantityincart = ""
+stq = ""
+btc = ""
+eth = ""
 

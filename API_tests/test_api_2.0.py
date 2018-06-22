@@ -19,6 +19,7 @@ def request(json_query, headers):
 def action(dictq):
     token_headers = ''
     errors = {}
+    answer: json
     count = 0
     context = {
         'n': datetime.strftime(datetime.now(), "%m%d%H%M%S"),
