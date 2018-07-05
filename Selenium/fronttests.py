@@ -15,10 +15,10 @@ if os.getenv('SELENIUM_URL'):
     url = os.environ['SELENIUM_URL']
 else: url = testdev
 
-driver = webdriver.Remote(
-   command_executor='http://uxtest.stq.cloud:4444/',
-   desired_capabilities=DesiredCapabilities.CHROME)
-#driver = webdriver.Chrome()
+# driver = webdriver.Remote(
+#    command_executor='http://uxtest.stq.cloud:4444/wd/hub',
+#    desired_capabilities=DesiredCapabilities.FIREFOX)
+driver = webdriver.Chrome()
 driver.maximize_window()
 driver.get(url)
 driver.implicitly_wait(4)
@@ -32,7 +32,7 @@ class TestFailException(Exception):
 # click on object
 def tap(adr):
     try:
-        elem = driver.find_element_by_xpath(adr)
+        elem = WebDriverWait(driver, 5).until(ec.element_to_be_clickable((By.XPATH, adr)))
         elem.click()
     except NoSuchElementException:
         raise TestFailException('Object "%s" not found' % adr)
