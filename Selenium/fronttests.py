@@ -6,18 +6,22 @@ from locators import *
 from selenium.common.exceptions import NoSuchElementException
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 if os.getenv('SELENIUM_URL'):
     url = os.environ['SELENIUM_URL']
 else: url = testdev
 
-driver = webdriver.Chrome()
+driver = webdriver.Remote(
+   command_executor='http://uxtest.stq.cloud:4444/',
+   desired_capabilities=DesiredCapabilities.CHROME)
+#driver = webdriver.Chrome()
 driver.maximize_window()
 driver.get(url)
-driver.implicitly_wait(2)
+driver.implicitly_wait(4)
 assert "Storiqa" in driver.title
 
 ########################################Interface#########################################
@@ -35,6 +39,16 @@ def tap(adr):
     else:
         return elem
 
+# wait before clik
+def waitonclick(adr):
+    try:
+        elem = WebDriverWait(driver, 5).until(
+            ec.visibility_of_element_located((By.XPATH, adr)))
+        elem.click()
+    except NoSuchElementException:
+        raise TestFailException('Object "%s" not found' % adr)
+
+# clear field
 def clear(adr):
     driver.find_elements_by_xpath(adr).clear()
     return True
@@ -86,7 +100,7 @@ class Registration:
         self.mail = mail
         self.pas = pas
 
-    test_name = 'registration test'
+    name = 'registration'
 
     def start(self):
         try:
@@ -111,7 +125,7 @@ class Authorization:
         self.mail = mail
         self.pas = pas
 
-    test_name = 'authorization'
+    name = 'authorization'
 
     def start(self):
         try:
@@ -128,10 +142,13 @@ class Authorization:
 
 class Store:
 
-    def __init__(self, name, slug, price):
+    def __init__(self, name, slug, pprice, vcode):
         self.name = name
         self.slug = slug
-        self.price = price
+        self.pprice = pprice
+        self.vcode = vcode
+
+    name = 'Store'
 
     def create(self):
         try:
@@ -140,7 +157,7 @@ class Store:
             write(store_name, self.name)
             write(storeSlug, self.slug)
             write(short_desc, 'test short')
-            tap(nextstep)
+            waitonclick(nextstep)
             checktxt('Set up store')
             tap(mainlanguage)
             list_lan = get_list(languages)
@@ -155,9 +172,25 @@ class Store:
             actions.move_to_element(elem2).click()
             tap(storeCountry)
             write(storeAdress, 'New Arbat Avenue')
+            waitonclick(storeSubmitAdress)
+            waitonclick(nextstep)
+            checktxt('Fill your store with goods')
+            tap(addFproduct)
+            write(productName, self.name)
+            write(short_desc, 'test')
+            tap(category)
+            tap(category1)
+            tap(category2)
+            tap(category3)
+            write(price, self.pprice)
+            write(vendorCode, self.vcode)
+            tap(saveProduct)
+            checktxt('Fill your store with goods')
             time.sleep(1)
-            driver.find_element_by_xpath(storeSubmitAdress).click()
-            tap(nextstep)
+            waitonclick(nextstep)
+            #driver.find_element_by_xpath(nextstep).click()
+            checktxt('Do you really want to leave this page?')
+            tap(closeWizard)
         except TestFailException as e:
             print('Create store test FAILED' + '\n' + str(e))
         except AssertionError:
@@ -165,9 +198,25 @@ class Store:
         else:
             return True
 
+    def edit(self):
+        try:
+            write(store_name, self.name+'edited')
+            write(slogan, 'testestest')
+            write(storeSlug, self.slug)
+            write(short_desc, 'short desc')
+            write(long_desc, 'long test')
+            tap(save_store)
+            time.sleep(1)
+            checktxt('Saved!')
+        except TestFailException as e:
+            print ('Edit store test FAILED' + '\n' + str(e))
+        else:
+            return True
 
 
 class User:
+
+    name = 'User'
 
     def profile(self):
         try:
@@ -180,7 +229,7 @@ class User:
             tap(phone).clear()
             write(phone, '8'+unic)
             tap(save_profile)
-            time.sleep(4)
+            time.sleep(3)
         except TestFailException as e:
             print('User profile update test FAILED' + '\n' + str(e))
         else:

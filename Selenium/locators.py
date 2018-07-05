@@ -107,20 +107,32 @@ three_step = "//div[contains(text(), 'Fill your store with goods')]" # Опре�
 addFproduct = "//button[@data-test='wizardUploaderProductFotoFirst']" # Кнопка добавить продукт
 productName =  "//input [@data-test='name']" #
 short_desc
-category = ""
+category = "//div[@data-test='categorySelector']"
+category1 = "//div[@data-test='categoryItem_36']"
+category2 = "//div[@data-test='categoryItem_37']"
+category3 = "//div[@data-test='categoryItem_38']"
 vendorCode = "//input[@data-test='vendorCode']"
 price = "//input[@data-test='price']"
 saveProduct = "//button[@data-test='wizardSaveProductButton']"
-
+closeWizard =  "//button[@data-test='closeWizard']"
+continueWizard =  "//button[@data-test='continueWizard']"
+# РЕДАКТИРОВАНИЕ МАГАЗИНА
+# settings
+settings = ""
+store_name
+storeLang = "//div[@data-test='storeLangSelect']"
 slogan = "//input[@data-test='slogan']" #
+storeSlug
+short_desc
 long_desc = "//textarea[@data-test='longDescription']" #
 save_store = "//button[@class='SpinnerButton__container___1_OzA']" #
+goods = ""
 
 # СОЗДАНИЕ ТОВАРА: (/product/tovar_name)
 seo_title = ""
 seo_desc = ""
 
-full_desc = ""
+full_desc = "" #
 
 
 
