@@ -146,7 +146,7 @@ queries = {
 
 'user_id' : '''
 {"query":
-	"query {me {id, rawId, isActive}}"}
+	"query {me {id, rawId, isActive, myStore {id}}}" }
 ''',
 
 'up_user' : '''
@@ -313,7 +313,7 @@ queries = {
 
 'increment_incart' : '''
 {"query":
-    "mutation incrementInCart($input: IncrementInCartInput!) {incrementInCart(input: $input) {id, name{text}}}",
+    "mutation incrementInCart($input: IncrementInCartInput!) {incrementInCart(input: $input) {id, productsCost}}",
 "variables": {
     "input": {
         "clientMutationId": "1",
@@ -324,7 +324,7 @@ queries = {
 
 'setselection_incart' : '''
 {"query":
-    "mutation setSelectionInCart($input: SetSelectionInCartInput!) {setSelectionInCart(input: $input) {id, name{text}}}",
+    "mutation setSelectionInCart($input: SetSelectionInCartInput!) {setSelectionInCart(input: $input) {id, productsCost}}",
 "variables": {
     "input": {
         "clientMutationId": "1",
@@ -336,7 +336,7 @@ queries = {
 
 'sequantity_incart' : '''
 {"query":
-    "mutation setQuantityInCart($input: SetQuantityInCartInput!) {setQuantityInCart(input: $input) {id, name{text}}}",
+    "mutation setQuantityInCart($input: SetQuantityInCartInput!) {setQuantityInCart(input: $input) {id, productsCost}}",
 "variables": {
     "input": {
         "clientMutationId": "1",
@@ -348,7 +348,7 @@ queries = {
 
 'delete_fromcart' : '''
 {"query":
-    "mutation deleteFromCart($input: DeleteFromCartInput!) {deleteFromCart(input: $input) {productId, storeId}}",
+    "mutation deleteFromCart($input: DeleteFromCartInput!) {deleteFromCart(input: $input) {id, totalCost}}",
 "variables": {
     "input": {
         "clientMutationId": "1",
