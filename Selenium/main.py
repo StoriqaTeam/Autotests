@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 from locators import *
 import fronttests as r
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import time
 
 passed_test_count = 0
@@ -15,20 +10,23 @@ failed_test_count = 0
 test_registration = r.Registration('tester', 'testoviy', regmail, 'qwe123QWE')
 test_authorization = r.Authorization('tester@storiqa.com', 'qwe123QWE')
 test_user_profile_update = r.User()
+test_add_shipping_address = r.User()
 test_create_store = r.Store(regname, regname, 333, unic)
 
-test_suite = [test_registration.start(), test_authorization.start(),
+'''test_suite = [test_registration.start(), test_authorization.start(),
               test_user_profile_update.profile(),
-              test_create_store.create(), test_create_store.edit()]
-#test_suite2 = [test_authorization.start(), test_create_store.create(), test_create_store.edit()]
+              test_create_store.create(), test_create_store.edit()]'''
+test_suite = [test_authorization.start(), test_user_profile_update.profile(),
+               test_add_shipping_address.adress_add(), test_add_shipping_address.adress_del()]
 
 if __name__ == "__main__":
 
-    #test_registration.start()
     for i in test_suite:
         if i is True:
             passed_test_count += 1
         else:
             failed_test_count += 1
     print ('Test finished with %s PASSED and %s FAILED' % (passed_test_count, failed_test_count))
-    #input('END')
+
+
+    input('END')

@@ -238,8 +238,23 @@ class User:
 
 
     def adress_add(self):
-        tap(adresses)
-        tap(addAdress)
+        try:
+            tap(adresses)
+            tap(addAddress)
+            tap(userCountry)
+            list_countries = get_list(countries)
+            assert len(list_countries) > 200
+            elem = driver.find_element_by_xpath(usa)
+            elem.click()
+            write(storeAdress, 'Нью-Йорк, Айова, США')
+            waitonclick(storeSubmitAdress)
+            tap(saveAddress)
+            time.sleep(1)
+            checktxt('Address created!')
+        except TestFailException as e:
+            print('Add shipping address test FAILED' + '\n' + str(e))
+        else:
+            return True
 
 
 
@@ -247,4 +262,11 @@ class User:
         pass
 
     def adress_del(self):
-        pass
+        try:
+            tap(dellAddress)
+            time.sleep(1)
+            checktxt('Address deleted!')
+        except TestFailException as e:
+            print('Delete shipping address test FAILED' + '\n' + str(e))
+        else:
+            return True

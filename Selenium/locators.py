@@ -73,9 +73,9 @@ userRegion = "//input[@data-test='administrativeAreaLevel2']" # Регион
 userArea = "//input[@data-test='administrativeAreaLevel1']" # Зона
 userPostalcode = "//input[@data-test='postalCode']" # Почтовый код
 priority = "//input[@data-test='priority']" # Приоритетность адреса
-saveAdress = "//button[@data-test='addShippingAddressButton']" # Кнопка сохранить адрес
-addAdress =  "" # Добавить адрес
-dellAdress = "" # Удалить адрес
+addAddress = "//button[@data-test='addShippingAddressButton']" # Кнопка добавить адрес
+saveAddress = "//button[@data-test='saveShippingAddressButton']" # Кнопка сохранить адрес
+dellAddress = "//button[@data-test='deleteShippingAddressButton']" # Удалить адрес
 
 # Безопасность
 # KYC
@@ -95,6 +95,7 @@ storeCountry = "//div[@data-test='AddressFormSelect']" # Страна магаз
 frame_country = "//div[@class='Select__itemsWrap___2oJi_']" # Окно со списком
 countries # Список стран
 russia = "//div/div/div[@id='RU']" # Россия
+usa = "//div/div/div[@id='US'][@data-test='AddressFormSelect_items']" # США
 storeAdress = "//input[@data-test='autocompleteAddress']"  # Адрес магазина
 storeSubmitAdress = "//div[@class='AddressForm__items___3Wr7L']"
 storeSuite = "//div[@data-test='streetNumber']" # Сокращение
