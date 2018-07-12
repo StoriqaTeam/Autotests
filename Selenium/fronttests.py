@@ -15,10 +15,10 @@ if os.getenv('SELENIUM_URL'):
     url = os.environ['SELENIUM_URL']
 else: url = testdev
 
-# driver = webdriver.Remote(
-#    command_executor='http://uxtest.stq.cloud:4444/wd/hub',
-#    desired_capabilities=DesiredCapabilities.FIREFOX)
-driver = webdriver.Chrome()
+driver = webdriver.Remote(
+   command_executor='http://uxtest.stq.cloud:4444/wd/hub',
+   desired_capabilities=DesiredCapabilities.FIREFOX)
+#driver = webdriver.Chrome()
 driver.maximize_window()
 driver.get(url)
 driver.implicitly_wait(4)

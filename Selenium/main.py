@@ -29,4 +29,4 @@ if __name__ == "__main__":
     print ('Test finished with %s PASSED and %s FAILED' % (passed_test_count, failed_test_count))
 
 
-    input('END')
+    #input('END')
