@@ -242,6 +242,36 @@ queries = {
 }
 ''',
 
+'cr_warehouse' : '''
+{"query":
+    "mutation createWarehouse($input: CreateWarehouseInput!) {createWarehouse (input: $input) {id}}",
+    "variables": {
+        "input": {
+            "clientMutationId": "1",
+            "name": "testwar",
+            "slug": "testwar",
+            "storeId": %(store_rawid)i,
+            "addressFull": {"value": "gdeto", "country": "Canada", "postalCode": "111111"}
+        }
+    }
+}
+''',
+
+'up_warehouse' : '''
+{"query":
+    "mutation updateWarehouse($input: UpdateWarehouseInput!) {updateWarehouse (input: $input) {id, name}}",
+    "variables": {
+        "input": {
+            "clientMutationId": "1",
+            "name": "testwarE",
+            "slug": "testwar%(n)s",
+            "id": "%(war_id)s",
+            "addressFull": {"value": "gdeto", "country": "Canada", "postalCode": "111111"}
+        }
+    }
+}
+''',
+
 'cr_b_prod' : '''
 {"query":
     "mutation createBaseProduct($input: CreateBaseProductInput!) {createBaseProduct(input: $input) {id rawId name {lang text}}}",
@@ -311,6 +341,20 @@ queries = {
 }
 ''',
 
+'prod_in_war' : '''
+{"query":
+    "mutation setProductQuantityInWarehouse($input: ProductQuantityInput!) {setProductQuantityInWarehouse (input: $input) {id, productId, quantity}}",
+    "variables": {
+        "input":{
+            "clientMutationId": "1",
+            "warehouseId": "%(war_id)s",
+            "productId": %(prod_rawid)i,
+            "quantity": 33
+        }
+    }
+}
+''',
+
 'increment_incart' : '''
 {"query":
     "mutation incrementInCart($input: IncrementInCartInput!) {incrementInCart(input: $input) {id, productsCost}}",
@@ -334,7 +378,7 @@ queries = {
  }}
 ''',
 
-'sequantity_incart' : '''
+'setquantity_incart' : '''
 {"query":
     "mutation setQuantityInCart($input: SetQuantityInCartInput!) {setQuantityInCart(input: $input) {id, productsCost}}",
 "variables": {
@@ -342,6 +386,55 @@ queries = {
         "clientMutationId": "1",
         "productId": %(prod_rawid)i,
         "value": 3
+    }
+ }}
+''',
+
+'cr_order' : '''
+{"query":
+    "mutation createOrders($input: CreateOrderInput!) {createOrders (input: $input) {invoice{id, orders{id, slug, trackId}}}}",
+"variables": {
+    "input": {
+        "clientMutationId": "1",
+        "addressFull": {"value": "gdeto", "country": "Canada", "postalCode": "111111"},
+        "receiverName": "tester",
+        "currencyId": 1 
+    }
+ }}
+''',
+
+'order_delivery' : '''
+{"query":
+    "mutation setOrderStatusDelivery($input: OrderStatusDeliveryInput!) {setOrderStatusDelivery (input: $input) {state, trackId}}",
+"variables": {
+    "input": {
+        "clientMutationId": "1",
+        "orderSlug": %(order_slug)i,
+        "comment": "test"
+    }
+ }}
+''',
+
+'order_canceled' : '''
+{"query":
+    "mutation setOrderStatusCanceled($input: OrderStatusCanceledInput!) {setOrderStatusCanceled (input: $input) {state, trackId}}",
+"variables": {
+    "input": {
+        "clientMutationId": "1",
+        "orderSlug": %(order_slug)i,
+        "comment": "test"
+    }
+ }}
+''',
+
+'order_complete' : '''
+{"query":
+    "mutation setOrderStatusComplete($input: OrderStatusCompleteInput!) {setOrderStatusComplete (input: $input) {state, trackId}}",
+"variables": {
+    "input": {
+        "clientMutationId": "1",
+        "orderSlug": %(order_slug)i,
+        "comment": "test"
     }
  }}
 ''',
@@ -380,7 +473,6 @@ queries = {
     }
 }
 ''',
-
 
 'deact_store' : '''
 {"query":
@@ -434,3 +526,9 @@ queries = {
 #     }
 # }}
 # '''
+#
+# 'del_warehouse' : '''
+# {"query":
+#     "mutation deleteWarehouse {deleteWarehouse(id: %(war_id)s) {id}}"
+# }
+# ''',

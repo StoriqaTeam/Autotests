@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-
+import re
 
 # Служебные переменные
 unic = datetime.strftime(datetime.now(), "%m%d%H%M%S") # Уникальная переменная
@@ -15,15 +15,16 @@ testprod = "https://storiqa.com/start" # Адрес продакшена
 # ШАПКА САЙТА:
 logo = "//a[@data-test='logoLink']"  # Логотип Сторика
 select = "//div[@class='Select__icon___QSozW']" # Выбор продукты или магазины
-search = "//input [@data-test='searchInput']" # Поиск по сайту
-user = "//div [@data-test='userDropdownButton']" # Открыть меню юзера
+search_query = "//input[@data-test='searchInput']" # Поле поиска по сайту
+search = "//div[button/@data-test='searchButton']" # Кнопка поиска
+user = "//div[@data-test='userDropdownButton']" # Открыть меню юзера
 currency = "//div [@data-test='headerСurrenciesSelect']" # Выбор валюты
 currencies = "//div[@data-test='']"
-lang = "//div [@data-test='headerLanguagesSelect']" # Выбор языка
+lang = "//div[@data-test='headerLanguagesSelect']" # Выбор языка
 langs = "//div[@data-test='']"
 helpp = "//a [@href='']" # Помощь
 wizard = "//a [@href='/manage/wizard']" # Создание магазина
-cart = "//a[@href='/cart]" # Корзина
+cart = "//a[@data-test='header-cart-button']" # Корзина
 
 # АВТОРИЗАЦИЯ: (/signin /signup)
 signup = "//div [@data-test='headerSignUpButton']" # Регистрация
@@ -138,9 +139,21 @@ full_desc = "" #
 
 
 # КОРЗИНА
-plusquantityincart = ""
-minusquantityincart = ""
+plusquantityincart = "//button[data-test='cartProductIncreaseButton']" #
+minusquantityincart = "//button[data-test='cartProductsDecreaseButton']" #
 stq = ""
 btc = ""
 eth = ""
+checkout = "//button[data-test='checkoutNext']" # Кнопка чекаут
+del_product = "//button[@data-test='cartProductDeleteButton']" # Удалить товар из корзины
+reciever_name = "//input[@data-test='receiverName']" # Имя получателя
+select_address = "//div[@data-test='selectExistingAddress']" # Выбрать из списка адресов
+address1 = "//div [@data-test='selectExistingAddress_items'][@id='New Arbat Avenue']" # Один и списка адресов
+nextSubmit = "//button [@data-test='checkoutNext']" # Следующий шаг
+replaceAddress = "//button[@data-test='changeAddress']" # Изменить адрес
 
+
+#ПРОДУКТЫ И МАГАЗИНЫ
+product = "//a [@data-test='668']" # Первый попавшийся продукт
+sproduct = "https://nightly.stq.cloud/store/136/products/529" # Конкретный продукт для тестов
+addprod = "//button[@data-test='product-addToCart']" # Добавить продукт в корзину.

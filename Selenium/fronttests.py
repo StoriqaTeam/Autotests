@@ -5,6 +5,8 @@ import os
 from locators import *
 from selenium.common.exceptions import NoSuchElementException
 from selenium import webdriver
+from selenium.common.exceptions import ElementNotVisibleException
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -16,8 +18,8 @@ if os.getenv('SELENIUM_URL'):
 else: url = testdev
 
 driver = webdriver.Remote(
-   command_executor='http://uxtest.stq.cloud:4444/wd/hub',
-   desired_capabilities=DesiredCapabilities.FIREFOX)
+    command_executor='http://uxtest.stq.cloud:4444/wd/hub',
+    desired_capabilities=DesiredCapabilities.FIREFOX)
 #driver = webdriver.Chrome()
 driver.maximize_window()
 driver.get(url)
@@ -248,6 +250,7 @@ class User:
             elem.click()
             write(storeAdress, 'Нью-Йорк, Айова, США')
             waitonclick(storeSubmitAdress)
+            write(userPostalcode, 123321)
             tap(saveAddress)
             time.sleep(1)
             checktxt('Address created!')
@@ -268,5 +271,21 @@ class User:
             checktxt('Address deleted!')
         except TestFailException as e:
             print('Delete shipping address test FAILED' + '\n' + str(e))
+        else:
+            return True
+
+class Checkout:
+
+    def __init__(self, prod):
+        self.prod = prod
+
+    name = 'Chekout'
+
+    def buy(self):
+        try:
+            driver.get(self.prod)
+            tap()
+        except TestFailException as e:
+            print('Buy item test FAILED' + '\n' + str(e))
         else:
             return True
