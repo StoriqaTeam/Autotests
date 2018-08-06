@@ -64,7 +64,7 @@ def action(dictq):
                 error_message = 'ЕСТЬ ОШИБКА В ЗАПРОСЕ: ' + str(i) + answer.text
                 errors['message'+str(count)] = error_message
                 count += 1
-        except EOFError as e:
+        except Exception as e:
             errors['except'+str(count)] = 'ИСКЛЮЧЕНИЕ В ЗАПРОСЕ ' + i + '\n' + answer.text + '\n' + str(e)
             count += 1
             break
