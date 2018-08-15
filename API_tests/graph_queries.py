@@ -137,7 +137,7 @@ queries = {
 	"variables": {
 	    "input": {
 	        "clientMutationId": "1",
-	        "email": "tester@storiqa.com",
+	        "email": "apitester@storiqa.com",
 	        "password": "qwe123QWE"
 	    }
 	}
@@ -398,6 +398,7 @@ queries = {
         "clientMutationId": "1",
         "addressFull": {"value": "gdeto", "country": "Canada", "postalCode": "111111"},
         "receiverName": "tester",
+        "receiverPhone": "+79095623366",
         "currencyId": 1 
     }
  }}
