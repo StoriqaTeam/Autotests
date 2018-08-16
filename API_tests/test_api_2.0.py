@@ -12,13 +12,14 @@ if os.getenv('GRAPHQL_URL'):
 else: url = 'https://nightly.stq.cloud/graphql'
 
 
-def request(json_query, headers):
-    r = requests.post(url, json=json_query, headers=headers)
+def request(json_query, headers, cookies):
+    r = requests.post(url, json=json_query, headers=headers, cookies=cookies)
     return r
 
 def action(dictq):
     token_headers = ''
     errors = {}
+    cookie = {"holyshit": "iamcool"}
     answer: json
     count = 0
     context = {
@@ -27,7 +28,7 @@ def action(dictq):
     context['regmail'] = 'test' + context['n'] + '@test.test'
     for i in dictq:
         try:
-            answer = request(json.loads(dictq[i] % context), token_headers)
+            answer = request(json.loads(dictq[i] % context), token_headers, cookie)
             if dictq[i] == q.queries['adm_token']:
                 ad_token = answer.json()['data']['getJWTByEmail']['token']
                 token_headers = {'Authorization': 'Bearer ' + ad_token}
