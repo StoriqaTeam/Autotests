@@ -14,9 +14,10 @@ test_add_shipping_address = r.User()
 test_create_store = r.Store(regname, regname, 333, unic)
 test_buy_item = r.Checkout(product)
 
-#test_suite = [test_authorization.start(), test_buy_item.buy()]
+#test_suite = [test_authorization.start(), test_create_store.create()]
 test_suite = [test_authorization.start(), test_user_profile_update.profile(),
-               test_add_shipping_address.adress_add(), test_add_shipping_address.adress_del()]
+                test_add_shipping_address.adress_add(), test_add_shipping_address.adress_del(),
+              test_create_store.create()]
 
 if __name__ == "__main__":
 

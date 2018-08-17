@@ -78,7 +78,7 @@ def checktxt(txt):
 # get list elements
 def get_list(adr):
     try:
-        elem:list = driver.find_elements_by_xpath(adr)
+        elem = driver.find_elements_by_xpath(adr)
     except NoSuchElementException:
         raise TestFailException('Object "%s" not found' % adr)
     else:
@@ -154,17 +154,19 @@ class Store:
 
     def create(self):
         try:
+            tap(startSell)
             tap(wizard)
             checktxt('Give your store a name')
             write(store_name, self.name)
             write(storeSlug, self.slug)
             write(short_desc, 'test short')
             waitonclick(nextstep)
+            time.sleep(1)
             checktxt('Set up store')
             tap(mainlanguage)
             list_lan = get_list(languages)
-            checklen(list_lan, 9)
-            list_lan[3].click()
+            checklen(list_lan, 1)
+            list_lan[0].click()
             tap(storeCountry)
             list_countries = get_list(countries)
             assert len(list_countries) > 200
@@ -176,8 +178,9 @@ class Store:
             write(storeAdress, 'New Arbat Avenue')
             waitonclick(storeSubmitAdress)
             waitonclick(nextstep)
+            time.sleep(1)
             checktxt('Fill your store with goods')
-            tap(addFproduct)
+            tap(addNproduct)
             write(productName, self.name)
             write(short_desc, 'test')
             tap(category)
@@ -186,13 +189,17 @@ class Store:
             tap(category3)
             write(price, self.pprice)
             write(vendorCode, self.vcode)
+            #tap(currency)
+            #get_list(stq)
+            write(cashback, 6)
+            write(quantity, 6)
             tap(saveProduct)
+            time.sleep(1)
             checktxt('Fill your store with goods')
             time.sleep(1)
             waitonclick(nextstep)
-            #driver.find_element_by_xpath(nextstep).click()
             checktxt('Do you really want to leave this page?')
-            tap(closeWizard)
+            tap(continueWizard)
         except TestFailException as e:
             print('Create store test FAILED' + '\n' + str(e))
         except AssertionError:
@@ -202,14 +209,16 @@ class Store:
 
     def edit(self):
         try:
+            tap(user)
+            tap(myshops)
             write(store_name, self.name+'edited')
             write(slogan, 'testestest')
-            write(storeSlug, self.slug)
             write(short_desc, 'short desc')
             write(long_desc, 'long test')
             tap(save_store)
             time.sleep(1)
             checktxt('Saved!')
+            tap(storages)
         except TestFailException as e:
             print ('Edit store test FAILED' + '\n' + str(e))
         else:
@@ -269,6 +278,7 @@ class User:
             tap(dellAddress)
             time.sleep(1)
             checktxt('Address deleted!')
+            time.sleep(3)
         except TestFailException as e:
             print('Delete shipping address test FAILED' + '\n' + str(e))
         else:

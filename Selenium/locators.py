@@ -7,7 +7,7 @@ unic = datetime.strftime(datetime.now(), "%m%d%H%M%S") # Уникальная п
 regmail = 'tester' + unic + '@test.test' # Адрес электронной почты для регистраций
 regname = 'test' + unic # Имена для магазинов и товаров
 testmail = 'tester@storiqa.com' # Логин тестового пользователя
-testdev = "https://nightly.stq.cloud/" # Адрес тестового стенда
+testdev = "https://storiqateam:s3cur3passw0rd@nightly.stq.cloud/auth" # Адрес тестового стенда
 testprod = "https://storiqa.com/start" # Адрес продакшена
 
 ''' Определение локаторов на STORIQA.COM '''
@@ -18,11 +18,12 @@ select = "//div[@class='Select__icon___QSozW']" # Выбор продукты и
 search_query = "//input[@data-test='searchInput']" # Поле поиска по сайту
 search = "//div[button/@data-test='searchButton']" # Кнопка поиска
 user = "//div[@data-test='userDropdownButton']" # Открыть меню юзера
-currency = "//div [@data-test='headerСurrenciesSelect']" # Выбор валюты
-currencies = "//div[@data-test='']"
+headercurrency = "//div [@data-test='headerСurrenciesSelect']" # Выбор валюты
+currencies = "//div[@data-test='headerСurrenciesSelect_items']" # Список валют
 lang = "//div[@data-test='headerLanguagesSelect']" # Выбор языка
-langs = "//div[@data-test='']"
+langs = "//div[@data-test='headerLanguagesSelect_items']" # Список языков
 helpp = "//a [@href='']" # Помощь
+startSell = "//a [@href='/start-selling']"
 wizard = "//a [@href='/manage/wizard']" # Создание магазина
 cart = "//a[@data-test='header-cart-button']" # Корзина
 
@@ -40,10 +41,9 @@ fg_pwd = ''  # Забыли пароль
 submitIN = "//button[@data-test='signInButton']" # Кнопка подтвердить авторизацию
 
 # МЕНЮ ЮЗЕРА
-messages = "" #
 profile = "//a[@data-test='header-user-menu-profileLink']" # Профиль пользователя
-history = "" #
-myshops = "" #
+orders = "" #
+myshops = "//a[@data-test='header-user-menu-myShops']" #
 logout = "//a[@data-test='header-user-menu-logoutLink']" # Логаут
 
 # ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ
@@ -106,7 +106,8 @@ storeRegion = "//div[@data-test='administrativeAreaLevel2']" # Регион \ ш
 storeArea = "//div[@data-test='administrativeAreaLevel1']" # Зона
 storePostalcode = "//div[@data-test='postalCode']" # Почтовый индекс
 three_step = "//div[contains(text(), 'Fill your store with goods')]" # Определение третьего шага
-addFproduct = "//button[@data-test='wizardUploaderProductFotoFirst']" # Кнопка добавить продукт
+addFproduct = "//button[@data-test='wizardUploaderProductFotoFirst']" # Кнопка добавить первый продукт
+addNproduct = "//div[@data-test='wizardUploaderProductFoto']"
 productName =  "//input [@data-test='name']" #
 short_desc
 category = "//div[@data-test='categorySelector']"
@@ -115,12 +116,16 @@ category2 = "//div[@data-test='categoryItem_37']"
 category3 = "//div[@data-test='categoryItem_38']"
 vendorCode = "//input[@data-test='vendorCode']"
 price = "//input[@data-test='price']"
+currency = "//div[@class='Select__container___3Ai0z Select__forForm___3OBqy']" # валюта
+stq = "//div[@data-test='undefined_items']" # Список валют
+cashback = "//input[@data-test='cashback']" # Кешбэк
+quantity = "//input[@data-test='quantity']" # Количество товара
 saveProduct = "//button[@data-test='wizardSaveProductButton']"
-closeWizard =  "//button[@data-test='closeWizard']"
-continueWizard =  "//button[@data-test='continueWizard']"
+closeWizard =  "//button[@data-test='closeWizard']" # Кнопка закрыть визард
+continueWizard =  "//button[@data-test='continueWizard']" # Продолжить создание продукта
 # РЕДАКТИРОВАНИЕ МАГАЗИНА
 # settings
-settings = ""
+settings = "//div[@data-test='store-menu-settings']"
 store_name
 storeLang = "//div[@data-test='storeLangSelect']"
 slogan = "//input[@data-test='slogan']" #
@@ -128,7 +133,9 @@ storeSlug
 short_desc
 long_desc = "//textarea[@data-test='longDescription']" #
 save_store = "//button[@class='SpinnerButton__container___1_OzA']" #
-goods = ""
+goods = "//div[@data-test='store-menu-goods']"
+storages = "//div[@data-test='store-menu-storages']"
+contackts = "//div[@data-test='store-menu-contacts']"
 
 # СОЗДАНИЕ ТОВАРА: (/product/tovar_name)
 seo_title = ""
