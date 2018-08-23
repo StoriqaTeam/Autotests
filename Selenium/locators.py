@@ -51,7 +51,7 @@ logout = "//a[@data-test='header-user-menu-logoutLink']" # Логаут
 userFname = "//input[@data-test='firstName']" # Имя
 userLname = "//input[@data-test='lastName']" # Фамилия
 gender = "//div[@data-test='profileGenderSelect']" # Пол
-genders = "//div[@data-test='profileGenderSelect_items']" # Все элементы списка пол
+genders = "//div[@data-test='profileGenderSelect_item']" # Все элементы списка пол
 birthdate = {
     'year' : "//class[@data-test='yearSelectBirthdateProfile']",
     'month' : "//class[@data-test='monthSelectBirthdateProfile']",
@@ -64,15 +64,15 @@ phone = "//input[@data-test='phone']" # Телефон
 save_profile = "//button[@data-test='saveButton']" # Сохранить
 # Адреса доставки
 adresses = "//a[@href='/profile/shipping-addresses']" # Выбор меню адресов доставки
-userCountry = "//div[@data-test='AddressFormSelect']" # Страна пользователя
-countries = "//div[@data-test='AddressFormSelect_items']" # Список стран
-userAdress = "//input[@data-test='autocompleteAddress']" # Адрес пользователя
-userSuite = "//input[@data-test='streetNumber']" # Сокращение
-userStreet = "//input[@data-test='route']" # Улица
-userCity = "//input[@data-test='locality']" # Город
-userRegion = "//input[@data-test='administrativeAreaLevel2']" # Регион
-userArea = "//input[@data-test='administrativeAreaLevel1']" # Зона
-userPostalcode = "//input[@data-test='postalCode']" # Почтовый код
+country = "//div[@data-test='AddressFormSelect']" # Страна пользователя
+countries = "//div[@data-test='AddressFormSelect_item']" # Список стран
+adress = "//input[@data-test='autocompleteAddress']" # Адрес пользователя
+suite = "//input[@data-test='streetNumber']" # Сокращение
+street = "//input[@data-test='route']" # Улица
+city = "//input[@data-test='locality']" # Город
+region = "//input[@data-test='administrativeAreaLevel2']" # Регион
+area = "//input[@data-test='administrativeAreaLevel1']" # Зона
+postalcode = "//input[@data-test='postalCode']" # Почтовый код
 priority = "//input[@data-test='priority']" # Приоритетность адреса
 addAddress = "//button[@data-test='addShippingAddressButton']" # Кнопка добавить адрес
 saveAddress = "//button[@data-test='saveShippingAddressButton']" # Кнопка сохранить адрес
@@ -90,13 +90,19 @@ short_desc = "//textarea[@data-test='shortDescription']" # Краткое опи
 nextstep = "//button[@data-test='wizardBackButton']" # Кнопка некст степ
 two_step = "//div[contains(text(), 'Set up store')]" # Определение второго шага
 mainlanguage = "//div[@data-test='wizardLanguagesSelect']" # Язык магазинга
-languages = "//div[@data-test='wizardLanguagesSelect_items']" # Список языков
+languages = "//div[@data-test='wizardLanguagesSelect_item']" # Список языков
 ru = "//div[@data-test='RU']" # Русский язык
-storeCountry = "//div[@data-test='AddressFormSelect']" # Страна магазина
-frame_country = "//div[@class='Select__itemsWrap___2oJi_']" # Окно со списком
-countries # Список стран
-russia = "//div/div/div[@id='RU']" # Россия
-usa = "//div/div/div[@id='US'][@data-test='AddressFormSelect_items']" # США
+country
+countries
+adress
+suite
+street              # ПЕРЕМЕННЫЕ ОПИСАНЫ В РАЗДЕЛЕ АДРЕСОВ ДОСТАВКИ
+city
+region
+area
+postalcode
+russia = "//div/div/div[@id='RU'][@data-test='AddressFormSelect_item']" # Россия
+usa = "//div/div/div[@id='US'][@data-test='AddressFormSelect_item']" # США
 storeAdress = "//input[@data-test='autocompleteAddress']"  # Адрес магазина
 storeSubmitAdress = "//div[@class='AddressForm__items___3Wr7L']"
 storeSuite = "//div[@data-test='streetNumber']" # Сокращение
@@ -107,8 +113,8 @@ storeArea = "//div[@data-test='administrativeAreaLevel1']" # Зона
 storePostalcode = "//div[@data-test='postalCode']" # Почтовый индекс
 three_step = "//div[contains(text(), 'Fill your store with goods')]" # Определение третьего шага
 addFproduct = "//button[@data-test='wizardUploaderProductFotoFirst']" # Кнопка добавить первый продукт
-addNproduct = "//div[@data-test='wizardUploaderProductFoto']"
-productName =  "//input [@data-test='name']" #
+addNproduct = "//div[@data-test='wizardUploaderProductFoto']" # Добавить еще один продукт
+productName =  "//input [@data-test='name']" # Название продукта
 short_desc
 category = "//div[@data-test='categorySelector']"
 category1 = "//div[@data-test='categoryItem_36']"
@@ -117,10 +123,14 @@ category3 = "//div[@data-test='categoryItem_38']"
 vendorCode = "//input[@data-test='vendorCode']"
 price = "//input[@data-test='price']"
 currency = "//div[@class='Select__container___3Ai0z Select__forForm___3OBqy']" # валюта
-stq = "//div[@data-test='undefined_items']" # Список валют
+stq = "//div[@id='1'][@data-test='undefined_item']" # Список валют
 cashback = "//input[@data-test='cashback']" # Кешбэк
 quantity = "//input[@data-test='quantity']" # Количество товара
-saveProduct = "//button[@data-test='wizardSaveProductButton']"
+saveProduct = "//button[@data-test='wizardSaveProductButton']" # Сохранить товар в визарде
+editProduct = "//span[@data-test='wizardEditProductButton']" # Редактировать товар в визарде
+deleteProduct = "//span[@data-test='wizardDeleteProductButton']" # Удалить второй товар в визарде
+yesDeleteProduct = "//button[@data-test='wizardDeleteProductButton']" # Подтвердить удаление
+noDeleteProduct = "//button[@data-test='wizardDeleteProductCancelButton']" # Отменить удаление
 closeWizard =  "//button[@data-test='closeWizard']" # Кнопка закрыть визард
 continueWizard =  "//button[@data-test='continueWizard']" # Продолжить создание продукта
 # РЕДАКТИРОВАНИЕ МАГАЗИНА
@@ -134,23 +144,41 @@ short_desc
 long_desc = "//textarea[@data-test='longDescription']" #
 save_store = "//button[@class='SpinnerButton__container___1_OzA']" #
 goods = "//div[@data-test='store-menu-goods']"
+# storages
 storages = "//div[@data-test='store-menu-storages']"
-contackts = "//div[@data-test='store-menu-contacts']"
+create_storage = "//button[@data-test='createStorageButton']"
+storage_name = "//input[@data-test='name']"
+country
+countries
+adress
+suite
+street              # ПЕРЕМЕННЫЕ ОПИСАНЫ В РАЗДЕЛЕ АДРЕСОВ ДОСТАВКИ
+city
+region
+area
+postalcode
+save_storage = "//button[@data-test='saveStorageButton']"
+cansel_storage = "//button[@data-test='cancelSaveStorageButton']"
+edit_storage = "//button[@data-test='editStorageDataButton']"
+delete_storage = "//button[@data-test='deleteStorageButton']"
+# goods
+seo_title = "//input[@data-test='seoTitle']"
+seo_desc = "//input[@data-test='seoDescription']"
+plong_desc = "//textarea[@data-test='longDescription']" #
+edit_variant = "//div[@data-test='toggleOpenVariantButton']"
+save_edit_variant = "//button[@data-test='saveProductButton']"
+add_variant = "//buttom[@data-test='addVariantButton']"
+save_new_variant = "//button[@data-test='variantsProductSaveButton']"
+cancel_new_variant = "//button[@data-test='cancelNewVariantButton']"
+# contacts
+contacts = "//div[@data-test='store-menu-contacts']"
 
-# СОЗДАНИЕ ТОВАРА: (/product/tovar_name)
-seo_title = ""
-seo_desc = ""
-
-full_desc = "" #
-
-
+# АЛЕРТЫ
+saved = "//div[@id='alerts-root'][contains(text(), 'Storage create')]"
 
 # КОРЗИНА
 plusquantityincart = "//button[data-test='cartProductIncreaseButton']" #
 minusquantityincart = "//button[data-test='cartProductsDecreaseButton']" #
-stq = ""
-btc = ""
-eth = ""
 checkout = "//button[data-test='checkoutNext']" # Кнопка чекаут
 del_product = "//button[@data-test='cartProductDeleteButton']" # Удалить товар из корзины
 reciever_name = "//input[@data-test='receiverName']" # Имя получателя

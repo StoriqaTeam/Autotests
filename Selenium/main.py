@@ -9,15 +9,14 @@ failed_test_count = 0
 # Tests with parametrs
 test_registration = r.Registration('tester', 'testoviy', regmail, 'qwe123QWE')
 test_authorization = r.Authorization('tester@storiqa.com', 'qwe123QWE')
-test_user_profile_update = r.User()
-test_add_shipping_address = r.User()
+test_user_profile = r.User()
 test_create_store = r.Store(regname, regname, 333, unic)
 test_buy_item = r.Checkout(product)
 
-#test_suite = [test_authorization.start(), test_create_store.create()]
-test_suite = [test_authorization.start(), test_user_profile_update.profile(),
-                test_add_shipping_address.adress_add(), test_add_shipping_address.adress_del(),
-              test_create_store.create()]
+#test_suite = [test_authorization.start(), test_create_store.edit()], test_create_store.edit()]
+test_suite = [test_authorization.start(), test_user_profile.profile(),
+              test_user_profile.adress_add(), test_user_profile.adress_del(),
+              test_create_store.create(), test_create_store.edit()]
 
 if __name__ == "__main__":
 
