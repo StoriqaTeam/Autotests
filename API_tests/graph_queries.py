@@ -10,13 +10,13 @@ queries = {
                  "query {languages{isoCode}}"}''',
 
 'currencies' : '''{"query":
-                 "query {currencies{key, name}}"}''',
+                 "query {currencies}"}''',
 
 'categories' : '''{"query":
                  "query {categories{id, rawId, name{text}, level, parentId}}"}''',
 
 'currencyExchange' : '''{"query":
-                        "query {currencyExchange{stq{rouble, dollar}, dollar{stq}}}"}''',
+                        "query {currencyExchange{code, rates{code, value}}}"}''',
 
 'adm_token' : '''{
 "query":
@@ -281,7 +281,7 @@ queries = {
              "name": [{"lang": "EN", "text": "testproduct%(n)s"},
                       {"lang": "RU", "text": "тестпродукт%(n)s"}],
              "storeId": %(store_rawid)i,
-             "currencyId": 1,
+             "currency": "STQ",
              "categoryId": 9,
              "slug": "bptest%(n)s",
              "shortDescription": [{"lang": "EN", "text": "test"}]
@@ -297,7 +297,7 @@ queries = {
         "input" : {
             "clientMutationId": "1",
              "id": "%(b_prod_id)s",
-             "currencyId": 2
+             "longDescription" : [{"lang" : "EN", "text" : "Long Desc"}]
         }
     }
 }
@@ -399,7 +399,7 @@ queries = {
         "addressFull": {"value": "gdeto", "country": "Canada", "postalCode": "111111"},
         "receiverName": "tester",
         "receiverPhone": "+79095623366",
-        "currencyId": 1 
+        "currency": "STQ" 
     }
  }}
 ''',

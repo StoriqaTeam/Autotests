@@ -11,14 +11,17 @@ if os.getenv('GRAPHQL_URL'):
     url = os.environ['GRAPHQL_URL']
 else: url = 'https://nightly.stq.cloud/graphql'
 
+class TestFailException(Exception):
+    pass
+
+errors = {}
 
 def request(json_query, headers, cookies):
     r = requests.post(url, json=json_query, headers=headers, cookies=cookies)
     return r
 
 def action(dictq):
-    token_headers = ''
-    errors = {}
+    token_headers = {"currency" : "STQ"}
     cookie = {"holyshit": "iamcool"}
     answer: json
     count = 0
@@ -31,7 +34,7 @@ def action(dictq):
             answer = request(json.loads(dictq[i] % context), token_headers, cookie)
             if dictq[i] == q.queries['adm_token']:
                 ad_token = answer.json()['data']['getJWTByEmail']['token']
-                token_headers = {'Authorization': 'Bearer ' + ad_token}
+                token_headers['Authorization'] = 'Bearer ' + ad_token
             elif dictq[i] == q.queries['cr_cat']:
                 context['cat_id'] = answer.json()['data']['createCategory']['id']
                 context['cat_rawid'] = answer.json()['data']['createCategory']['rawId']
@@ -40,7 +43,7 @@ def action(dictq):
                 context['attr_rawid'] = answer.json()['data']['createAttribute']['rawId']
             elif dictq[i] == q.queries['user_token']:
                 token = answer.json()['data']['getJWTByEmail']['token']
-                token_headers = {'Authorization': 'Bearer '+ token}
+                token_headers['Authorization'] = 'Bearer ' + token
             elif dictq[i] == q.queries['user_id']:
                 context['usr_id'] = answer.json()['data']['me']['id']
                 context['usr_rawId'] = answer.json()['data']['me']['rawId']
@@ -65,15 +68,16 @@ def action(dictq):
                 error_message = 'ЕСТЬ ОШИБКА В ЗАПРОСЕ: ' + str(i) + answer.text
                 errors['message'+str(count)] = error_message
                 count += 1
-        except Exception as e:
-            errors['except'+str(count)] = 'ИСКЛЮЧЕНИЕ В ЗАПРОСЕ ' + i + '\n' + answer.text + '\n' + str(e)
+        except Exception as ex:
+            errors['except'+str(count)] = 'ИСКЛЮЧЕНИЕ В ЗАПРОСЕ ' + i + '\n' + answer.text + '\n' + str(ex)
             count += 1
             break
-    if count > 0:
-        for i in errors:
-            print ('\n', '\n', errors[i])
-    else:
-        print ('\n', '\n', 'ОШИБОК НЕ ОБНАРУЖЕНО')
 
 
 action(q.queries)
+if len(errors) > 0:
+    for e in errors:
+        print('\n', '\n', errors[e])
+        raise Exception(TestFailException)
+else:
+    print('\n', '\n', 'ОШИБОК НЕ ОБНАРУЖЕНО')
