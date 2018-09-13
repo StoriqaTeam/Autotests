@@ -47,9 +47,9 @@ def action(dictq):
             elif dictq[i] == q.queries['user_id']:
                 context['usr_id'] = answer.json()['data']['me']['id']
                 context['usr_rawId'] = answer.json()['data']['me']['rawId']
-            elif dictq[i] == q.queries['createUserDeliveryAddress']:
-                context['addr_id'] = answer.json()['data']['createUserDeliveryAddress']['id']
-                context['addr_rawid'] = answer.json()['data']['createUserDeliveryAddress']['rawId']
+            elif dictq[i] == q.queries['createUserDeliveryAddressFull']:
+                context['addr_id'] = answer.json()['data']['createUserDeliveryAddressFull']['id']
+                context['addr_rawid'] = answer.json()['data']['createUserDeliveryAddressFull']['rawId']
             elif dictq[i] == q.queries['cr_store']:
                 context['store_id'] = answer.json()['data']['createStore']['id']
                 context['store_rawid'] = answer.json()['data']['createStore']['rawId']
@@ -72,6 +72,7 @@ def action(dictq):
             errors['except'+str(count)] = 'ИСКЛЮЧЕНИЕ В ЗАПРОСЕ ' + i + '\n' + answer.text + '\n' + str(ex)
             count += 1
             break
+
 
 
 action(q.queries)

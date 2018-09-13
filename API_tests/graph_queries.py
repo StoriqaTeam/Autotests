@@ -167,39 +167,37 @@ queries = {
 }
 ''',
 
-'createUserDeliveryAddress' : '''
+'createUserDeliveryAddressFull' : '''
 {"query":
-    "mutation createUserDeliveryAddress($input: NewUserDeliveryAddressInput!) {createUserDeliveryAddress(input: $input) {id, rawId, isPriority}}",
+    "mutation createUserDeliveryAddressFull($input: NewUserDeliveryAddressFullInput!) {createUserDeliveryAddressFull(input: $input) {id, rawId, isPriority}}",
     "variables": {
         "input" : {
             "clientMutationId": "1",
             "userId": %(usr_rawId)i,
-            "country": "United States",
-            "postalCode": "432234",
+            "addressFull" : {"country": "United States", "postalCode": "432234"},
             "isPriority": true
         }
     }
 }
 ''',
 
-'updateUserDeliveryAddress' : '''
+'updateUserDeliveryAddressFull' : '''
 {"query":
-    "mutation updateUserDeliveryAddress($input: UpdateUserDeliveryAddressInput!) {updateUserDeliveryAddress(input: $input) {id, rawId, isPriority}}",
+    "mutation updateUserDeliveryAddressFull($input: UpdateUserDeliveryAddressFullInput!) {updateUserDeliveryAddressFull(input: $input) {id, rawId, isPriority}}",
     "variables": {
         "input" : {
             "clientMutationId": "1",
             "id": %(addr_rawid)i,
-            "country": "Canada",
-            "postalCode": "436236",
+            "addressFull" : {"value": "kakayato avenue 34", "country": "United States", "postalCode": "432234"},
             "isPriority": true
         }
     }
 }
 ''',
 
-'deleteUserDeliveryAddress' : '''
+'deleteUserDeliveryAddressFull' : '''
 {"query":
-    "mutation deleteUserDeliveryAddress {deleteUserDeliveryAddress(id: %(addr_rawid)i) {id, rawId}}"
+    "mutation deleteUserDeliveryAddressFull {deleteUserDeliveryAddressFull(id: %(addr_rawid)i) {id, rawId}}"
 }
 ''',
 
@@ -531,5 +529,34 @@ queries = {
 # 'del_warehouse' : '''
 # {"query":
 #     "mutation deleteWarehouse {deleteWarehouse(id: %(war_id)s) {id}}"
+# }
+# ''',
+# 'createUserDeliveryAddress' : '''
+# {"query":
+#     "mutation createUserDeliveryAddress($input: NewUserDeliveryAddressInput!) {createUserDeliveryAddress(input: $input) {id, rawId, isPriority}}",
+#     "variables": {
+#         "input" : {
+#             "clientMutationId": "1",
+#             "userId": %(usr_rawId)i,
+#             "country": "United States",
+#             "postalCode": "432234",
+#             "isPriority": true
+#         }
+#     }
+# }
+# ''',
+#
+# 'updateUserDeliveryAddress' : '''
+# {"query":
+#     "mutation updateUserDeliveryAddress($input: UpdateUserDeliveryAddressInput!) {updateUserDeliveryAddress(input: $input) {id, rawId, isPriority}}",
+#     "variables": {
+#         "input" : {
+#             "clientMutationId": "1",
+#             "id": %(addr_rawid)i,
+#             "country": "Canada",
+#             "postalCode": "436236",
+#             "isPriority": true
+#         }
+#     }
 # }
 # ''',
