@@ -414,6 +414,11 @@ queries = {
  }}
 ''',
 
+'order_history' : '''
+{"query":
+    "query order_history {me{id, order(slug: %(order_slug)i){history {edges {node {state, orderId, comment}}}}}}"}
+''',
+
 'order_canceled' : '''
 {"query":
     "mutation setOrderStatusCanceled($input: OrderStatusCanceledInput!) {setOrderStatusCanceled (input: $input) {state, trackId}}",

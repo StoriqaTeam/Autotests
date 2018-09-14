@@ -27,6 +27,7 @@ def action(dictq):
     count = 0
     context = {
         'n': datetime.strftime(datetime.now(), "%m%d%H%M%S"),
+        'store_id': ""
     }
     context['regmail'] = 'test' + context['n'] + '@test.test'
     for i in dictq:
@@ -47,6 +48,11 @@ def action(dictq):
             elif dictq[i] == q.queries['user_id']:
                 context['usr_id'] = answer.json()['data']['me']['id']
                 context['usr_rawId'] = answer.json()['data']['me']['rawId']
+                try:
+                    context['store_id'] = answer.json()['data']['me']['myStore']['id']
+                    if len(context['store_id']) > 0:
+                        request(json.loads(dictq['deact_store'] % context), token_headers, cookie)
+                except: TypeError()
             elif dictq[i] == q.queries['createUserDeliveryAddressFull']:
                 context['addr_id'] = answer.json()['data']['createUserDeliveryAddressFull']['id']
                 context['addr_rawid'] = answer.json()['data']['createUserDeliveryAddressFull']['rawId']
@@ -70,15 +76,11 @@ def action(dictq):
                 count += 1
         except Exception as ex:
             errors['except'+str(count)] = 'ИСКЛЮЧЕНИЕ В ЗАПРОСЕ ' + i + '\n' + answer.text + '\n' + str(ex)
+            print (errors['except'+str(count)])
             count += 1
-            break
-
-
+        if len(errors) > 0:
+            raise Exception(TestFailException)
+    print('\n', '\n', 'ОШИБОК НЕ ОБНАРУЖЕНО')
 
 action(q.queries)
-if len(errors) > 0:
-    for e in errors:
-        print('\n', '\n', errors[e])
-        raise Exception(TestFailException)
-else:
-    print('\n', '\n', 'ОШИБОК НЕ ОБНАРУЖЕНО')
+
