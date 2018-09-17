@@ -24,8 +24,11 @@ lang = "//div[@data-test='headerLanguagesSelect']" # Выбор языка
 langs = "//div[@data-test='headerLanguagesSelect_items']" # Список языков
 helpp = "//a [@href='']" # Помощь
 startSell = "//a [@href='/start-selling']"
-wizard = "//a [@href='/manage/wizard']" # Создание магазина
+wizard = "//div[@data-test='startSelling']" # Создание магазина
 cart = "//a[@data-test='header-cart-button']" # Корзина
+
+# ФИЛЬТРЫ
+allCat = "" #
 
 # АВТОРИЗАЦИЯ: (/signin /signup)
 signup = "//div [@data-test='headerSignUpButton']" # Регистрация
@@ -182,6 +185,7 @@ minusquantityincart = "//button[data-test='cartProductsDecreaseButton']" #
 checkout = "//button[data-test='checkoutNext']" # Кнопка чекаут
 del_product = "//button[@data-test='cartProductDeleteButton']" # Удалить товар из корзины
 reciever_name = "//input[@data-test='receiverName']" # Имя получателя
+reciever_phone = "//input[@data-test='receiverPhone']" # Телефон получателя
 select_address = "//div[@data-test='selectExistingAddress']" # Выбрать из списка адресов
 address1 = "//div [@data-test='selectExistingAddress_items'][@id='New Arbat Avenue']" # Один и списка адресов
 nextSubmit = "//button [@data-test='checkoutNext']" # Следующий шаг
@@ -189,6 +193,9 @@ replaceAddress = "//button[@data-test='changeAddress']" # Изменить ад�
 
 
 #ПРОДУКТЫ И МАГАЗИНЫ
-product = "//a [@data-test='668']" # Первый попавшийся продукт
+product = "//a [@data-test='951']" # Тестовый продукт
 sproduct = "https://nightly.stq.cloud/store/136/products/529" # Конкретный продукт для тестов
+atrSize = "" #
+atrMaterial = "" #
+atrColour = "" #
 addprod = "//button[@data-test='product-addToCart']" # Добавить продукт в корзину.

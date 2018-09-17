@@ -13,10 +13,10 @@ test_user_profile = r.User()
 test_create_store = r.Store(regname, regname, 333, unic)
 test_buy_item = r.Checkout(product)
 
-#test_suite = [test_authorization.start(), test_create_store.edit()], test_create_store.edit()]
-test_suite = [test_authorization.start(), test_user_profile.profile(),
+# test_suite = [test_authorization.start(), test_create_store.create()]
+test_suite = [test_registration.positive(), test_authorization.start(), test_user_profile.profile(),
               test_user_profile.adress_add(), test_user_profile.adress_del(),
-              test_create_store.create(), test_create_store.edit()]
+              test_create_store.edit()]
 
 if __name__ == "__main__":
 
@@ -26,6 +26,7 @@ if __name__ == "__main__":
         else:
             failed_test_count += 1
     print ('Test finished with %s PASSED and %s FAILED' % (passed_test_count, failed_test_count))
+    if failed_test_count > 0:
+        raise r.TestFailException()
 
-
-    #input('END')
+    # input('END')

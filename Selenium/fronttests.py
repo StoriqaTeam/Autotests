@@ -20,7 +20,7 @@ else: url = testdev
 driver = webdriver.Remote(
      command_executor='http://uxtest.stq.cloud:4444/wd/hub',
      desired_capabilities=DesiredCapabilities.FIREFOX)
-#driver = webdriver.Chrome()
+# driver = webdriver.Chrome()
 driver.maximize_window()
 driver.get(url)
 driver.implicitly_wait(4)
@@ -103,7 +103,7 @@ class Registration:
 
     name = 'registration'
 
-    def start(self):
+    def positive(self):
         try:
             tap(signup)
             time.sleep(1)
@@ -120,6 +120,7 @@ class Registration:
         else:
             return True
 
+
 class Authorization:
 
     def __init__(self, mail, pas):
@@ -130,7 +131,7 @@ class Authorization:
 
     def start(self):
         try:
-            tap(signin)
+            waitonclick(signin)
             write(email, self.mail)
             write(pwd, self.pas)
             tap(submitIN)
@@ -154,7 +155,8 @@ class Store:
     def create(self):
         try:
             tap(startSell)
-            tap(wizard)
+            waitonclick(wizard)
+            time.sleep(2)
             checktxt('Give your store a name')
             write(store_name, self.name)
             write(storeSlug, self.slug)
@@ -300,8 +302,10 @@ class Checkout:
 
     def buy(self):
         try:
-            driver.get(self.prod)
-            tap()
+            write(search_query, 'motorcycle')
+            tap(search)
+            tap(product)
+
         except TestFailException as e:
             print('Buy item test FAILED' + '\n' + str(e))
         else:
