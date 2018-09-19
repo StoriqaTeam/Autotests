@@ -216,7 +216,7 @@ class Store:
             write(short_desc, 'short desc')
             write(long_desc, 'long test')
             tap(save_store)
-            time.sleep(5)
+            time.sleep(1)
             checktxt('Saved!')
             time.sleep(3)
             tap(storages)
