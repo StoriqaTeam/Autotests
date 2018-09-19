@@ -216,7 +216,7 @@ class Store:
             write(short_desc, 'short desc')
             write(long_desc, 'long test')
             tap(save_store)
-            time.sleep(3)
+            time.sleep(5)
             checktxt('Saved!')
             time.sleep(3)
             tap(storages)
@@ -304,7 +304,7 @@ class Checkout:
         try:
             write(search_query, 'motorcycle')
             tap(search)
-            tap(product)
+            waitonclick(product)
 
         except TestFailException as e:
             print('Buy item test FAILED' + '\n' + str(e))
