@@ -201,6 +201,31 @@ queries = {
 }
 ''',
 
+'cr_wizard' : '''
+{"query":
+    "mutation createWizardStore {createWizardStore {id, storeId}}"
+}
+''',
+
+'up_wizard' : '''
+{"query":
+    "mutation updateWizardStore($input: UpdateWizardStoreInput!) {updateWizardStore(input: $input) {id, storeId}}",    
+    "variables": {
+        "input" : {
+            "clientMutationId": "1",
+          	"addressFull": {"country": "Russia", "postalCode": "123321"}
+        }
+    }
+}
+''',
+
+'del_wizard' : '''
+{"query":
+    "mutation deleteWizardStore {deleteWizardStore {id, storeId}}"
+}
+''',
+
+
 'cr_store' : '''
 {"query":
     "mutation createStore($input: CreateStoreInput!) {createStore(input: $input) {id, name{lang, text}, rawId}}",
@@ -308,6 +333,8 @@ queries = {
         "input" : {
             "clientMutationId": "1",
              "product":  {"baseProductId": %(b_prod_rawid)i,
+                          "preOrder": true,
+                          "preOrderDays": 10,
                           "price": 200.00,
                           "vendorCode": "11"},
              "attributes": [{"attrId": 1,
@@ -351,6 +378,11 @@ queries = {
         }
     }
 }
+''',
+
+'clear_Cart' : '''
+{"query":
+    "mutation clearCart  {clearCart{id, totalCost}}"}
 ''',
 
 'increment_incart' : '''
@@ -489,6 +521,8 @@ queries = {
     }
 }
 '''
+
+
 
 }
 
