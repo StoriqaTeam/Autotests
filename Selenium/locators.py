@@ -60,9 +60,6 @@ birthdate = {
     'month' : "//class[@data-test='monthSelectBirthdateProfile']",
     'day' : "//class[@data-test='daySelectBirthdateProfile']"
             } # Дата рождения
-years = "//div[@data-test='']"
-months = "//div[@data-test='']"
-days = "//div[@data-test='']"
 phone = "//input[@data-test='phone']" # Телефон
 save_profile = "//button[@data-test='saveButton']" # Сохранить
 # Адреса доставки
@@ -104,8 +101,8 @@ city
 region
 area
 postalcode
-russia = "//div/div/div[@id='RU'][@data-test='AddressFormSelect_item']" # Россия
-usa = "//div/div/div[@id='US'][@data-test='AddressFormSelect_item']" # США
+russia = "//div/div/div[@id='RUS'][@data-test='AddressFormSelect_item']" # Россия
+usa = "//div/div/div[@id='USA'][@data-test='AddressFormSelect_item']" # США
 storeAdress = "//input[@data-test='autocompleteAddress']"  # Адрес магазина
 storeSubmitAdress = "//div[@class='AddressForm__items___3Wr7L']"
 storeSuite = "//div[@data-test='streetNumber']" # Сокращение
@@ -149,7 +146,6 @@ save_store = "//button[@class='SpinnerButton__container___1_OzA']" #
 goods = "//div[@data-test='store-menu-goods']"
 # storages
 storages = "//div[@data-test='store-menu-storages']"
-create_storage = "//button[@data-test='createStorageButton']"
 storage_name = "//input[@data-test='name']"
 country
 countries
@@ -165,6 +161,7 @@ cansel_storage = "//button[@data-test='cancelSaveStorageButton']"
 edit_storage = "//button[@data-test='editStorageDataButton']"
 delete_storage = "//button[@data-test='deleteStorageButton']"
 # goods
+add_item = "//button[@data-test='addProductButton']"
 seo_title = "//input[@data-test='seoTitle']"
 seo_desc = "//input[@data-test='seoDescription']"
 plong_desc = "//textarea[@data-test='longDescription']" #
@@ -177,7 +174,8 @@ cancel_new_variant = "//button[@data-test='cancelNewVariantButton']"
 contacts = "//div[@data-test='store-menu-contacts']"
 
 # АЛЕРТЫ
-saved = "//div[@id='alerts-root'][contains(text(), 'Storage create')]"
+closeAlert = "//button[@name='alertCloseButton']"
+success = "//div/div[contains(text(), 'Success!')]"
 
 # КОРЗИНА
 plusquantityincart = "//button[data-test='cartProductIncreaseButton']" #
@@ -195,7 +193,7 @@ replaceAddress = "//button[@data-test='changeAddress']" # Изменить ад�
 #ПРОДУКТЫ И МАГАЗИНЫ
 product = "//a [@data-test='951']" # Тестовый продукт
 sproduct = "https://nightly.stq.cloud/store/136/products/529" # Конкретный продукт для тестов
-atrSize = "" #
+atrSize44 = "//button[@data-test='productSize44" #
 atrMaterial = "" #
 atrColour = "" #
 addprod = "//button[@data-test='product-addToCart']" # Добавить продукт в корзину.

@@ -45,7 +45,7 @@ def tap(adr):
 def waitonclick(adr):
     try:
         elem = WebDriverWait(driver, 5).until(
-            ec.visibility_of_element_located((By.XPATH, adr)))
+            ec.element_to_be_clickable((By.XPATH, adr)))
         elem.click()
     except NoSuchElementException:
         raise TestFailException('Object "%s" not found' % adr)
@@ -58,13 +58,23 @@ def clear(adr):
 # write text in field
 def write(adr, char):
     try:
-        elem = driver.find_element_by_xpath(adr)
+        #elem = driver.find_element_by_xpath(adr)
+        elem =WebDriverWait(driver, 5).until(
+            ec.visibility_of_element_located((By.XPATH, adr)))
         elem.click()
         elem.clear()
         elem.send_keys(char)
     except NoSuchElementException:
         raise TestFailException('Object "%s" not found' % adr)
     return elem
+
+# check element present on page
+def checkelem(adr):
+    try:
+        WebDriverWait(driver, 10).until(
+            ec.presence_of_element_located((By.XPATH, adr)))
+    except NoSuchElementException:
+        raise TestFailException('Object "%s" not found' % adr)
 
 # check some text on page
 def checktxt(txt):
@@ -105,16 +115,15 @@ class Registration:
 
     def positive(self):
         try:
-            tap(signup)
-            time.sleep(1)
+            waitonclick(signup)
+            #time.sleep(1)
             write(firstname, self.fname)
             write(lastname, self.lname)
             write(email, self.mail)
             write(pwd, self.pas)
             tap(submitUP)
-            time.sleep(1)
-            assert driver.find_element_by_xpath(signup)
-            time.sleep(4)
+            checkelem(success)
+            tap(closeAlert)
         except TestFailException as e:
             print ('Registration test FAILED' + '\n' + str(e))
         else:
@@ -154,17 +163,19 @@ class Store:
 
     def create(self):
         try:
-            tap(startSell)
+            waitonclick(startSell)
             waitonclick(wizard)
-            time.sleep(2)
-            checktxt('Give your store a name')
+            # time.sleep(2)
+            # checktxt('Give your store a name')
+            checkelem(first_step)
             write(store_name, self.name)
             write(storeSlug, self.slug)
             time.sleep(1)
             write(short_desc, 'test short')
             waitonclick(nextstep)
-            WebDriverWait(driver, 5).until(
-                ec.visibility_of_element_located((By.XPATH, two_step)))
+            checkelem(two_step)
+            # WebDriverWait(driver, 5).until(
+            #     ec.visibility_of_element_located((By.XPATH, two_step)))
             tap(mainlanguage)
             list_lan = get_list(languages)
             checklen(list_lan, 1)
@@ -177,8 +188,9 @@ class Store:
             write(storeAdress, 'New Arbat Avenue')
             waitonclick(storeSubmitAdress)
             waitonclick(nextstep)
-            WebDriverWait(driver, 5).until(
-                ec.visibility_of_element_located((By.XPATH, three_step)))
+            checkelem(three_step)
+            # WebDriverWait(driver, 5).until(
+            #     ec.visibility_of_element_located((By.XPATH, three_step)))
             tap(addNproduct)
             write(productName, self.name)
             write(short_desc, 'test')
@@ -209,34 +221,45 @@ class Store:
 
     def edit(self):
         try:
-            tap(user)
+            waitonclick(user)
             tap(myshops)
             write(store_name, self.name+'edited')
             write(slogan, 'testestest')
             write(short_desc, 'short desc')
             write(long_desc, 'long test')
             tap(save_store)
-            time.sleep(1)
-            checktxt('Saved!')
-            time.sleep(3)
-            tap(storages)
-            waitonclick(create_storage)
+            checkelem(success)
+            waitonclick(storages)
+            waitonclick(edit_storage)
             write(storage_name, 'teststorage')
             tap(country)
             list_countries = get_list(countries)
-            assert len(list_countries) == 249
+            assert len(list_countries) == 250
             elem = driver.find_element_by_xpath(russia)
             elem.click()
             write(storeAdress, 'New Arbat Avenue')
             waitonclick(storeSubmitAdress)
             tap(save_storage)
-            time.sleep(4)
-            tap(delete_storage)
-
+            checkelem(success)
+            waitonclick(closeAlert)
         except TestFailException as e:
             print ('Edit store test FAILED' + '\n' + str(e))
         else:
             return True
+
+    def goods(self):
+        waitonclick(goods)
+        tap(add_item)
+        write(productName, self.name)
+        write(seo_title, 'test')
+        write(seo_desc, 'test seo')
+        write(short_desc, 'short')
+        write(plong_desc, 'long')
+        tap(category)
+        tap(category1)
+        tap(category2)
+        tap(category3)
+
 
 
 class User:
@@ -245,7 +268,7 @@ class User:
 
     def profile(self):
         try:
-            tap(user)
+            waitonclick(user)
             tap(profile)
             tap(gender)
             list_genders = get_list(genders)
@@ -254,7 +277,8 @@ class User:
             tap(phone).clear()
             write(phone, '8'+unic)
             tap(save_profile)
-            time.sleep(5)
+            checkelem(success)
+            tap(closeAlert)
         except TestFailException as e:
             print('User profile update test FAILED' + '\n' + str(e))
         else:
@@ -262,8 +286,7 @@ class User:
 
     def adress_add(self):
         try:
-            tap(adresses)
-            tap(addAddress)
+            waitonclick(adresses)
             tap(country)
             list_countries = get_list(countries)
             assert len(list_countries) > 200
@@ -273,9 +296,8 @@ class User:
             waitonclick(storeSubmitAdress)
             write(postalcode, 123321)
             tap(saveAddress)
-            time.sleep(2)
-            checktxt('Address created!')
-            time.sleep(5)
+            checkelem(success)
+            tap(closeAlert)
         except TestFailException as e:
             print('Add shipping address test FAILED' + '\n' + str(e))
         else:
@@ -284,9 +306,8 @@ class User:
     def adress_del(self):
         try:
             tap(dellAddress)
-            time.sleep(1)
-            checktxt('Address deleted!')
-            time.sleep(3)
+            checkelem(success)
+            tap(closeAlert)
         except TestFailException as e:
             print('Delete shipping address test FAILED' + '\n' + str(e))
         else:
