@@ -14,7 +14,7 @@ test_create_store = r.Store(regname, regname, 333, unic)
 test_buy_item = r.Checkout(product)
 
 # test_suite = [test_authorization.start(), test_create_store.create()]
-test_suite = [test_authorization.start(), test_user_profile.profile(),
+test_suite = [test_registration.positive(), test_authorization.start(), test_user_profile.profile(),
               test_user_profile.adress_add(), test_user_profile.adress_del(),
               test_create_store.edit()]
 
@@ -29,4 +29,5 @@ if __name__ == "__main__":
     if failed_test_count > 0:
         raise r.TestFailException()
 
-   # input('END')
+
+    input('END')

@@ -225,7 +225,6 @@ queries = {
 }
 ''',
 
-
 'cr_store' : '''
 {"query":
     "mutation createStore($input: CreateStoreInput!) {createStore(input: $input) {id, name{lang, text}, rawId}}",
@@ -521,10 +520,8 @@ queries = {
     }
 }
 '''
-
-
-
 }
+
 
 
 #Ниже не актуальные для использования в настоящее время запросы.

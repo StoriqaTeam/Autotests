@@ -36,6 +36,8 @@ firstname = "//input [@data-test='firstName']" # Имя
 lastname = "//input [@data-test='lastName']" # Фамилия
 email = "//input [@data-test='email']" # Електронная почта
 pwd = "//input [@data-test='password']" # Пароль
+terms = "//input[@data-test='terms']" #
+privacy = "//input[@data-test='privacy']" #
 submitUP = "//button[@data-test='signUpButton']" # Кнопка подтвердить регитсрацию
 signin = "//div [@data-test='headerSignInButton']"# Авторизация
 fb = "//a [@data-test='authFacebookButton']"  # Авторизация через фейсбук
