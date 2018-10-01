@@ -4,30 +4,31 @@
 queries = {
 
 'version' : '''{"query":
-               "query {apiVersion}"}''',
+                "query {apiVersion}"}''',
 
 'languages' : '''{"query":
-                 "query {languages{isoCode}}"}''',
+                    "query {languages{isoCode}}"}''',
 
 'currencies' : '''{"query":
-                 "query {currencies}"}''',
+                    "query {currencies}"}''',
 
 'categories' : '''{"query":
-                 "query {categories{id, rawId, name{text}, level, parentId}}"}''',
+                    "query {categories{id, rawId, name{text}, level, parentId}}"}''',
 
 'currencyExchange' : '''{"query":
-                        "query {currencyExchange{code, rates{code, value}}}"}''',
+                            "query {currencyExchange{code, rates{code, value}}}"}''',
 
 'adm_token' : '''{
-"query":
-    "mutation getJWTByEmail($input: CreateJWTEmailInput!) {getJWTByEmail (input: $input) {token}}",
-"variables": {
-    "input": {
-        "clientMutationId": "1",
-        "email": "admin@storiqa.com",
-        "password": "bqF5BkdsCS"
+    "query":
+        "mutation getJWTByEmail($input: CreateJWTEmailInput!) {getJWTByEmail (input: $input) {token}}",
+    "variables": {
+        "input": {
+            "clientMutationId": "1",
+            "email": "admin@storiqa.com",
+            "password": "bqF5BkdsCS"
+        }
     }
-}}''',
+}''',
 
 'cr_cat' : '''
 {"query":
@@ -115,6 +116,85 @@ queries = {
 }
 ''',
 
+'cr_company' : '''
+{"query":
+    "mutation createCompany($input: NewCompanyInput!) {createCompany (input: $input) {id, rawId}}",
+    "variables": {
+         "input": {
+            "clientMutationId": "1",
+            "name": "testCompany",
+            "label": "TST",
+            "description": "company for tests",
+            "deliveriesFrom": ["LBR"],
+            "logo": "TST"
+        }
+    }
+}
+''',
+
+'up_company' : '''
+{"query":
+    "mutation updateCompany($input: UpdateCompanyInput!) {updateCompany (input: $input) {deliveriesFrom {alpha3 children{alpha3 children{alpha3}}}}}",
+    "variables": {
+         "input": {
+            "clientMutationId": "1",
+			"id": "%(company_id)s",
+            "deliveriesFrom": ["LBR", "RUS"],
+            "logo": "XxX_TST_XxX"
+        }
+    }
+}
+''',
+
+'cr_package' : '''
+{"query":
+    "mutation createPackage($input: NewPackagesInput!) {createPackage (input: $input) {id, rawId}}",
+    "variables": {
+        "input": {
+            "clientMutationId": "1",
+            "name": "testPackge",
+            "maxSize": 10.0,
+            "minSize": 1.0,
+            "maxWeight": 30.0,
+            "minWeight": 0.5,
+            "deliveriesTo": ["LBR"]
+        }
+    }
+}
+''',
+
+'up_package' : '''
+{"query":
+    "mutation updatePackage($input: UpdatePackagesInput!) {updatePackage (input: $input) {deliveriesTo {alpha3 children{alpha3 children{alpha3}}}}}",
+    "variables": {
+        "input": {
+            "clientMutationId": "1",
+            "id": "%(package_id)s",
+            "maxSize": 11.0,
+            "minSize": 1.5,
+            "maxWeight": 31.0,
+            "minWeight": 0.8,
+            "deliveriesTo": ["LBR", "RUS"]
+        }
+    }
+}
+''',
+
+'ad_package' : '''
+{"query":
+    "mutation addPackageToCompany($input: NewCompaniesPackagesInput!) {addPackageToCompany (input: $input) {id, rawId}}",
+    "variables": {
+         "input": {
+            "clientMutationId": "1",
+			"companyId": %(company_rawid)i,
+          	"packageId": %(package_rawid)i 
+        }
+    }
+}
+''',
+
+
+
 'cr_user' : '''
 {"query":
 	"mutation createUser($input: CreateUserInput!) {createUser(input: $input) {id}}",
@@ -173,7 +253,7 @@ queries = {
     "variables": {
         "input" : {
             "clientMutationId": "1",
-            "userId": %(usr_rawId)i,
+            "userId": %(usr_rawid)i,
             "addressFull" : {"country": "United States", "postalCode": "432234"},
             "isPriority": true
         }
@@ -232,7 +312,7 @@ queries = {
         "input": {
             "clientMutationId": "1",
             "name": [{"lang": "EN", "text": "testshop%(n)s"}],
-            "userId": %(usr_rawId)i,
+            "userId": %(usr_rawid)i,
             "defaultLanguage": "EN",
             "shortDescription": [{"lang": "EN", "text": "test"}],
             "slug": "test%(n)s",
@@ -273,7 +353,7 @@ queries = {
             "name": "testwar",
             "slug": "testwar",
             "storeId": %(store_rawid)i,
-            "addressFull": {"value": "gdeto", "country": "Canada", "postalCode": "111111"}
+            "addressFull": {"value": "gdeto", "country": "Liberia", "postalCode": "111111", "countryCode": "LBR"}
         }
     }
 }
@@ -354,6 +434,22 @@ queries = {
             "id": "%(prod_id)s",
             "product": {"discount": 1.0},
             "attributes": []
+        }
+    }
+}
+''',
+
+'upsert_ship' : '''
+{"query":
+    "mutation upsertShipping($input: NewShippingInput!) {upsertShipping (input: $input) {local {deliveriesTo {alpha3 children{alpha3 children{alpha3}}}}}}",
+    "variables": {
+        "input": {
+            "clientMutationId": "1",
+            "local": {"companyPackageId": %(comp_pack_rawid)i, "price": 100.0},
+            "international": {"companyPackageId": %(comp_pack_rawid)i, "price": 200.0, "deliveriesTo": ["LBR"]},
+            "pickup": {"pickup": true, "price": 0.0},
+            "baseProductId": %(b_prod_rawid)i,
+			"storeId": %(store_rawid)i
         }
     }
 }
@@ -573,7 +669,7 @@ queries = {
 #     "variables": {
 #         "input" : {
 #             "clientMutationId": "1",
-#             "userId": %(usr_rawId)i,
+#             "userId": %(usr_rawid)i,
 #             "country": "United States",
 #             "postalCode": "432234",
 #             "isPriority": true

@@ -42,12 +42,20 @@ def action(dictq):
             elif dictq[i] == q.queries['cr_attr']:
                 context['attr_id'] = answer.json()['data']['createAttribute']['id']
                 context['attr_rawid'] = answer.json()['data']['createAttribute']['rawId']
+            elif dictq[i] == q.queries['cr_company']:
+                context['company_id'] = answer.json()['data']['createCompany']['id']
+                context['company_rawid'] = answer.json()['data']['createCompany']['rawId']
+            elif dictq[i] == q.queries['cr_package']:
+                context['package_id'] = answer.json()['data']['createPackage']['id']
+                context['package_rawid'] = answer.json()['data']['createPackage']['rawId']
+            elif dictq[i] == q.queries['ad_package']:
+                context['comp_pack_rawid'] = answer.json()['data']['addPackageToCompany']['rawId']
             elif dictq[i] == q.queries['user_token']:
                 token = answer.json()['data']['getJWTByEmail']['token']
                 token_headers['Authorization'] = 'Bearer ' + token
             elif dictq[i] == q.queries['user_id']:
                 context['usr_id'] = answer.json()['data']['me']['id']
-                context['usr_rawId'] = answer.json()['data']['me']['rawId']
+                context['usr_rawid'] = answer.json()['data']['me']['rawId']
                 try:
                     context['store_id'] = answer.json()['data']['me']['myStore']['id']
                     if len(context['store_id']) > 0:
