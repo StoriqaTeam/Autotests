@@ -34,11 +34,17 @@ def action(dictq):
         try:
             answer = request(json.loads(dictq[i] % context), token_headers, cookie)
             if dictq[i] == q.queries['adm_token']:
-                ad_token = answer.json()['data']['getJWTByEmail']['token']
-                token_headers['Authorization'] = 'Bearer ' + ad_token
-            elif dictq[i] == q.queries['cr_cat']:
-                context['cat_id'] = answer.json()['data']['createCategory']['id']
-                context['cat_rawid'] = answer.json()['data']['createCategory']['rawId']
+                ad_token = 'Bearer ' + answer.json()['data']['getJWTByEmail']['token']
+                token_headers['Authorization'] =  ad_token
+            elif dictq[i] == q.queries['cr_cat1']:
+                context['cat_id_1'] = answer.json()['data']['createCategory']['id']
+                context['cat_rawid_1'] = answer.json()['data']['createCategory']['rawId']
+            elif dictq[i] == q.queries['cr_cat2']:
+                context['cat_id_2'] = answer.json()['data']['createCategory']['id']
+                context['cat_rawid_2'] = answer.json()['data']['createCategory']['rawId']
+            elif dictq[i] == q.queries['cr_cat3']:
+                context['cat_id_3'] = answer.json()['data']['createCategory']['id']
+                context['cat_rawid_3'] = answer.json()['data']['createCategory']['rawId']
             elif dictq[i] == q.queries['cr_attr']:
                 context['attr_id'] = answer.json()['data']['createAttribute']['id']
                 context['attr_rawid'] = answer.json()['data']['createAttribute']['rawId']
@@ -50,9 +56,11 @@ def action(dictq):
                 context['package_rawid'] = answer.json()['data']['createPackage']['rawId']
             elif dictq[i] == q.queries['ad_package']:
                 context['comp_pack_rawid'] = answer.json()['data']['addPackageToCompany']['rawId']
+            elif dictq[i] == q.queries['cr_user']:
+                context['n_usr_rawid'] = answer.json()['data']['createUser']['rawId']
             elif dictq[i] == q.queries['user_token']:
-                token = answer.json()['data']['getJWTByEmail']['token']
-                token_headers['Authorization'] = 'Bearer ' + token
+                token = 'Bearer ' +  answer.json()['data']['getJWTByEmail']['token']
+                token_headers['Authorization'] = token
             elif dictq[i] == q.queries['user_id']:
                 context['usr_id'] = answer.json()['data']['me']['id']
                 context['usr_rawid'] = answer.json()['data']['me']['rawId']
@@ -72,11 +80,15 @@ def action(dictq):
             elif dictq[i] == q.queries['cr_b_prod']:
                 context['b_prod_id'] = answer.json()['data']['createBaseProduct']['id']
                 context['b_prod_rawid'] = answer.json()['data']['createBaseProduct']['rawId']
+            elif dictq[i] == q.queries['cr_cust_attr']:
+                context['cust_attr_rawid'] = answer.json()['data']['createCustomAttribute']['rawId']
             elif dictq[i] == q.queries['cr_prod']:
                 context['prod_id'] = answer.json()['data']['createProduct']['id']
                 context['prod_rawid'] = answer.json()['data']['createProduct']['rawId']
             elif dictq[i] == q.queries['cr_order']:
                 context['order_slug'] = answer.json()['data']['createOrders']['invoice']['orders'][0]['slug']
+            elif dictq[i] == q.queries['delete_fromcart']:
+                token_headers['Authorization'] = ad_token
             print(answer.json())
             if 'errors' in answer.text:
                 error_message = 'ЕСТЬ ОШИБКА В ЗАПРОСЕ: ' + str(i) + answer.text
