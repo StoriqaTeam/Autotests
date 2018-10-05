@@ -7,8 +7,8 @@ passed_test_count = 0
 failed_test_count = 0
 
 # Tests with parametrs
-test_registration = r.Registration('tester', 'testoviy', regmail, 'qwe123QWE')
-test_authorization = r.Authorization('tester@storiqa.com', 'qwe123QWE')
+test_registration = r.Registration('Tester', 'Testoviy', regmail, 'qwe123QWE')
+test_authorization = r.Authorization('Tester@storiqa.com', 'qwe123QWE')
 test_user_profile = r.User()
 test_create_store = r.Store(regname, regname, 333, unic)
 test_buy_item = r.Checkout(product)
@@ -30,4 +30,4 @@ if __name__ == "__main__":
         raise r.TestFailException()
 
 
-    input('END')
+   # input('END')

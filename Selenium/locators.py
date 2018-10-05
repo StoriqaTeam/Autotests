@@ -8,7 +8,7 @@ regmail = 'tester' + unic + '@test.test' # Адрес электронной п�
 regname = 'test' + unic # Имена для магазинов и товаров
 testmail = 'tester@storiqa.com' # Логин тестового пользователя
 testdev = "https://storiqateam:s3cur3passw0rd@nightly.stq.cloud/auth" # Адрес тестового стенда
-testprod = "https://storiqa.com/start" # Адрес продакшена
+testprod = "https://storiqateam:s3cur3passw0rd@stage.stq.cloud/auth" # Адрес продакшена
 
 ''' Определение локаторов на STORIQA.COM '''
 
@@ -36,8 +36,8 @@ firstname = "//input [@data-test='firstName']" # Имя
 lastname = "//input [@data-test='lastName']" # Фамилия
 email = "//input [@data-test='email']" # Електронная почта
 pwd = "//input [@data-test='password']" # Пароль
-terms = "//input[@data-test='terms']" #
-privacy = "//input[@data-test='privacy']" #
+terms = "//div[input/@data-test='terms']" #
+privacy = "//div[input/@data-test='privacy']" #
 submitUP = "//button[@data-test='signUpButton']" # Кнопка подтвердить регитсрацию
 signin = "//div [@data-test='headerSignInButton']"# Авторизация
 fb = "//a [@data-test='authFacebookButton']"  # Авторизация через фейсбук
@@ -127,6 +127,7 @@ price = "//input[@data-test='price']"
 currency = "//div[@class='Select__container___3Ai0z Select__forForm___3OBqy']" # валюта
 stq = "//div[@id='1'][@data-test='undefined_item']" # Список валют
 cashback = "//input[@data-test='cashback']" # Кешбэк
+discount = "//input[@data-test='variantDiscountInput']" #
 quantity = "//input[@data-test='quantity']" # Количество товара
 saveProduct = "//button[@data-test='wizardSaveProductButton']" # Сохранить товар в визарде
 editProduct = "//span[@data-test='wizardEditProductButton']" # Редактировать товар в визарде
@@ -170,6 +171,10 @@ plong_desc = "//textarea[@data-test='longDescription']" #
 edit_variant = "//div[@data-test='toggleOpenVariantButton']"
 save_edit_variant = "//button[@data-test='saveProductButton']"
 add_variant = "//buttom[@data-test='addVariantButton']"
+noLocalShip = "" #
+localFixedAll = "" #
+noInterShip = "" #
+interFixedAll = "" #
 save_new_variant = "//button[@data-test='variantsProductSaveButton']"
 cancel_new_variant = "//button[@data-test='cancelNewVariantButton']"
 # contacts
