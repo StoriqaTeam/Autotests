@@ -17,10 +17,10 @@ if os.getenv('SELENIUM_URL'):
     url = os.environ['SELENIUM_URL']
 else: url = testdev
 
-# driver = webdriver.Remote(
-#      command_executor='http://uxtest.stq.cloud:4444/wd/hub',
-#      desired_capabilities=DesiredCapabilities.CHROME)
-driver = webdriver.Chrome()
+driver = webdriver.Remote(
+     command_executor='http://uxtest.stq.cloud:4444/wd/hub',
+     desired_capabilities=DesiredCapabilities.CHROME)
+# driver = webdriver.Chrome()
 driver.maximize_window()
 driver.get(url)
 driver.implicitly_wait(4)
@@ -116,7 +116,6 @@ class Registration:
     def positive(self):
         try:
             waitonclick(signup)
-            #time.sleep(1)
             write(firstname, self.fname)
             write(lastname, self.lname)
             write(email, self.mail)
@@ -124,12 +123,10 @@ class Registration:
             time.sleep(1)
             elem = driver.find_element_by_xpath(terms)
             ActionChains(driver).move_to_element(elem).perform()
-            time.sleep(4)
             elem.click()
             elem = driver.find_element_by_xpath(privacy)
             ActionChains(driver).move_to_element(elem).perform()
-            #driver.find_element_by_xpath(terms).click()
-            #driver.find_element_by_xpath(privacy).click()
+            elem.click()
             tap(submitUP)
             checkelem(success)
             tap(closeAlert)
@@ -174,8 +171,6 @@ class Store:
         try:
             waitonclick(startSell)
             waitonclick(wizard)
-            # time.sleep(2)
-            # checktxt('Give your store a name')
             checkelem(first_step)
             write(store_name, self.name)
             write(storeSlug, self.slug)
@@ -183,8 +178,6 @@ class Store:
             write(short_desc, 'test short')
             waitonclick(nextstep)
             checkelem(two_step)
-            # WebDriverWait(driver, 5).until(
-            #     ec.visibility_of_element_located((By.XPATH, two_step)))
             tap(mainlanguage)
             list_lan = get_list(languages)
             checklen(list_lan, 1)
@@ -198,8 +191,6 @@ class Store:
             waitonclick(storeSubmitAdress)
             waitonclick(nextstep)
             checkelem(three_step)
-            # WebDriverWait(driver, 5).until(
-            #     ec.visibility_of_element_located((By.XPATH, three_step)))
             tap(addNproduct)
             write(productName, self.name)
             write(short_desc, 'test')
@@ -268,6 +259,10 @@ class Store:
         tap(category1)
         tap(category2)
         tap(category3)
+        write(vendorCode, self.vcode)
+        write(price, self.pprice)
+        write(cashback, 7)
+        write(discount, 3)
 
 
 
@@ -284,7 +279,7 @@ class User:
             checklen(list_genders, 2)
             list_genders[1].click()
             tap(phone).clear()
-            write(phone, '8'+unic)
+            write(phone, '+7'+unic)
             tap(save_profile)
             checkelem(success)
             tap(closeAlert)
