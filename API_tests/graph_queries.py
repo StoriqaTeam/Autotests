@@ -40,7 +40,7 @@ queries = {
                 {"lang": "DE", "text": "test"},
                 {"lang": "RU", "text": "тест%(n)s"}
                 ],
-            "level": 1
+            "parentId": 0
         }
     }
 }
@@ -56,7 +56,6 @@ queries = {
                 {"lang": "DE", "text": "test"},
                 {"lang": "RU", "text": "тест%(n)s"}
                 ],
-            "level": 2,
             "parentId": %(cat_rawid_1)i
         }
     }
@@ -73,7 +72,6 @@ queries = {
                 {"lang": "DE", "text": "test"},
                 {"lang": "RU", "text": "тест%(n)s"}
                 ],
-            "level": 3,
             "parentId": %(cat_rawid_2)i
         }
     }
@@ -289,7 +287,7 @@ queries = {
 	"variables": {
 	    "input": {
 	        "clientMutationId": "1",
-	        "email": "apitester@storiqa.com",
+	        "email": "tester@storiqa.com",
 	        "password": "qwe123QWE"
 	    }
 	}
@@ -518,8 +516,8 @@ queries = {
             "id": "%(prod_id)s",
             "product": {"discount": 1.0},
             "customAttributes": [{
-                "customAttributeId" : %(cust_attr_rawid)i,
-                "value" : "test"}]
+                     "customAttributeId": %(cust_attr_rawid)i,
+                     "value": "test"}]
         }
     }
 }
@@ -586,7 +584,8 @@ queries = {
         "clientMutationId": "1",
         "productId": %(prod_rawid)i
     }
- }}
+ }
+}
 ''',
 
 'setselection_incart' : '''
