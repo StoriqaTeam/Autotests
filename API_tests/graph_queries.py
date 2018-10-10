@@ -287,7 +287,7 @@ queries = {
 	"variables": {
 	    "input": {
 	        "clientMutationId": "1",
-	        "email": "tester@storiqa.com",
+	        "email": "apitester@storiqa.com",
 	        "password": "qwe123QWE"
 	    }
 	}
