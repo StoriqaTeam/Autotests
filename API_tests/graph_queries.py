@@ -514,10 +514,7 @@ queries = {
         "input": {
             "clientMutationId": "1",
             "id": "%(prod_id)s",
-            "product": {"discount": 1.0},
-            "customAttributes": [{
-                     "customAttributeId": %(cust_attr_rawid)i,
-                     "value": "test"}]
+            "product": {"discount": 1.0}
         }
     }
 }
