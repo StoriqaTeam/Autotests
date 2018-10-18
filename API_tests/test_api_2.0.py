@@ -92,6 +92,7 @@ def action(dictq):
             print(answer.json())
             if 'errors' in answer.text:
                 error_message = 'ЕСТЬ ОШИБКА В ЗАПРОСЕ: ' + str(i) + answer.text
+                print (error_message)
                 errors['message'+str(count)] = error_message
                 count += 1
         except Exception as ex:

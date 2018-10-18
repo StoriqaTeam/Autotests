@@ -37,7 +37,7 @@ queries = {
         {"input": {
             "clientMutationId": "1",
             "name": [
-                {"lang": "DE", "text": "test"},
+                {"lang": "EN", "text": "test"},
                 {"lang": "RU", "text": "тест%(n)s"}
                 ],
             "parentId": 0
@@ -144,7 +144,8 @@ queries = {
             "label": "TST",
             "description": "company for tests",
             "deliveriesFrom": ["LBR"],
-            "logo": "TST"
+            "logo": "TST",
+            "currency": "STQ"
         }
     }
 }
