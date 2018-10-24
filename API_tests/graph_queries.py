@@ -690,7 +690,7 @@ queries = {
 
 'del_comp_pack' : '''
 {"query":
-    "mutation deleteCompanyPackage {deleteCompanyPackage(id: %(comp_pack_rawid)i) {id}}"
+    "mutation deleteCompanyPackage {deleteCompanyPackage(companyId: %(company_rawid)i, packageId: %(package_rawid)i) {id}}"
 }
 ''',
 
