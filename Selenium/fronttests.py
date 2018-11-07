@@ -5,7 +5,7 @@ import os
 from locators import *
 from selenium.common.exceptions import NoSuchElementException
 from selenium import webdriver
-from selenium.common.exceptions import ElementNotVisibleException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -34,9 +34,12 @@ class TestFailException(Exception):
 # click on object
 def tap(adr):
     try:
-        elem = WebDriverWait(driver, 5).until(ec.visibility_of_element_located((By.XPATH, adr)))
+        elem = WebDriverWait(driver, 5).until(
+            ec.visibility_of_element_located((By.XPATH, adr)))
         elem.click()
     except NoSuchElementException:
+        raise TestFailException('Object "%s" not found' % adr)
+    except TimeoutException:
         raise TestFailException('Object "%s" not found' % adr)
     else:
         return elem
@@ -49,6 +52,8 @@ def waitonclick(adr):
         elem.click()
     except NoSuchElementException:
         raise TestFailException('Object "%s" not found' % adr)
+    except TimeoutException:
+        raise TestFailException('Object "%s" not found' % adr)
 
 # clear field
 def clear(adr):
@@ -58,13 +63,14 @@ def clear(adr):
 # write text in field
 def write(adr, char):
     try:
-        #elem = driver.find_element_by_xpath(adr)
         elem =WebDriverWait(driver, 5).until(
             ec.visibility_of_element_located((By.XPATH, adr)))
         elem.click()
         elem.clear()
         elem.send_keys(char)
     except NoSuchElementException:
+        raise TestFailException('Object "%s" not found' % adr)
+    except TimeoutException:
         raise TestFailException('Object "%s" not found' % adr)
     return elem
 
@@ -74,6 +80,8 @@ def checkelem(adr):
         WebDriverWait(driver, 10).until(
             ec.presence_of_element_located((By.XPATH, adr)))
     except NoSuchElementException:
+        raise TestFailException('Object "%s" not found' % adr)
+    except TimeoutException:
         raise TestFailException('Object "%s" not found' % adr)
 
 # check some text on page
@@ -102,6 +110,43 @@ def checklen(lst, ln):
     else:
         return True
 
+# move cursor on element and click
+def cursor_click(adr):
+    try:
+        elem = driver.find_element_by_xpath(adr)
+        ActionChains(driver).move_to_element(elem).perform()
+        elem.click()
+    except NoSuchElementException:
+        print('Element %s not found' % adr)
+
+def check_address_correct():
+    try:
+        elem = driver.find_element_by_xpath(adress)
+        a = elem.get_attribute('value')
+        assert a == test_address['address']
+        elem = driver.find_element_by_xpath(suite)
+        a = elem.get_attribute('value')
+        assert a == test_address['suite']
+        elem = driver.find_element_by_xpath(street)
+        a = elem.get_attribute('value')
+        assert a == test_address['street']
+        elem = driver.find_element_by_xpath(city)
+        a = elem.get_attribute('value')
+        assert a == test_address['locality']
+        elem = driver.find_element_by_xpath(region)
+        a = elem.get_attribute('value')
+        assert a == test_address['region']
+        elem = driver.find_element_by_xpath(area)
+        a = elem.get_attribute('value')
+        assert a == test_address['area']
+        elem = driver.find_element_by_xpath(postalcode)
+        a = elem.get_attribute('value')
+        assert a == test_address['pcode']
+    except AssertionError as err:
+        print('Address incorrect'+ str(err))
+    else:
+        return True
+
 #################################Classes for tests#######################################
 class Registration:
 
@@ -120,13 +165,14 @@ class Registration:
             write(lastname, self.lname)
             write(email, self.mail)
             write(pwd, self.pas)
-            time.sleep(1)
-            elem = driver.find_element_by_xpath(terms)
-            ActionChains(driver).move_to_element(elem).perform()
-            elem.click()
-            elem = driver.find_element_by_xpath(privacy)
-            ActionChains(driver).move_to_element(elem).perform()
-            elem.click()
+            cursor_click(terms)
+            cursor_click(privacy)
+            # elem = driver.find_element_by_xpath(terms)
+            # ActionChains(driver).move_to_element(elem).perform()
+            # elem.click()
+            # elem = driver.find_element_by_xpath(privacy)
+            # ActionChains(driver).move_to_element(elem).perform()
+            # elem.click()
             tap(submitUP)
             checkelem(success)
             tap(closeAlert)
@@ -164,6 +210,7 @@ class Store:
         self.slug = slug
         self.pprice = pprice
         self.vcode = vcode
+        #self.address = address
 
     name = 'Store'
 
@@ -204,7 +251,7 @@ class Store:
             tap(stq)
             write(cashback, 6)
             write(quantity, 6)
-            tap(saveProduct)
+            tap(save_firstProduct)
             WebDriverWait(driver, 5).until(
                 ec.visibility_of_element_located((By.XPATH, three_step)))
             #tap(deleteProduct)
@@ -229,16 +276,11 @@ class Store:
             write(long_desc, 'long test')
             tap(save_store)
             checkelem(success)
+            tap(closeAlert)
             waitonclick(storages)
             waitonclick(edit_storage)
             write(storage_name, 'teststorage')
-            tap(country)
-            list_countries = get_list(countries)
-            assert len(list_countries) == 250
-            elem = driver.find_element_by_xpath(russia)
-            elem.click()
-            write(storeAdress, 'New Arbat Avenue')
-            waitonclick(storeSubmitAdress)
+            check_address_correct()
             tap(save_storage)
             checkelem(success)
             waitonclick(closeAlert)
@@ -248,22 +290,49 @@ class Store:
             return True
 
     def goods(self):
-        waitonclick(goods)
-        tap(add_item)
-        write(productName, self.name)
-        write(seo_title, 'test')
-        write(seo_desc, 'test seo')
-        write(short_desc, 'short')
-        write(plong_desc, 'long')
-        tap(category)
-        tap(category1)
-        tap(category2)
-        tap(category3)
-        write(vendorCode, self.vcode)
-        write(price, self.pprice)
-        write(cashback, 7)
-        write(discount, 3)
-
+        try:
+            time.sleep(0.5)
+            waitonclick(user)
+            tap(myshops)
+            waitonclick(goods)
+            tap(add_item)
+            tap(save_product)
+            time.sleep(0.5)
+            checktxt('Name is required')
+            checktxt('Short description is required')
+            checktxt('Long description is required')
+            checktxt('Vendor code is required')
+            checktxt('Category is required')
+            checktxt('Price is required')
+            tap(category)
+            tap(category1)
+            tap(category2)
+            tap(category3)
+            write(productName, self.name)
+            write(seo_title, 'test')
+            write(seo_desc, 'test seo')
+            write(short_desc, 'short')
+            write(plong_desc, 'long')
+            write(vendorCode, self.vcode)
+            write(v_price, self.pprice)
+            write(v_cashback, 5)
+            write(v_discount, 10)
+            write(preOrder_days, 5)
+            cursor_click(preOrder_check)
+            tap(attr_select)
+            tap(attr_item)
+            tap(attr_add)
+            tap(save_product)
+            checkelem(success)
+            tap(closeAlert)
+            tap(goods)
+            waitonclick(delete_product)
+            checkelem(success)
+            tap(closeAlert)
+        except TestFailException as e:
+            print('Test Edit Goods FAILED' + '\n' + str(e))
+        else:
+            return True
 
 
 class User:
@@ -327,9 +396,10 @@ class Checkout:
 
     def buy(self):
         try:
-            write(search_query, 'motorcycle')
-            tap(search)
-            waitonclick(product)
+            tap(logo)
+            waitonclick(allCat)
+            waitonclick()
+
 
         except TestFailException as e:
             print('Buy item test FAILED' + '\n' + str(e))

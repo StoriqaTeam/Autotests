@@ -100,7 +100,7 @@ queries = {
         "name": [{"text": "test", "lang": "EN"}],
         "valueType": "STR",
         "metaField": {
-            "values": ["test"],
+            "values": ["test1", "test2"],
             "uiElement": "COMBOBOX"
             }
         }
@@ -211,8 +211,6 @@ queries = {
     }
 }
 ''',
-
-
 
 'cr_user' : '''
 {"query":
@@ -500,8 +498,8 @@ queries = {
                           "preOrderDays": 10,
                           "price": 200.00,
                           "vendorCode": "11"},
-             "attributes": [{"attrId": 1,
-                             "value": "1",
+             "attributes": [{"attrId": %(attr_rawid)i,
+                             "value": "test1",
                              "metaField": "dfasfas"}]   
         }
     }
@@ -533,6 +531,31 @@ queries = {
             "baseProductId": %(b_prod_rawid)i,
 			"storeId": %(store_rawid)i
         }
+    }
+}
+''',
+
+'cr_b_prod_var' : '''
+{"query":
+    "mutation createBaseProductWithVariants($input: NewBaseProductWithVariantsInput!) {createBaseProductWithVariants(input: $input) {id, rawId, products(first : 100) {edges {node {id, rawId}}}}}",
+    "variables": {
+        "input" : {
+            "clientMutationId": "1",
+            "name": [{"lang": "EN", "text": "testprodwithvar"}],
+          	"storeId": %(store_rawid)i,
+          	"shortDescription": [{"lang": "EN", "text": "test"}],
+          	"currency": "STQ",
+          	"categoryId": %(cat_rawid_3)i,
+          	"variants": {
+              "clientMutationId": "1",
+              "product": {
+                "vendorCode": "E1",
+                "price": 10.0
+              },
+            	"attributes": [{"attrId": %(attr_rawid)i, "value": "test2"}]
+            },
+          	"selectedAttributes": [%(attr_rawid)i]
+        }     
     }
 }
 ''',
@@ -595,7 +618,8 @@ queries = {
         "productId": %(prod_rawid)i,
         "value": true
     }
- }}
+ }
+}
 ''',
 
 'setquantity_incart' : '''
@@ -607,7 +631,8 @@ queries = {
         "productId": %(prod_rawid)i,
         "value": 3
     }
- }}
+ }
+}
 ''',
 
 'cr_order' : '''
@@ -621,7 +646,8 @@ queries = {
         "receiverPhone": "+79095623366",
         "currency": "STQ" 
     }
- }}
+ }
+}
 ''',
 
 'order_delivery' : '''
@@ -633,7 +659,8 @@ queries = {
         "orderSlug": %(order_slug)i,
         "comment": "test"
     }
- }}
+ }
+}
 ''',
 
 'order_history' : '''
