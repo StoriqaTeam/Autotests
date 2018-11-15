@@ -85,6 +85,8 @@ def action(dictq):
             elif dictq[i] == q.queries['cr_prod']:
                 context['prod_id'] = answer.json()['data']['createProduct']['id']
                 context['prod_rawid'] = answer.json()['data']['createProduct']['rawId']
+            elif dictq[i] == q.queries['aval_ship']:
+                context['ship_id'] = answer.json()['data']['availableShippingForUser']['packages'][0]['shippingId']
             elif dictq[i] == q.queries['cr_order']:
                 context['order_slug'] = answer.json()['data']['createOrders']['invoice']['orders'][0]['slug']
             elif dictq[i] == q.queries['delete_fromcart']:

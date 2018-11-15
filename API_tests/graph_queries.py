@@ -422,7 +422,7 @@ queries = {
             "name": "testwar",
             "slug": "testwar",
             "storeId": %(store_rawid)i,
-            "addressFull": {"value": "gdeto", "country": "Liberia", "postalCode": "111111", "countryCode": "LBR"}
+            "addressFull": {"value": "gdeto", "country": "Canada", "postalCode": "111111", "countryCode": "CND"}
         }
     }
 }
@@ -437,7 +437,7 @@ queries = {
             "name": "testwarE",
             "slug": "testwar%(n)s",
             "id": "%(war_id)s",
-            "addressFull": {"value": "gdeto", "country": "Canada", "postalCode": "111111"}
+            "addressFull": {"value": "gdeto", "country": "Liberia", "postalCode": "111111", "countryCode": "LBR"}
         }
     }
 }
@@ -526,7 +526,7 @@ queries = {
         "input": {
             "clientMutationId": "1",
             "local": {"companyPackageId": %(comp_pack_rawid)i, "price": 100.0},
-            "international": {"companyPackageId": %(comp_pack_rawid)i, "price": 200.0, "deliveriesTo": ["LBR"]},
+            "international": {"companyPackageId": %(comp_pack_rawid)i, "price": 200.0, "deliveriesTo": ["RUS"]},
             "pickup": {"pickup": true, "price": 0.0},
             "baseProductId": %(b_prod_rawid)i,
 			"storeId": %(store_rawid)i
@@ -580,6 +580,11 @@ queries = {
 }
 ''',
 
+# 'cr_coupon' : '''
+# {"query" :
+#
+# ''',
+
 'publish_store' : '''
 {"query":
     "mutation publishStore {publishStore(id: %(store_rawid)i) {id}}"
@@ -630,6 +635,25 @@ queries = {
         "clientMutationId": "1",
         "productId": %(prod_rawid)i,
         "value": 3
+    }
+ }
+}
+''',
+
+'aval_ship' : '''
+{"query":
+    "{availableShippingForUser(userCountry: \\"RUS\\", baseProductId: %(b_prod_rawid)i) {packages {id shippingId}}}"
+}
+''',
+
+'set_delivery' : '''
+{"query":
+    "mutation setDeliveryMethodInCart($input: SetDeliveryMethodInCartInput!) {setDeliveryMethodInCart(input: $input) {id productsCost totalCost}}",
+"variables": {
+    "input": {
+            "clientMutationId": "1",
+			"productId": %(prod_rawid)i,
+          	"shippingId": %(ship_id)i
     }
  }
 }
