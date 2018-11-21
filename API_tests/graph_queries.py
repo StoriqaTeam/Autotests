@@ -560,12 +560,6 @@ queries = {
 }
 ''',
 
-'get_b_prods' : '''
-{"query":
-    "{me {baseProducts {edges {node {id rawId}}}}}"
-}
-''',
-
 'prod_in_war' : '''
 {"query":
     "mutation setProductQuantityInWarehouse($input: ProductQuantityInput!) {setProductQuantityInWarehouse (input: $input) {id, productId, quantity}}",
@@ -733,11 +727,11 @@ queries = {
 }
 ''',
 
-'draft_store': '''
-{"query":
-    "mutation draftStore {draftStore(id: %(store_rawid)i) {id}}"
-}
-''',
+# 'draft_store': '''
+# {"query":
+#     "mutation draftStore {draftStore(id: %(store_rawid)i) {id}}"
+# }
+# ''',
 
 'del_comp_pack' : '''
 {"query":
@@ -756,18 +750,6 @@ queries = {
     "mutation deleteCompany {deleteCompany(id: %(company_rawid)i) {id}}"
 }
 ''',
-
-# 'del_cust_attr' : '''
-# {"query":
-#     "mutation deleteCustomAttribute($input: DeleteCustomAttributeInput!) {deleteCustomAttribute (input: $input) {id, rawId}}",
-#     "variables": {
-#         "input":{
-#             "clientMutationId": "1",
-#             "customAttributeId": %(cust_attr_rawid)i
-#         }
-#     }
-# }
-# ''',
 
 'del_attr_from_cat' : '''
 {"query":
@@ -889,6 +871,24 @@ queries = {
 #             "country": "Canada",
 #             "postalCode": "436236",
 #             "isPriority": true
+#         }
+#     }
+# }
+# ''',
+#
+# 'get_b_prods' : '''
+# {"query":
+#     "{me {baseProducts {edges {node {id rawId}}}}}"
+# }
+# ''',
+#
+# 'del_cust_attr' : '''
+# {"query":
+#     "mutation deleteCustomAttribute($input: DeleteCustomAttributeInput!) {deleteCustomAttribute (input: $input) {id, rawId}}",
+#     "variables": {
+#         "input":{
+#             "clientMutationId": "1",
+#             "customAttributeId": %(cust_attr_rawid)i
 #         }
 #     }
 # }
