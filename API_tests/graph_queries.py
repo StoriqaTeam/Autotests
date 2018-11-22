@@ -78,7 +78,7 @@ queries = {
 }
 ''',
 
-'up_cat' : """
+'updateCategory' : """
 {"query":
     "mutation updateCategory($input: UpdateCategoryInput!) {updateCategory(input: $input) {id}}",
     "variables": {
@@ -91,7 +91,7 @@ queries = {
 }
 """,
 
-'cr_attr' : '''
+'createAttribute' : '''
 {"query":
     "mutation createAttribute($input: CreateAttributeInput!) {createAttribute(input: $input) {id, rawId}}",
     "variables": {
@@ -108,7 +108,7 @@ queries = {
 }
 ''',
 
-'up_attr' : '''
+'updateAttribute' : '''
 {"query":
     "mutation updateAttribute($input: UpdateAttributeInput!) {updateAttribute(input: $input) {id}}",
     "variables": {
@@ -121,7 +121,7 @@ queries = {
 }
 ''',
 
-'add_attr' : '''
+'addAttributeToCategory' : '''
 {"query":
     "mutation addAttributeToCategory($input: AddAttributeToCategoryInput!) {addAttributeToCategory(input: $input) {mock}}",
     "variables": {
@@ -134,7 +134,7 @@ queries = {
 }
 ''',
 
-'cr_company' : '''
+'createCompany' : '''
 {"query":
     "mutation createCompany($input: NewCompanyInput!) {createCompany (input: $input) {id, rawId}}",
     "variables": {
@@ -151,7 +151,7 @@ queries = {
 }
 ''',
 
-'up_company' : '''
+'updateCompany' : '''
 {"query":
     "mutation updateCompany($input: UpdateCompanyInput!) {updateCompany (input: $input) {deliveriesFrom {alpha3 children{alpha3 children{alpha3}}}}}",
     "variables": {
@@ -165,7 +165,7 @@ queries = {
 }
 ''',
 
-'cr_package' : '''
+'createPackage' : '''
 {"query":
     "mutation createPackage($input: NewPackagesInput!) {createPackage (input: $input) {id, rawId}}",
     "variables": {
@@ -182,7 +182,7 @@ queries = {
 }
 ''',
 
-'up_package' : '''
+'updatePackage' : '''
 {"query":
     "mutation updatePackage($input: UpdatePackagesInput!) {updatePackage (input: $input) {deliveriesTo {alpha3 children{alpha3 children{alpha3}}}}}",
     "variables": {
@@ -199,7 +199,7 @@ queries = {
 }
 ''',
 
-'ad_package' : '''
+'addPackageToCompany' : '''
 {"query":
     "mutation addPackageToCompany($input: NewCompaniesPackagesInput!) {addPackageToCompany (input: $input) {id, rawId}}",
     "variables": {
@@ -212,7 +212,7 @@ queries = {
 }
 ''',
 
-'cr_user' : '''
+'createUser' : '''
 {"query":
 	"mutation createUser($input: CreateUserInput!) {createUser(input: $input) {id rawId}}",
 	"variables": {
@@ -228,7 +228,7 @@ queries = {
 }
 ''',
 
-'ad_role_user_users' : '''
+'addRoleToUserOnUsersMicroservice' : '''
 {"query":
     "mutation addRoleToUserOnUsersMicroservice($input: NewUsersRoleInput!) {addRoleToUserOnUsersMicroservice (input: $input) {userId, name}}",
     "variables": {
@@ -241,7 +241,7 @@ queries = {
 }
 ''',
 
-'ad_role_user_stores' : '''
+'addRoleToUserOnStoresMicroservice' : '''
 {"query":
     "mutation addRoleToUserOnStoresMicroservice($input: NewStoresRoleInput!) {addRoleToUserOnStoresMicroservice (input: $input) {userId, name}}",
     "variables": {
@@ -254,7 +254,7 @@ queries = {
 }
 ''',
 
-'del_role_user_users' : '''
+'removeRoleFromUserOnUsersMicroservice' : '''
 {"query":
     "mutation removeRoleFromUserOnUsersMicroservice($input: RemoveUsersRoleInput!) {removeRoleFromUserOnUsersMicroservice (input: $input) {userId, name}}",
     "variables": {
@@ -267,7 +267,7 @@ queries = {
 }
 ''',
 
-'del_role_user_stores' : '''
+'removeRoleFromUserOnStoresMicroservice' : '''
 {"query":
     "mutation removeRoleFromUserOnStoresMicroservice($input: RemoveStoresRoleInput!) {removeRoleFromUserOnStoresMicroservice (input: $input) {userId, name}}",
     "variables": {
@@ -280,7 +280,7 @@ queries = {
 }
 ''',
 
-'user_token' : '''
+'user_getJWTByEmail' : '''
 {"query":
 	"mutation getJWTByEmail($input: CreateJWTEmailInput!) {getJWTByEmail (input: $input) {token}}",
 	"variables": {
@@ -293,12 +293,12 @@ queries = {
 }
 ''',
 
-'user_id' : '''
+'query_me' : '''
 {"query":
 	"query {me {id, rawId, isActive, myStore {id}}}" }
 ''',
 
-'up_user' : '''
+'updateUser' : '''
 {"query":
     "mutation updateUser($input: UpdateUserInput!) {updateUser(input: $input){id, isActive}}",
     "variables": {
@@ -350,13 +350,13 @@ queries = {
 }
 ''',
 
-'cr_wizard' : '''
+'createWizardStore' : '''
 {"query":
     "mutation createWizardStore {createWizardStore {id, storeId}}"
 }
 ''',
 
-'up_wizard' : '''
+'updateWizardStore' : '''
 {"query":
     "mutation updateWizardStore($input: UpdateWizardStoreInput!) {updateWizardStore(input: $input) {id, storeId}}",    
     "variables": {
@@ -368,13 +368,13 @@ queries = {
 }
 ''',
 
-'del_wizard' : '''
+'deleteWizardStore' : '''
 {"query":
     "mutation deleteWizardStore {deleteWizardStore {id, storeId}}"
 }
 ''',
 
-'cr_store' : '''
+'createStore' : '''
 {"query":
     "mutation createStore($input: CreateStoreInput!) {createStore(input: $input) {id, name{lang, text}, rawId}}",
     "variables": {
@@ -393,7 +393,7 @@ queries = {
 }
 ''',
 
-'up_store' : '''
+'updateStore' : '''
 {"query":
     "mutation updateStore($input: UpdateStoreInput!) {updateStore(input: $input) {id, isActive}}",
     "variables": {
@@ -413,7 +413,7 @@ queries = {
 }
 ''',
 
-'cr_warehouse' : '''
+'createWarehouse' : '''
 {"query":
     "mutation createWarehouse($input: CreateWarehouseInput!) {createWarehouse (input: $input) {id}}",
     "variables": {
@@ -428,7 +428,7 @@ queries = {
 }
 ''',
 
-'up_warehouse' : '''
+'updateWarehouse' : '''
 {"query":
     "mutation updateWarehouse($input: UpdateWarehouseInput!) {updateWarehouse (input: $input) {id, name}}",
     "variables": {
@@ -443,7 +443,7 @@ queries = {
 }
 ''',
 
-'cr_b_prod' : '''
+'createBaseProduct' : '''
 {"query":
     "mutation createBaseProduct($input: CreateBaseProductInput!) {createBaseProduct(input: $input) {id rawId name {lang text}}}",
     "variables": {
@@ -461,7 +461,7 @@ queries = {
 }
 ''',
 
-'up_b_prod' : '''
+'updateBaseProduct' : '''
 {"query":
     "mutation updateBaseProduct($input: UpdateBaseProductInput!) {updateBaseProduct(input: $input) {id, rawId}}",
     "variables": {
@@ -474,7 +474,7 @@ queries = {
 }
 ''',
 
-'cr_cust_attr' : '''
+'createCustomAttribute' : '''
 {"query":
     "mutation createCustomAttribute($input: NewCustomAttributeInput!) {createCustomAttribute (input: $input) {id, rawId}}",
     "variables": {
@@ -487,7 +487,7 @@ queries = {
 }
 ''',
 
-'cr_prod' : '''
+'createProduct' : '''
 {"query":
     "mutation createProduct($input: CreateProductWithAttributesInput!) {createProduct(input: $input) {id, isActive, rawId}}",
     "variables": {
@@ -506,7 +506,7 @@ queries = {
 }
 ''',
 
-'up_prod' : '''
+'updateProduct' : '''
 {"query":
     "mutation updateProduct($input: UpdateProductWithAttributesInput!) {updateProduct(input: $input) {id}}",
     "variables": {
@@ -519,7 +519,7 @@ queries = {
 }
 ''',
 
-'upsert_ship' : '''
+'upsertShipping' : '''
 {"query":
     "mutation upsertShipping($input: NewShippingInput!) {upsertShipping (input: $input) {local {deliveriesTo {alpha3 children{alpha3 children{alpha3}}}}}}",
     "variables": {
@@ -535,7 +535,7 @@ queries = {
 }
 ''',
 
-'cr_b_prod_var' : '''
+'createBaseProductWithVariants' : '''
 {"query":
     "mutation createBaseProductWithVariants($input: NewBaseProductWithVariantsInput!) {createBaseProductWithVariants(input: $input) {id, rawId, products(first : 100) {edges {node {id, rawId}}}}}",
     "variables": {
@@ -560,7 +560,7 @@ queries = {
 }
 ''',
 
-'prod_in_war' : '''
+'setProductQuantityInWarehouse' : '''
 {"query":
     "mutation setProductQuantityInWarehouse($input: ProductQuantityInput!) {setProductQuantityInWarehouse (input: $input) {id, productId, quantity}}",
     "variables": {
@@ -579,7 +579,7 @@ queries = {
 #
 # ''',
 
-'sendStoretoModeration' : '''
+'sendStoreToModeration' : '''
 {"query" :
     "mutation sendStoreToModeration {sendStoreToModeration(id:%(store_rawid)i) {rawId status}}"
 }
@@ -597,13 +597,13 @@ queries = {
 }
 ''',
 
-'sendProdModeration' : '''
+'sendBaseProductToModeration' : '''
 {"query" :
     "mutation sendBaseProductToModeration {sendBaseProductToModeration(id:%(b_prod_rawid)i) {rawId status}}"
 }
 ''',
 
-'setModerationStatusProd' : '''
+'setModerationStatusBaseProduct' : '''
 {"query" :
     "mutation setModerationStatusBaseProduct($input: BaseProductModerateInput!) {setModerationStatusBaseProduct(input: $input) {rawId status}}",
 "variables": {
@@ -615,12 +615,12 @@ queries = {
 }
 ''',
 
-'clear_Cart' : '''
+'clearCart' : '''
 {"query":
     "mutation clearCart  {clearCart{id, totalCost}}"}
 ''',
 
-'increment_incart' : '''
+'incrementInCart' : '''
 {"query":
     "mutation incrementInCart($input: IncrementInCartInput!) {incrementInCart(input: $input) {id, productsCost}}",
 "variables": {
@@ -632,7 +632,7 @@ queries = {
 }
 ''',
 
-'setselection_incart' : '''
+'setSelectionInCart' : '''
 {"query":
     "mutation setSelectionInCart($input: SetSelectionInCartInput!) {setSelectionInCart(input: $input) {id, productsCost}}",
 "variables": {
@@ -645,7 +645,7 @@ queries = {
 }
 ''',
 
-'setquantity_incart' : '''
+'setQuantityInCart' : '''
 {"query":
     "mutation setQuantityInCart($input: SetQuantityInCartInput!) {setQuantityInCart(input: $input) {id, productsCost}}",
 "variables": {
@@ -658,13 +658,13 @@ queries = {
 }
 ''',
 
-'aval_ship' : '''
+'availableShippingForUser' : '''
 {"query":
     "{availableShippingForUser(userCountry: \\"RUS\\", baseProductId: %(b_prod_rawid)i) {packages {id shippingId}}}"
 }
 ''',
 
-'set_delivery' : '''
+'setDeliveryMethodInCart' : '''
 {"query":
     "mutation setDeliveryMethodInCart($input: SetDeliveryMethodInCartInput!) {setDeliveryMethodInCart(input: $input) {id productsCost totalCost}}",
 "variables": {
@@ -677,7 +677,7 @@ queries = {
 }
 ''',
 
-'cr_order' : '''
+'createOrders' : '''
 {"query":
     "mutation createOrders($input: CreateOrderInput!) {createOrders (input: $input) {invoice{id, orders{id, slug, trackId}}}}",
 "variables": {
@@ -692,7 +692,7 @@ queries = {
 }
 ''',
 
-'order_delivery' : '''
+'setOrderStatusDelivery' : '''
 {"query":
     "mutation setOrderStatusDelivery($input: OrderStatusDeliveryInput!) {setOrderStatusDelivery (input: $input) {state, trackId}}",
 "variables": {
@@ -710,7 +710,7 @@ queries = {
     "query order_history {me{id, order(slug: %(order_slug)i){history {edges {node {state, orderId, comment}}}}}}"}
 ''',
 
-'order_canceled' : '''
+'setOrderStatusCanceled' : '''
 {"query":
     "mutation setOrderStatusCanceled($input: OrderStatusCanceledInput!) {setOrderStatusCanceled (input: $input) {state, trackId}}",
 "variables": {
@@ -722,7 +722,7 @@ queries = {
  }}
 ''',
 
-'order_complete' : '''
+'setOrderStatusComplete' : '''
 {"query":
     "mutation setOrderStatusComplete($input: OrderStatusCompleteInput!) {setOrderStatusComplete (input: $input) {state, trackId}}",
 "variables": {
@@ -734,7 +734,7 @@ queries = {
  }}
 ''',
 
-'delete_fromcart' : '''
+'deleteFromCart' : '''
 {"query":
     "mutation deleteFromCart($input: DeleteFromCartInput!) {deleteFromCart(input: $input) {id, totalCost}}",
 "variables": {
@@ -745,37 +745,37 @@ queries = {
  }}
 ''',
 
-'draft_b_prod' : '''
+'draftBaseProducts' : '''
 {"query":
     "mutation draftBaseProducts {draftBaseProducts(ids: %(b_prod_rawid)i) {id}}"
 }
 ''',
 
-'draft_store': '''
+'draftStore': '''
 {"query":
     "mutation draftStore {draftStore(id: %(store_rawid)i) {id}}"
 }
 ''',
 
-'del_comp_pack' : '''
+'deleteCompanyPackage' : '''
 {"query":
     "mutation deleteCompanyPackage {deleteCompanyPackage(companyId: %(company_rawid)i, packageId: %(package_rawid)i) {id}}"
 }
 ''',
 
-'del_package' : '''
+'deletePackage' : '''
 {"query":
     "mutation deletePackage {deletePackage(id: %(package_rawid)i) {id}}"
 }
 ''',
 
-'del_company' : '''
+'deleteCompany' : '''
 {"query":
     "mutation deleteCompany {deleteCompany(id: %(company_rawid)i) {id}}"
 }
 ''',
 
-'del_attr_from_cat' : '''
+'deleteAttributeFromCategory' : '''
 {"query":
     "mutation deleteAttributeFromCategory($input: DeleteAttributeFromCategory!) {deleteAttributeFromCategory(input: $input) {mock}}",
     "variables": {
@@ -788,7 +788,7 @@ queries = {
 }
 ''',
 
-'deact_prod' : '''
+'deactivateProduct' : '''
 {"query":
     "mutation deactivateProduct($input: DeactivateProductInput!) {deactivateProduct(input: $input) {id, isActive}}",
     "variables": {
@@ -800,7 +800,7 @@ queries = {
 }
 ''',
 
-'deact_b_prod' : '''
+'deactivateBaseProduct' : '''
 {"query":
     "mutation deactivateBaseProduct($input: DeactivateBaseProductInput!) {deactivateBaseProduct(input: $input) {id, isActive}}",
     "variables": {
@@ -812,7 +812,7 @@ queries = {
 }
 ''',
 
-'deact_store' : '''
+'deactivateStore' : '''
 {"query":
     "mutation deactivateStore($input: DeactivateStoreInput!) {deactivateStore(input: $input) {id, isActive}}",
     "variables": {

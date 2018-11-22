@@ -22,10 +22,9 @@ query = {
 	"query {me {id, rawId, isActive, myStore {id}}}" }
 ''',
 
-'del_warehouse' : '''
+'aval_ship' : '''
 {"query":
-    "mutation deleteWarehouse {deleteWarehouse(%(war_id)s) {id}}"
-}
+    "{availableShippingForUser(userCountry: "RUS", baseProductId: 1874) {packages {id shippingId}}}"
 '''
 }
 
@@ -36,11 +35,12 @@ context = {
     }
 
 cookie = {"holyshit": "iamcool"}
-theaders = {"currency" : "STQ", "Authorization" : "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoxOTcsImV4cCI6MTUzNzQ0NzYyOSwicHJvdmlkZXIiOiJFbWFpbCJ9.gbKvRHYGgKhStq-8F7W_CW7IakP18e5wFteOvIIhxFlUe8z_J7t6KI_0zoW8BokX6moF5qnAGIVOgKLO7k9E0x6NTFpgOlSytwSbswouIv9aYgjwI_jVzU5MZObe_RIY0M796wE4wXy8SDzrG6O9YDwY1-ihAZX0qyqxywkNi_skZ0r96lehcJwBhqDcphitubvpGBpYCWjGb92Ck104DPwJ7uUPGK64MX2FAAzA5eYJlO9118BLlw_6oC6bw1Hsc5fbG8_nmxEdEE3HkVnOPXLFwlismk_VnOKwsCcdCTO-0tLYwNbgbx9rr6TS2L4on065ikRP04E75iMavoCtMw"}
+theaders = {"currency" : "STQ", "Authorization" : "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoxOTcsImV4cCI6MTU0MjI3MjcwNywicHJvdmlkZXIiOiJFbWFpbCJ9.CfSd4aDPWQdi1rqpPae1axQ8ARXX0CYQCT8DhBQJ020WV0OUjH28UVpLYOHYpBF_NFhH8AE501z-gVh6wXYET9sDdO7PC4ZOD2IuSCDVBA2gVgyeD2cUrRVZIBPE4d8BUZyF4i3uv227cInsWDX3MG-pyDP-4waRAGtzsTfIHnIMNaeMUzTrmxXA5e3L11GIX_IwpFYmEpBTNK7lNn4cpBXlkAvEhC7KN1BOhXwv_ul2fe4-kqWzLdy2NU1QgqXev1B8WhIiu2zu0IxpR7nIDzydrEtfNAYdIz35p3_Vw4ofHTXKg3vKh9bfmT_EK_380vZ4kbHIwyM-PtzH2G3jrA"}
 def request(json_query, headers, cookies):
     url = 'https://nightly.stq.cloud/graphql'
     r = requests.post(url, json=json_query, headers=headers, cookies=cookies)
     return r
-for i in query:
-    answer = request(json.loads(query[i] % context), theaders, cookie)
-    print(answer.json())
+
+rus = "RUS"
+answer = request(json.loads('''{"query" : "{availableShippingForUser(userCountry: \\"RUS\\", baseProductId: 1874) {packages {id shippingId}}}"}'''), theaders, cookie)
+print(answer.json())

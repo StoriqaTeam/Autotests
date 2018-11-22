@@ -12,9 +12,9 @@ testprod = "https://storiqa:whenLambo%3F@stage.stq.cloud/auth" # Адрес пр
 test_address = {"country" : "Russian Federation",
                 "address" : "New Arbat Avenue",
                 "suite" : "33/5",
-                "street" : "Новый Арбат улица",
-                "locality" : "Москва",
-                "region" : "Москва",
+                "street" : "New Arbat Avenue",
+                "locality" : "Moskva",
+                "region" : "Moskva",
                 "area" : "moscow",
                 "pcode" : '123321'} # Данные формы адреса
 
