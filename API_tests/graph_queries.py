@@ -30,7 +30,7 @@ queries = {
     }
 }''',
 
-'cr_cat1' : '''
+'createCategory_1' : '''
 {"query":
     "mutation createCategory($input: CreateCategoryInput!) {createCategory(input: $input) {id rawId name {lang text}}}",
     "variables": 
@@ -46,7 +46,7 @@ queries = {
 }
 ''',
 
-'cr_cat2' : '''
+'createCategory_2' : '''
 {"query":
     "mutation createCategory($input: CreateCategoryInput!) {createCategory(input: $input) {id rawId name {lang text}}}",
     "variables": 
@@ -62,7 +62,7 @@ queries = {
 }
 ''',
 
-'cr_cat3' : '''
+'createCategory_3' : '''
 {"query":
     "mutation createCategory($input: CreateCategoryInput!) {createCategory(input: $input) {id rawId name {lang text}}}",
     "variables": 
@@ -579,15 +579,39 @@ queries = {
 #
 # ''',
 
-'publish_store' : '''
-{"query":
-    "mutation publishStore {publishStore(id: %(store_rawid)i) {id}}"
+'sendStoretoModeration' : '''
+{"query" :
+    "mutation sendStoreToModeration {sendStoreToModeration(id:%(store_rawid)i) {rawId status}}"
 }
 ''',
 
-'publish_b_prod' : '''
-{"query":
-    "mutation publishBaseProducts {publishBaseProducts(ids: %(b_prod_rawid)i) {id}}"
+'setModerationStatusStore' : '''
+{"query" :
+    "mutation setModerationStatusStore($input: StoreModerateInput!) {setModerationStatusStore(input: $input) {rawId status}}",
+"variables": {
+  "input": {
+	"id" : "%(store_id)s",
+    "status" : "PUBLISHED"
+  }
+}
+}
+''',
+
+'sendProdModeration' : '''
+{"query" :
+    "mutation sendBaseProductToModeration {sendBaseProductToModeration(id:%(b_prod_rawid)i) {rawId status}}"
+}
+''',
+
+'setModerationStatusProd' : '''
+{"query" :
+    "mutation setModerationStatusBaseProduct($input: BaseProductModerateInput!) {setModerationStatusBaseProduct(input: $input) {rawId status}}",
+"variables": {
+  "input": {
+	"id" : "%(b_prod_id)s",
+    "status" : "PUBLISHED"
+  }
+}
 }
 ''',
 
@@ -727,11 +751,11 @@ queries = {
 }
 ''',
 
-# 'draft_store': '''
-# {"query":
-#     "mutation draftStore {draftStore(id: %(store_rawid)i) {id}}"
-# }
-# ''',
+'draft_store': '''
+{"query":
+    "mutation draftStore {draftStore(id: %(store_rawid)i) {id}}"
+}
+''',
 
 'del_comp_pack' : '''
 {"query":
@@ -891,5 +915,16 @@ queries = {
 #             "customAttributeId": %(cust_attr_rawid)i
 #         }
 #     }
+# }
+# ''',
+# 'publish_store' : '''
+# {"query":
+#     "mutation publishStore {publishStore(id: %(store_rawid)i) {id}}"
+# }
+# ''',
+#
+# 'publish_b_prod' : '''
+# {"query":
+#     "mutation publishBaseProducts {publishBaseProducts(ids: %(b_prod_rawid)i) {id}}"
 # }
 # ''',

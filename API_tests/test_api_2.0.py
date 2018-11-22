@@ -36,13 +36,13 @@ def action(dictq):
             if dictq[i] == q.queries['adm_token']:
                 ad_token = 'Bearer ' + answer.json()['data']['getJWTByEmail']['token']
                 token_headers['Authorization'] =  ad_token
-            elif dictq[i] == q.queries['cr_cat1']:
+            elif dictq[i] == q.queries['createCategory_1']:
                 context['cat_id_1'] = answer.json()['data']['createCategory']['id']
                 context['cat_rawid_1'] = answer.json()['data']['createCategory']['rawId']
-            elif dictq[i] == q.queries['cr_cat2']:
+            elif dictq[i] == q.queries['createCategory_2']:
                 context['cat_id_2'] = answer.json()['data']['createCategory']['id']
                 context['cat_rawid_2'] = answer.json()['data']['createCategory']['rawId']
-            elif dictq[i] == q.queries['cr_cat3']:
+            elif dictq[i] == q.queries['createCategory_3']:
                 context['cat_id_3'] = answer.json()['data']['createCategory']['id']
                 context['cat_rawid_3'] = answer.json()['data']['createCategory']['rawId']
             elif dictq[i] == q.queries['cr_attr']:
