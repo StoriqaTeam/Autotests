@@ -20,7 +20,7 @@ def request(json_query, headers, cookies):
     r = requests.post(url, json=json_query, headers=headers, cookies=cookies)
     return r
 
-def action(dictq):
+def action(dictq:dict):
     token_headers = {"currency" : "STQ"}
     cookie = {"holyshit": "iamcool"}
     answer: json
@@ -103,7 +103,8 @@ def action(dictq):
             count += 1
         if len(errors) > 0:
             raise Exception(TestFailException)
-    print('\n', '\n', 'Yay! All processes COPLETED. Well done bakenders :3')
+    print('\n', '\n', 'Yay! All processes COMPLETED. Bakend developers well done ^_^')
 
 action(q.queries)
+
 
