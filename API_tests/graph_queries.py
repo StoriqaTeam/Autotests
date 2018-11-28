@@ -24,8 +24,8 @@ queries = {
     "variables": {
         "input": {
             "clientMutationId": "1",
-            "email": "admin@storiqa.com",
-            "password": "bqF5BkdsCS"
+            "email": "%(adm)s",
+            "password": "%(admpwd)s"
         }
     }
 }''',
@@ -234,7 +234,7 @@ queries = {
     "variables": {
         "input": {
             "clientMutationId": "",
-            "userId": %(n_usr_rawid)i,
+            "userId": %(new_usr_rawid)i,
             "name": "MODERATOR"
         }
     }
@@ -247,7 +247,7 @@ queries = {
     "variables": {
         "input": {
             "clientMutationId": "",
-            "userId": %(n_usr_rawid)i,
+            "userId": %(new_usr_rawid)i,
             "name": "MODERATOR"
         }
     }
@@ -260,7 +260,7 @@ queries = {
     "variables": {
         "input": {
             "clientMutationId": "",
-            "userId": %(n_usr_rawid)i,
+            "userId": %(new_usr_rawid)i,
             "name": "MODERATOR"
         }
     }
@@ -273,7 +273,7 @@ queries = {
     "variables": {
         "input": {
             "clientMutationId": "",
-            "userId": %(n_usr_rawid)i,
+            "userId": %(new_usr_rawid)i,
             "name": "MODERATOR"
         }
     }
@@ -286,8 +286,8 @@ queries = {
 	"variables": {
 	    "input": {
 	        "clientMutationId": "",
-	        "email": "apitester@storiqa.com",
-	        "password": "qwe123QWE"
+	        "email": "%(usr)s",
+	        "password": "%(usrpwd)s"
 	    }
 	}
 }
@@ -560,6 +560,23 @@ queries = {
 }
 ''',
 
+'createCoupon' : '''
+{"query":
+    "mutation createCoupon($input: NewCouponInput!) {createCoupon(input: $input) {id rawId code isActive}}",
+"variables" : {
+    "input": {
+          "clientMutationId": "",
+          "code": "TEST1",
+          "title": "skidosik",
+          "storeId": %(store_rawid)i,
+          "scope": "BASE_PRODUCTS",
+          "percent": 10,
+          "quantity": 10
+    }
+ }
+}
+''',
+
 'setProductQuantityInWarehouse' : '''
 {"query":
     "mutation setProductQuantityInWarehouse($input: ProductQuantityInput!) {setProductQuantityInWarehouse (input: $input) {id, productId, quantity}}",
@@ -609,10 +626,7 @@ queries = {
 }
 }
 ''',
-# 'cr_coupon' : '''
-# {"query" :
-#
-# ''',
+
 'clearCart' : '''
 {"query":
     "mutation clearCart  {clearCart{id, totalCost}}"}
@@ -669,7 +683,7 @@ queries = {
     "input": {
             "clientMutationId": "",
 			"productId": %(prod_rawid)i,
-          	"shippingId": %(ship_id)i
+          	"shippingId": %(shipping_id)i
     }
  }
 }
@@ -681,7 +695,7 @@ queries = {
 "variables": {
     "input": {
         "clientMutationId": "",
-        "addressFull": {"value": "gdeto", "country": "Canada", "postalCode": "111111"},
+        "addressFull": {"value": "gdeto", "country": "Russian Federation", "postalCode": "111111", "countryCode": "RUS"},
         "receiverName": "tester",
         "receiverPhone": "+79095623366",
         "currency": "STQ" 
@@ -741,6 +755,24 @@ queries = {
         "productId": %(prod_rawid)i
     }
  }}
+''',
+
+'buyNow' : '''
+{"query":
+    "mutation buyNow($input: BuyNowInput!) {buyNow(input: $input) {invoice {id state} cart{id totalCost}}}",
+"variables": {
+    "input": {
+        "clientMutationId": "",
+        "productId": %(prod_rawid)i,
+        "quantity": 1,
+        "addressFull": {"value": "gdeto", "country": "Russian Federation", "postalCode": "111111", "countryCode": "RUS"},
+        "receiverName": "apitester",
+        "receiverPhone": "+79034569874",
+        "currency": "RUB",
+        "shippingId": %(shipping_id)i
+    }
+ }
+}
 ''',
 
 'draftBaseProducts' : '''
