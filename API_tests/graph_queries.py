@@ -172,10 +172,10 @@ queries = {
         "input": {
             "clientMutationId": "",
             "name": "testPackge",
-            "maxSize": 10.0,
-            "minSize": 1.0,
-            "maxWeight": 30.0,
-            "minWeight": 0.5,
+            "maxSize": 200,
+            "minSize": 5,
+            "maxWeight": 30000,
+            "minWeight": 100,
             "deliveriesTo": ["LBR"]
         }
     }
@@ -189,10 +189,10 @@ queries = {
         "input": {
             "clientMutationId": "",
             "id": "%(package_id)s",
-            "maxSize": 11.0,
-            "minSize": 1.5,
-            "maxWeight": 31.0,
-            "minWeight": 0.8,
+            "maxSize": 210,
+            "minSize": 10,
+            "maxWeight": 33000,
+            "minWeight": 100,
             "deliveriesTo": ["LBR", "RUS"]
         }
     }

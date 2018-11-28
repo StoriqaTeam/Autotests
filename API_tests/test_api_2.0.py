@@ -16,19 +16,42 @@ class TestFailException(Exception):
 
 errors = {}
 
+# Создает список из ключей словаря
+def keys2list(anydict:dict):
+    key_list = anydict.keys()
+    key_list = list(key_list)
+    return key_list
+
+# Выводит пронумерованный столбец ключей
+def list_colum(anylist:list):
+    n = 0
+    for i in anylist:
+        print(n, i)
+        n += 1
+
+# Из большого словаря делает новый словарь по списку ключей
+def select_query_part(keylist:list, anydict:dict):
+    querypart = {}
+    for i in keylist:
+        querypart[i] = anydict[i]
+    return querypart
+
+# Пост запрос с параметрами
 def request(json_query, headers, cookies):
     r = requests.post(url, json=json_query, headers=headers, cookies=cookies)
     return r
 
+context = {
+    'n': datetime.strftime(datetime.now(), "%m%d%H%M%S"),
+    'store_id': ""
+}
+# Действие со списком запросов. Основная логика теста.
 def action(dictq:dict):
     token_headers = {"currency" : "STQ"}
     cookie = {"holyshit": "iamcool"}
     answer: json
     count = 0
-    context = {
-        'n': datetime.strftime(datetime.now(), "%m%d%H%M%S"),
-        'store_id': ""
-    }
+
     context['regmail'] = 'test' + context['n'] + '@test.test'
     for i in dictq:
         try:
@@ -105,6 +128,26 @@ def action(dictq:dict):
             raise Exception(TestFailException)
     print('\n', '\n', 'Yay! All processes COMPLETED. Bakend developers well done ^_^')
 
+# Тестировать все
 action(q.queries)
+'''
+Чтобы протестировать только некоторые запросы нужно закоментировать "Тестировать все" и
+раскомментировать "Тестировать часть".
+Чтобы задать необходимые переменные нужно написать их значение в словарь context в строке 44
+'''
+# list_colum(keys2list(q.queries)) # Выполнить чтобы увидеть список ключей для выбора
+# # Тестировать часть
+# u = 23  # Индекс запроса для получения токена admin = 5, user = 23
+# a = 5
+# list_indexes = [a, 6, 7, 8, u, 24, 32, 36, 44, 46, 45, 47, 67, 68] # Указать нужные ключи
+# keylist = keys2list(q.queries)
+# actual_keys = []
+# for n in list_indexes:
+#     actual_keys.append(keylist[n])
+# querypart = select_query_part(actual_keys, q.queries)
+# action(querypart)
+
+
+
 
 
