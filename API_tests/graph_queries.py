@@ -192,9 +192,9 @@ queries: Dict[Union[str, Any], Union[str, Any]] = {
             "clientMutationId": "",
             "id": "%(package_id)s",
             "maxSize": 210,
-            "minSize": 10,
+            "minSize": 1,
             "maxWeight": 33000,
-            "minWeight": 100,
+            "minWeight": 1,
             "deliveriesTo": ["LBR", "RUS"]
         }
     }
