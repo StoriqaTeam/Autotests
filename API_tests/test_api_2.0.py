@@ -14,7 +14,7 @@ else: url = 'https://nightly.stq.cloud/graphql'
 class TestFailException(Exception):
     pass
 
-errors = {}
+errors:dict = {}
 
 # Создает список из ключей словаря
 def keys2list(anydict:dict):
@@ -24,10 +24,10 @@ def keys2list(anydict:dict):
 
 # Выводит пронумерованный столбец ключей
 def list_colum(anylist:list):
-    n = 0
+    num = 0
     for i in anylist:
-        print(n, i)
-        n += 1
+        print(num, i)
+        num += 1
 
 # Из большого словаря делает новый словарь по списку ключей
 def select_query_part(keylist:list, anydict:dict):
@@ -42,7 +42,7 @@ def request(json_query, headers, cookies):
     return r
 
 # Словарь с переменными использующимися в запросах
-context = {
+context:dict = {
     'n': datetime.strftime(datetime.now(), "%m%d%H%M%S"),
     'adm' : 'admin@storiqa.com',
     'admpwd' : 'bqF5BkdsCS',
@@ -75,19 +75,20 @@ context = {
     'shipping_id' : '',
     'coupon_rawid' : '',
     'coupon_code' : '',
-    'order_slug' : ''
+    'order_slug' : '',
+    'invoice_id' : ''
 }
 # Действие со списком запросов. Основная логика теста.
 def action(dictq:dict):
-    token_headers = {"currency" : "STQ"}
-    cookie = {"holyshit": "iamcool"}
-    answer: json
-    count = 0
+    token_headers:dict = {"currency" : "STQ"}
+    cookie:dict = {"holyshit": "iamcool"}
+    answer:json
+    count:int = 0
     context['regmail'] = 'test' + context['n'] + '@test.test'
     for i in dictq:
         try:
             answer = request(json.loads(dictq[i] % context), token_headers, cookie)
-            if dictq[i] == q.queries['adm_token']:
+            if dictq[i] == q.queries['admin_getJWTByEmail']:
                 ad_token = 'Bearer ' + answer.json()['data']['getJWTByEmail']['token']
                 token_headers['Authorization'] =  ad_token
             elif dictq[i] == q.queries['createCategory_1']:
@@ -146,6 +147,8 @@ def action(dictq:dict):
                 context['shipping_id'] = answer.json()['data']['availableShippingForUser']['packages'][0]['shippingId']
             elif dictq[i] == q.queries['createOrders']:
                 context['order_slug'] = answer.json()['data']['createOrders']['invoice']['orders'][0]['slug']
+            elif dictq[i] == q.queries['buyNow']:
+                context['invoice_id'] = answer.json()['data']['buyNow']['invoice']['id']
             elif dictq[i] == q.queries['deleteFromCart']:
                 token_headers['Authorization'] = ad_token
             print(answer.json())
@@ -179,9 +182,9 @@ else:
     else:
         u = 23  # Индекс запроса для получения токена admin = 5, user = 23
         a = 5
-        list_indexes = [a, 6, 7, 8, 10, u, 24, 32, 34, 36, 39, 44, 45, 46, 47, 48, 68] # Указать нужные ключи
+        list_indexes = [a, 6, 7, 8, 10, u, 24, 32, 34, 36, 39, 44, 45, 46, 47, 48] # Указать нужные ключи
         keylist = keys2list(q.queries)
-        actual_keys = []
+        actual_keys:list = []
         for n in list_indexes:
             actual_keys.append(keylist[n])
         querypart = select_query_part(actual_keys, q.queries)

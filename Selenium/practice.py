@@ -2,20 +2,21 @@
 import requests
 import json
 from datetime import datetime
+import graph_queries as q
 
 query = {
-# 'user_token' : '''
-# {"query":
-# 	"mutation getJWTByEmail($input: CreateJWTEmailInput!) {getJWTByEmail (input: $input) {token}}",
-# 	"variables": {
-# 	    "input": {
-# 	        "clientMutationId": "1",
-# 	        "email": "apitester@storiqa.com",
-# 	        "password": "qwe123QWE"
-# 	    }
-# 	}
-# }
-# ''',
+'user_token' : '''
+{"query":
+	"mutation getJWTByEmail($input: CreateJWTEmailInput!) {getJWTByEmail (input: $input) {token}}",
+	"variables": {
+	    "input": {
+	        "clientMutationId": "1",
+	        "email": "apitester@storiqa.com",
+	        "password": "qwe123QWE"
+	    }
+	}
+}
+''',
 
 'user_id' : '''
 {"query":
@@ -41,6 +42,25 @@ def request(json_query, headers, cookies):
     r = requests.post(url, json=json_query, headers=headers, cookies=cookies)
     return r
 
-rus = "RUS"
-answer = request(json.loads('''{"query" : "{availableShippingForUser(userCountry: \\"RUS\\", baseProductId: 1874) {packages {id shippingId}}}"}'''), theaders, cookie)
-print(answer.json())
+answer = request(json.loads(q.queries['user_getJWTByEmail']), theaders, cookie)
+#print(answer.json())
+
+def keys2list(anydict:dict):
+    key_list = anydict.keys()
+    key_list = list(key_list)
+    return key_list
+
+def list_colum(anylist):
+    n = 0
+    for i in anylist:
+        print(n, i)
+        n += 1
+
+def select_query_part(keylist, anydict):
+    querypart = {}
+    for i in keylist:
+        querypart[i] = anydict[i]
+    return querypart
+
+for a in select_query_part(keys2list(q.queries)[0:3], q.queries):
+    print (a)

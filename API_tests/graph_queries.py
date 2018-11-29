@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 #Это словарь со всеми запросами для GaphQL
-queries = {
+from typing import Dict, Any, Union
+
+queries: Dict[Union[str, Any], Union[str, Any]] = {
 
 'version' : '''{"query":
                 "query {apiVersion}"}''',
@@ -18,7 +20,7 @@ queries = {
 'currencyExchange' : '''{"query":
                             "query {currencyExchange{code, rates{code, value}}}"}''',
 
-'adm_token' : '''{
+'admin_getJWTByEmail' : '''{
     "query":
         "mutation getJWTByEmail($input: CreateJWTEmailInput!) {getJWTByEmail (input: $input) {token}}",
     "variables": {
@@ -772,6 +774,12 @@ queries = {
         "shippingId": %(shipping_id)i
     }
  }
+}
+''',
+
+'recalcInvoiceAmount' : '''
+{"query":
+    "mutation recalcInvoiceAmount{recalcInvoiceAmount(id : \\"%(invoice_id)s\\") {id} }"
 }
 ''',
 

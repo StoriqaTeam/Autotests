@@ -30,4 +30,4 @@ if __name__ == "__main__":
         raise r.TestFailException()
 
 
-    input('END')
+    #input('END')
