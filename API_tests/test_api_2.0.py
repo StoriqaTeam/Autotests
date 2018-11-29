@@ -158,7 +158,7 @@ def action(dictq:dict):
                 errors['message'+str(count)] = error_message
                 count += 1
         except Exception as ex:
-            errors['except'+str(count)] = 'EXCEPTION IN QUERY: ' + i + '\n' + str(ex)
+            errors['except'+str(count)] = 'EXCEPTION IN QUERY: ' + i + '\n' + answer.text + '\n' + str(ex)
             print (errors['except'+str(count)])
             count += 1
         if len(errors) > 0:
