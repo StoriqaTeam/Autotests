@@ -116,7 +116,7 @@ postalcode
 russia = "//div/div/div[@id='RUS'][@data-test='AddressFormSelect_item']" # Россия
 usa = "//div/div/div[@id='USA'][@data-test='AddressFormSelect_item']" # США
 storeAdress = "//input[@data-test='autocompleteAddress']"  # Адрес магазина
-storeSubmitAdress = "//div[@class='AddressForm__items___3Wr7L']"
+storeSubmitAdress = "//div[@class='AddressForm__items___20ta9']"
 # storeSuite = "//div[@data-test='streetNumber']" # Сокращение
 # storeStreet = "//div[@data-test='route']" # Улица
 # storeCity = "//div[@data-test='locality']" # Город
