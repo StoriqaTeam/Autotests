@@ -174,7 +174,7 @@ queries: Dict[Union[str, Any], Union[str, Any]] = {
         "input": {
             "clientMutationId": "",
             "name": "testPackge",
-            "maxSize": 200,
+            "maxSize": 150000,
             "minSize": 5,
             "maxWeight": 30000,
             "minWeight": 100,
@@ -191,7 +191,7 @@ queries: Dict[Union[str, Any], Union[str, Any]] = {
         "input": {
             "clientMutationId": "",
             "id": "%(package_id)s",
-            "maxSize": 210,
+            "maxSize": 165000,
             "minSize": 1,
             "maxWeight": 33000,
             "minWeight": 1,
