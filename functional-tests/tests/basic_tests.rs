@@ -1,11 +1,122 @@
 extern crate functional_tests;
 
 use functional_tests::query::{
-    create_attribute, create_category, create_store, create_user, get_jwt_by_email,
-    get_jwt_by_provider,
+    create_attribute, create_attribute_value, create_category, create_store, create_user,
+    delete_attribute_value, get_jwt_by_email, get_jwt_by_provider, update_attribute_value,
 };
 
 use functional_tests::context::TestContext;
+
+#[test]
+pub fn delete_attribute_value() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let attribute = context
+        .create_attribute(create_attribute::default_create_attribute_input())
+        .unwrap()
+        .create_attribute;
+    let new_value = context
+        .create_attribute_value(create_attribute_value::CreateAttributeValueInput {
+            raw_attribute_id: attribute.raw_id,
+            ..create_attribute_value::default_create_attribute_value_input()
+        }).unwrap()
+        .create_attribute_value;
+    //when
+    let _ = context
+        .delete_attribute_value(delete_attribute_value::DeleteAttributeValueInput {
+            raw_id: new_value.raw_id,
+            ..delete_attribute_value::default_delete_attribute_value_input()
+        }).unwrap()
+        .delete_attribute_value;
+    //then
+    let changed_attribute = context
+        .get_attributes()
+        .unwrap()
+        .attributes
+        .into_iter()
+        .flatten()
+        .filter(|a| a.raw_id == attribute.raw_id)
+        .next()
+        .unwrap();
+    assert!(changed_attribute.values.unwrap().is_empty());
+}
+
+#[test]
+pub fn update_attribute_value() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let attribute = context
+        .create_attribute(create_attribute::default_create_attribute_input())
+        .unwrap()
+        .create_attribute;
+    let new_value = context
+        .create_attribute_value(create_attribute_value::CreateAttributeValueInput {
+            raw_attribute_id: attribute.raw_id,
+            ..create_attribute_value::default_create_attribute_value_input()
+        }).unwrap()
+        .create_attribute_value;
+    //when
+    let updated = context
+        .update_attribute_value(update_attribute_value::UpdateAttributeValueInput {
+            raw_id: new_value.raw_id,
+            raw_attribute_id: attribute.raw_id,
+            ..update_attribute_value::default_create_attribute_value_input()
+        }).unwrap()
+        .update_attribute_value;
+    //then
+    assert_eq!(
+        Some(updated.code),
+        update_attribute_value::default_create_attribute_value_input().code
+    );
+}
+
+#[test]
+pub fn add_values_to_attribute() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let attribute = context
+        .create_attribute(create_attribute::default_create_attribute_input())
+        .unwrap()
+        .create_attribute;
+    //when
+    let new_value = context
+        .create_attribute_value(create_attribute_value::CreateAttributeValueInput {
+            raw_attribute_id: attribute.raw_id,
+            ..create_attribute_value::default_create_attribute_value_input()
+        }).unwrap()
+        .create_attribute_value;
+    //then
+    assert_eq!(new_value.attr_raw_id, attribute.raw_id);
+    assert_eq!(new_value.attribute.unwrap().raw_id, attribute.raw_id);
+}
+
+#[test]
+pub fn create_attribute_with_values() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //then
+    let _attribute = context
+        .create_attribute(create_attribute::CreateAttributeInput {
+            values: Some(vec![
+                create_attribute::CreateAttributeValueWithAttributeInput {
+                    code: "attribute_code".to_string(),
+                    translations: Some(vec![create_attribute::TranslationInput {
+                        lang: create_attribute::Language::EN,
+                        text: "attribute code".to_string(),
+                    }]),
+                },
+            ]),
+            ..create_attribute::default_create_attribute_input()
+        }).unwrap()
+        .create_attribute;
+}
 
 #[test]
 pub fn create_attribute() {
@@ -14,9 +125,8 @@ pub fn create_attribute() {
     context.as_superadmin();
     //then
     let _attribute = context
-        .create_attribute(create_attribute::CreateAttributeInput {
-            ..create_attribute::default_create_attribute_input()
-        }).unwrap()
+        .create_attribute(create_attribute::default_create_attribute_input())
+        .unwrap()
         .create_attribute;
 }
 

@@ -1,0 +1,14 @@
+mutation createAttributeValue($input: CreateAttributeValueInput!) {
+ createAttributeValue(input: $input) {
+    rawId,
+    attrRawId,
+    code,
+    translations {
+        lang,
+        text
+    },
+    attribute {
+        rawId
+    }
+ }
+}

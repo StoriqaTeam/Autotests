@@ -1,0 +1,14 @@
+mutation updateAttributeValue($input: UpdateAttributeValueInput!) {
+ updateAttributeValue(input: $input) {
+    rawId,
+    attrRawId,
+    code,
+    translations {
+        lang,
+        text
+    },
+    attribute {
+        rawId
+    }
+ }
+}

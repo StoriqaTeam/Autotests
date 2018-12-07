@@ -8,8 +8,9 @@ use serde::Serialize;
 use config::Config;
 use microservice::{StoresMicroservice, UsersMicroservice};
 use query::{
-    create_attribute, create_category, create_store, create_user, get_jwt_by_email,
-    get_jwt_by_provider,
+    create_attribute, create_attribute_value, create_category, create_store, create_user,
+    delete_attribute_value, get_attributes, get_jwt_by_email, get_jwt_by_provider,
+    update_attribute_value,
 };
 
 pub const GRAPHQL_URL: &'static str = "http://gateway:8000/graphql";
@@ -93,6 +94,18 @@ impl TestContext {
         self.bearer = None;
     }
 
+    pub fn get_attributes(&self) -> Result<get_attributes::ResponseData, FailureError> {
+        let request_body =
+            get_attributes::GetAttributesQuery::build_query(get_attributes::Variables {});
+        let response_body: Response<get_attributes::ResponseData> =
+            self.graphql_request(request_body)?;
+        match (response_body.data, response_body.errors) {
+            (Some(data), None) => Ok(data),
+            (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
+            _ => unreachable!(),
+        }
+    }
+
     graphql_request!(
         create_category,
         create_category,
@@ -128,6 +141,24 @@ impl TestContext {
         create_attribute,
         CreateAttributeInput,
         CreateAttributeMutation
+    );
+    graphql_request!(
+        create_attribute_value,
+        create_attribute_value,
+        CreateAttributeValueInput,
+        CreateAttributeValueMutation
+    );
+    graphql_request!(
+        update_attribute_value,
+        update_attribute_value,
+        UpdateAttributeValueInput,
+        UpdateAttributeValueMutation
+    );
+    graphql_request!(
+        delete_attribute_value,
+        delete_attribute_value,
+        DeleteAttributeValueInput,
+        DeleteAttributeValueMutation
     );
 
     fn graphql_request<T: Serialize, S: DeserializeOwned>(
