@@ -1,0 +1,25 @@
+mutation createCategory($input: CreateCategoryInput!) {
+ createCategory(input: $input) {
+    id,
+    rawId,
+    name {
+        lang,
+        text
+    },
+    metaField,
+    parentId,
+    parent {
+        id,
+        rawId
+    },
+    level,
+    children {
+        id,
+        rawId,
+    },
+    getAttributes {
+        id
+    },
+    slug
+ }
+}

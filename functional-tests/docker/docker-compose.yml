@@ -1,0 +1,26 @@
+version: '3'
+services:
+  functional-tests:
+    image: functional-tests
+    build:
+      context: .
+      dockerfile: Dockerfile.functional-tests
+    container_name: functional-tests
+    working_dir: /app
+    command: cargo run
+    volumes:
+      - ..:/app
+      - stq_cargo_cache:/usr/local/cargo
+    environment:
+      - "RUST_LOG=functional_tests=debug"
+    ports:
+      - 8000:8000
+    stdin_open: true
+
+volumes:
+  stq_cargo_cache:
+
+networks:
+  default:
+    external:
+      name: storiqa

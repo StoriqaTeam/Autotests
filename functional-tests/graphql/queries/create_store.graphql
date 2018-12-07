@@ -1,0 +1,51 @@
+mutation createStore($input:CreateStoreInput!) {
+ createStore(input: $input) {
+    id,
+    rawId,
+    userId,
+    storeManager {
+       id
+      rawId
+      email
+      isActive
+      phone
+      firstName
+      lastName
+      middleName
+      gender
+      birthdate
+      avatar
+      isBlocked
+      emarsysId
+      createdAt
+      updatedAt
+    },
+    name {
+       lang,
+       text
+    },
+    isActive,
+    shortDescription {
+       lang,
+       text
+    },
+    longDescription {
+       lang,
+       text
+    },
+    slug,
+    createdAt,
+    updatedAt,
+    cover,
+    logo,
+    phone,
+    email,
+    facebookUrl,
+    twitterUrl,
+    instagramUrl,
+    defaultLanguage,
+    slogan,
+    rating,
+    status
+ }
+}
