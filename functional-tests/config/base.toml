@@ -1,3 +1,6 @@
+[gateway_microservice]
+graphql_url="http://gateway:8000/graphql"
+
 [users_microservice]
 url="http://users:8000"
 database_url="postgresql://users:users@users-pg:5432/users"

@@ -8,16 +8,15 @@ use serde::Serialize;
 use config::Config;
 use microservice::{StoresMicroservice, UsersMicroservice};
 use query::{
-    create_attribute, create_attribute_value, create_category, create_store, create_user,
-    delete_attribute_value, get_attributes, get_jwt_by_email, get_jwt_by_provider,
+    create_attribute, create_attribute_value, create_base_product, create_category, create_store,
+    create_user, delete_attribute_value, get_attributes, get_jwt_by_email, get_jwt_by_provider,
     update_attribute_value,
 };
-
-pub const GRAPHQL_URL: &'static str = "http://gateway:8000/graphql";
 
 pub struct TestContext {
     bearer: Option<String>,
     client: Client,
+    config: Config,
     users_microservice: UsersMicroservice,
     stores_microservice: StoresMicroservice,
 }
@@ -56,6 +55,7 @@ impl TestContext {
                 database_url: config.stores_microservice.database_url.clone(),
                 client: client.clone(),
             },
+            config,
             bearer: None,
             client: client.clone(),
         };
@@ -160,12 +160,21 @@ impl TestContext {
         DeleteAttributeValueInput,
         DeleteAttributeValueMutation
     );
+    graphql_request!(
+        create_base_product,
+        create_base_product,
+        CreateBaseProductInput,
+        CreateBaseProductMutation
+    );
 
     fn graphql_request<T: Serialize, S: DeserializeOwned>(
         &self,
         data: T,
     ) -> Result<S, FailureError> {
-        let mut request = self.client.post(GRAPHQL_URL).header("Currency", "STQ");
+        let mut request = self
+            .client
+            .post(&self.config.gateway_microservice.graphql_url)
+            .header("Currency", "STQ");
         if let Some(ref bearer) = self.bearer {
             request = request.header("Authorization", format!("Bearer {}", bearer));
         }

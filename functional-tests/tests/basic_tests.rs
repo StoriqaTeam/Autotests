@@ -1,11 +1,41 @@
+extern crate failure;
 extern crate functional_tests;
 
+use failure::Error as FailureError;
+
 use functional_tests::query::{
-    create_attribute, create_attribute_value, create_category, create_store, create_user,
-    delete_attribute_value, get_jwt_by_email, get_jwt_by_provider, update_attribute_value,
+    create_attribute, create_attribute_value, create_base_product, create_category, create_store,
+    create_user, delete_attribute_value, get_jwt_by_email, get_jwt_by_provider,
+    update_attribute_value,
 };
 
 use functional_tests::context::TestContext;
+
+#[test]
+pub fn create_base_product() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, store, category) = set_up_store(&mut context).unwrap();
+    context.set_bearer(token);
+    let new_base_product = create_base_product::CreateBaseProductInput {
+        store_id: store.create_store.raw_id,
+        category_id: category.create_category.raw_id,
+        ..create_base_product::default_create_base_product_input()
+    };
+    //when
+    let base_product = context
+        .create_base_product(new_base_product)
+        .unwrap()
+        .create_base_product;
+    //then
+    assert_eq!(
+        base_product.slug,
+        create_base_product::default_create_base_product_input()
+            .slug
+            .unwrap()
+    );
+}
 
 #[test]
 pub fn delete_attribute_value() {
@@ -330,4 +360,45 @@ pub fn create_user_via_google_with_additional_data() {
     let user = context.create_user_jwt(google_jwt);
     //then
     assert!(user.is_ok());
+}
+
+fn set_up_store(
+    context: &mut TestContext,
+) -> Result<
+    (
+        create_user::ResponseData,
+        String,
+        create_store::ResponseData,
+        create_category::ResponseData,
+    ),
+    FailureError,
+> {
+    let user = context.create_user(create_user::default_create_user_input())?;
+    context.verify_email(&user.create_user.email).unwrap();
+    let token: String = context
+        .get_jwt_by_email(get_jwt_by_email::default_create_jwt_email_input())?
+        .get_jwt_by_email
+        .token;
+    context.set_bearer(token.clone());
+    let store = context.create_store(create_store::CreateStoreInput {
+        user_id: user.create_user.raw_id,
+        ..create_store::default_create_store_input()
+    })?;
+    context.as_superadmin();
+    let category_level_1 = context
+        .create_category(create_category::default_create_category_input())?
+        .create_category;
+    let category_level_2 = context
+        .create_category(create_category::CreateCategoryInput {
+            parent_id: category_level_1.raw_id,
+            slug: Some("category-slug-1".to_string()),
+            ..create_category::default_create_category_input()
+        })?.create_category;
+    let category_level_3 = context.create_category(create_category::CreateCategoryInput {
+        parent_id: category_level_2.raw_id,
+        slug: Some("category-slug-2".to_string()),
+        ..create_category::default_create_category_input()
+    })?;
+    context.clear_bearer();
+    Ok((user, token, store, category_level_3))
 }

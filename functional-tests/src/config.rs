@@ -4,6 +4,7 @@ use config_crate::{Config as RawConfig, ConfigError, Environment, File};
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Config {
+    pub gateway_microservice: Gateway,
     pub users_microservice: Microservice,
     pub stores_microservice: Microservice,
     pub saga_microservice: Microservice,
@@ -18,6 +19,11 @@ pub struct Config {
 pub struct Microservice {
     pub database_url: String,
     pub url: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Gateway {
+    pub graphql_url: String,
 }
 
 impl Config {
