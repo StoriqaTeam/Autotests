@@ -1,0 +1,5 @@
+mutation deleteCategory($input: DeleteCategoryInput!) {
+ deleteCategory(input: $input) {
+    mock
+ }
+}

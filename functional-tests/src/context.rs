@@ -138,6 +138,18 @@ impl TestContext {
         }
     }
 
+    pub fn get_categories(&self) -> Result<get_categories::ResponseData, FailureError> {
+        let request_body =
+            get_categories::GetCategoriesQuery::build_query(get_categories::Variables {});
+        let response_body: Response<get_categories::ResponseData> =
+            self.graphql_request(request_body)?;
+        match (response_body.data, response_body.errors) {
+            (Some(data), None) => Ok(data),
+            (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
+            _ => unreachable!(),
+        }
+    }
+
     pub fn microservice_healthcheck(&self) -> Result<(), FailureError> {
         self.users_microservice.healthcheck()?;
         self.stores_microservice.healthcheck()?;
@@ -163,6 +175,14 @@ impl TestContext {
         UpdateCategoryInput,
         UpdateCategoryMutation
     );
+
+    graphql_request!(
+        delete_category,
+        delete_category,
+        DeleteCategoryInput,
+        DeleteCategoryMutation
+    );
+
     graphql_request!(
         create_user,
         create_user,

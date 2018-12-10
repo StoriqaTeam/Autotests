@@ -8,6 +8,34 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn delete_category() {
+    //setup
+    let mut context = TestContext::new();
+
+    context.as_superadmin();
+    //given
+    let category = context
+        .create_category(create_category::default_create_category_input())
+        .unwrap()
+        .create_category;
+    //when
+    let _ = context
+        .delete_category(delete_category::DeleteCategoryInput {
+            cat_id: category.raw_id,
+            ..delete_category::default_delete_category_input()
+        }).unwrap()
+        .delete_category;
+    //then
+    let existing_categories = context
+        .get_categories()
+        .unwrap()
+        .categories
+        .unwrap()
+        .children;
+    assert!(existing_categories.is_empty());
+}
+
+#[test]
 pub fn update_category() {
     //setup
     let mut context = TestContext::new();
@@ -241,6 +269,13 @@ pub fn create_category() {
         Some(category.slug),
         create_category::default_create_category_input().slug
     );
+    let existing_categories = context
+        .get_categories()
+        .unwrap()
+        .categories
+        .unwrap()
+        .children;
+    assert_eq!(existing_categories.len(), 1);
 }
 
 #[test]
