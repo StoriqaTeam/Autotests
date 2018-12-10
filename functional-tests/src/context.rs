@@ -249,6 +249,12 @@ impl TestContext {
         CreateAttributeMutation
     );
     graphql_request!(
+        update_attribute,
+        update_attribute,
+        UpdateAttributeInput,
+        UpdateAttributeMutation
+    );
+    graphql_request!(
         create_attribute_value,
         create_attribute_value,
         CreateAttributeValueInput,

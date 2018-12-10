@@ -8,6 +8,28 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn update_attribute() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let attribute = context
+        .create_attribute(create_attribute::default_create_attribute_input())
+        .unwrap()
+        .create_attribute;
+    //when
+    let updated_attribute = context
+        .update_attribute(update_attribute::UpdateAttributeInput {
+            id: attribute.id,
+            ..update_attribute::default_update_attribute_input()
+        })
+        .unwrap()
+        .update_attribute;
+    //then
+    assert_eq!(updated_attribute.name[0].text, "Update category");
+}
+
+#[test]
 pub fn delete_attribute_from_category() {
     //setup
     let mut context = TestContext::new();

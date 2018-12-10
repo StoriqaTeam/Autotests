@@ -14,5 +14,6 @@ pub mod get_attributes;
 pub mod get_categories;
 pub mod get_jwt_by_email;
 pub mod get_jwt_by_provider;
+pub mod update_attribute;
 pub mod update_attribute_value;
 pub mod update_category;

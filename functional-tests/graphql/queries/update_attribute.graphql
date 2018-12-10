@@ -1,0 +1,23 @@
+mutation updateAttribute($input: UpdateAttributeInput!) {
+ updateAttribute(input: $input) {
+    id,
+    rawId,
+    name {
+        lang,
+        text
+    },
+    valueType,
+    metaField {
+        uiElement
+    },
+    values {
+        rawId,
+        attrRawId,
+        code,
+        translations {
+            lang,
+            text
+        }
+    }
+ }
+}
