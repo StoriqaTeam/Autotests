@@ -142,7 +142,8 @@ impl UsersMicroservice {
         let _ = diesel::sql_query(format!(
             "UPDATE users SET email_verified=true WHERE email='{}';",
             email
-        )).execute(&conn)?;
+        ))
+        .execute(&conn)?;
 
         Ok(())
     }

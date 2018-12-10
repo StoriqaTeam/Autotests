@@ -1,7 +1,7 @@
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "graphql/schema.json",
-    query_path = "graphql/queries/create_user.graphql",
+    query_path = "graphql/queries/create_user.graphql"
 )]
 pub struct CreateUserMutation;
 

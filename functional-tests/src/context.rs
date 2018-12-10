@@ -116,7 +116,8 @@ impl TestContext {
                 client_mutation_id: "".to_string(),
                 email: "admin@storiqa.com".to_string(),
                 password: "bqF5BkdsCS".to_string(),
-            }).unwrap()
+            })
+            .unwrap()
             .get_jwt_by_email
             .token;
         self.bearer = Some(token);
@@ -196,6 +197,20 @@ impl TestContext {
         CreateUserInput,
         CreateUserMutation
     );
+
+    pub fn delete_user(&self, user_id: i64) -> Result<delete_user::ResponseData, FailureError> {
+        let request_body =
+            delete_user::DeleteUserMutation::build_query(delete_user::Variables { user_id });
+        let response_body: Response<delete_user::ResponseData> =
+            self.graphql_request(request_body)?;
+
+        match (response_body.data, response_body.errors) {
+            (Some(data), None) => Ok(data),
+            (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
+            _ => unreachable!(),
+        }
+    }
+
     graphql_request!(
         create_user_jwt,
         get_jwt_by_provider,
@@ -244,6 +259,19 @@ impl TestContext {
         CreateBaseProductInput,
         CreateBaseProductMutation
     );
+
+    pub fn delete_store(&self, store_id: i64) -> Result<delete_store::ResponseData, FailureError> {
+        let request_body =
+            delete_store::DeleteStoreMutation::build_query(delete_store::Variables { store_id });
+        let response_body: Response<delete_store::ResponseData> =
+            self.graphql_request(request_body)?;
+
+        match (response_body.data, response_body.errors) {
+            (Some(data), None) => Ok(data),
+            (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
+            _ => unreachable!(),
+        }
+    }
 
     fn graphql_request<T: Serialize, S: DeserializeOwned>(
         &self,
