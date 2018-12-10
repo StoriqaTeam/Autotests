@@ -7,11 +7,7 @@ use serde::Serialize;
 
 use config::Config;
 use microservice::*;
-use query::{
-    create_attribute, create_attribute_value, create_base_product, create_category, create_store,
-    create_user, delete_attribute_value, get_attributes, get_jwt_by_email, get_jwt_by_provider,
-    update_attribute_value,
-};
+use query::*;
 
 pub struct TestContext {
     bearer: Option<String>,
@@ -159,6 +155,13 @@ impl TestContext {
         create_category,
         CreateCategoryInput,
         CreateCategoryMutation
+    );
+
+    graphql_request!(
+        update_category,
+        update_category,
+        UpdateCategoryInput,
+        UpdateCategoryMutation
     );
     graphql_request!(
         create_user,

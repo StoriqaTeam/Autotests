@@ -3,13 +3,40 @@ extern crate functional_tests;
 
 use failure::Error as FailureError;
 
-use functional_tests::query::{
-    create_attribute, create_attribute_value, create_base_product, create_category, create_store,
-    create_user, delete_attribute_value, get_jwt_by_email, get_jwt_by_provider,
-    update_attribute_value,
-};
+use functional_tests::query::*;
 
 use functional_tests::context::TestContext;
+
+#[test]
+pub fn update_category() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let category = context
+        .create_category(create_category::default_create_category_input())
+        .unwrap()
+        .create_category;
+    //when
+    let updated_category = context
+        .update_category(update_category::UpdateCategoryInput {
+            id: category.id,
+            ..update_category::default_update_category_input()
+        }).unwrap()
+        .update_category;
+    //then
+    let expected_values = update_category::default_update_category_input();
+    assert_eq!(updated_category.slug, expected_values.slug.unwrap());
+    assert_eq!(
+        updated_category.meta_field.unwrap(),
+        expected_values.meta_field.unwrap()
+    );
+    assert_eq!(
+        updated_category.parent_id.unwrap(),
+        expected_values.parent_id.unwrap()
+    );
+    assert_eq!(updated_category.level, expected_values.level.unwrap());
+}
 
 #[test]
 pub fn microservice_healthcheck() {
