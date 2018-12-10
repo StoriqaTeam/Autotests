@@ -121,7 +121,8 @@ impl TestContext {
                 client_mutation_id: "".to_string(),
                 email: "admin@storiqa.com".to_string(),
                 password: "bqF5BkdsCS".to_string(),
-            }).unwrap()
+            })
+            .unwrap()
             .get_jwt_by_email
             .token;
         self.bearer = Some(token);
