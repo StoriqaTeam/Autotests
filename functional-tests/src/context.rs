@@ -255,6 +255,12 @@ impl TestContext {
         UpdateAttributeMutation
     );
     graphql_request!(
+        delete_attribute,
+        delete_attribute,
+        DeleteAttributeInput,
+        DeleteAttributeMutation
+    );
+    graphql_request!(
         create_attribute_value,
         create_attribute_value,
         CreateAttributeValueInput,

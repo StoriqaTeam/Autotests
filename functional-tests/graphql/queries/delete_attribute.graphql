@@ -1,0 +1,5 @@
+mutation deleteAttribute($input: DeleteAttributeInput!) {
+ deleteAttribute(input: $input) {
+    mock
+ }
+}

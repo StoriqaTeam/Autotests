@@ -8,6 +8,28 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn delete_attribute() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let attribute = context
+        .create_attribute(create_attribute::default_create_attribute_input())
+        .unwrap()
+        .create_attribute;
+    //when
+    let _ = context
+        .delete_attribute(delete_attribute::DeleteAttributeInput {
+            id: attribute.id,
+            ..delete_attribute::default_delete_attribute_input()
+        })
+        .unwrap();
+    //then
+    let all_attribute = context.get_attributes().unwrap().attributes.unwrap();
+    assert!(all_attribute.is_empty());
+}
+
+#[test]
 pub fn update_attribute() {
     //setup
     let mut context = TestContext::new();
