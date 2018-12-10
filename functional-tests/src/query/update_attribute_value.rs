@@ -1,7 +1,7 @@
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "graphql/schema.json",
-    query_path = "graphql/queries/update_attribute_value.graphql",
+    query_path = "graphql/queries/update_attribute_value.graphql"
 )]
 pub struct UpdateAttributeValueMutation;
 

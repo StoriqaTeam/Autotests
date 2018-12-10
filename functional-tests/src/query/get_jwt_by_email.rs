@@ -1,7 +1,7 @@
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "graphql/schema.json",
-    query_path = "graphql/queries/get_jwt_by_email.graphql",
+    query_path = "graphql/queries/get_jwt_by_email.graphql"
 )]
 pub struct GetJwtByEmailMutation;
 
