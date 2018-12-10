@@ -15,5 +15,12 @@ mutation CreateUser($input: CreateUserInput!) {
     emarsysId
     createdAt
     updatedAt
+    referal
+    utmMarks {
+      key
+      value
+    }
+    country
+    referer
   }
 }

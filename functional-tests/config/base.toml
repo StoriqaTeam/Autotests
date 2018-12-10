@@ -1,5 +1,6 @@
 [gateway_microservice]
 graphql_url="http://gateway:8000/graphql"
+url="http://gateway:8000"
 
 [users_microservice]
 url="http://users:8000"

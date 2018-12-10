@@ -27,7 +27,8 @@ pub fn add_attribute_to_category() {
             cat_id: category.raw_id,
             attr_id: attribute.raw_id,
             ..add_attribute_to_category::default_add_attribute_to_categoryinput()
-        }).unwrap();
+        })
+        .unwrap();
     //then
     let changed_category_attributes = context
         .get_categories()
@@ -41,13 +42,11 @@ pub fn add_attribute_to_category() {
         .unwrap()
         .get_attributes;
     assert_eq!(changed_category_attributes.len(), 1);
-    assert!(
-        changed_category_attributes
-            .iter()
-            .filter(|attr| attr.id == attribute.id)
-            .next()
-            .is_some()
-    );
+    assert!(changed_category_attributes
+        .iter()
+        .filter(|attr| attr.id == attribute.id)
+        .next()
+        .is_some());
 }
 
 #[test]
@@ -65,7 +64,8 @@ pub fn delete_category() {
         .delete_category(delete_category::DeleteCategoryInput {
             cat_id: category.raw_id,
             ..delete_category::default_delete_category_input()
-        }).unwrap()
+        })
+        .unwrap()
         .delete_category;
     //then
     let existing_categories = context
@@ -92,7 +92,8 @@ pub fn update_category() {
         .update_category(update_category::UpdateCategoryInput {
             id: category.id,
             ..update_category::default_update_category_input()
-        }).unwrap()
+        })
+        .unwrap()
         .update_category;
     //then
     let expected_values = update_category::default_update_category_input();
@@ -399,7 +400,7 @@ pub fn create_user_with_additional_data() {
             country: Some("MMR".to_string()),
             referal: Some(referal.create_user.raw_id),
             referer: Some("localhost".to_string()),
-            utm_marks: Some(vec![create_user::UtmMark {
+            utm_marks: Some(vec![create_user::UtmMarkInput {
                 key: "source".to_string(),
                 value: "word_of_mouth".to_string(),
             }]),
@@ -410,6 +411,11 @@ pub fn create_user_with_additional_data() {
     let user = context.create_user(new_user).unwrap().create_user;
     //then
     assert_eq!(user.email, create_user::default_create_user_input().email);
+    assert_eq!(user.referal.unwrap(), referal.create_user.raw_id);
+    assert_eq!(user.country.unwrap(), "MMR".to_string());
+    assert_eq!(user.referer.unwrap(), "localhost".to_string());
+    assert_eq!(&user.utm_marks.as_ref().unwrap()[0].key, "source");
+    assert_eq!(&user.utm_marks.as_ref().unwrap()[0].value, "word_of_mouth");
 }
 
 #[test]
@@ -456,7 +462,7 @@ pub fn create_user_via_facebook_with_additional_data() {
             country: Some("MMR".to_string()),
             referal: Some(referal.create_user.raw_id),
             referer: Some("localhost".to_string()),
-            utm_marks: Some(vec![get_jwt_by_provider::UtmMark {
+            utm_marks: Some(vec![get_jwt_by_provider::UtmMarkInput {
                 key: "source".to_string(),
                 value: "word_of_mouth".to_string(),
             }]),
@@ -487,7 +493,7 @@ pub fn create_user_via_google_with_additional_data() {
             country: Some("MMR".to_string()),
             referal: Some(referal.create_user.raw_id),
             referer: Some("localhost".to_string()),
-            utm_marks: Some(vec![get_jwt_by_provider::UtmMark {
+            utm_marks: Some(vec![get_jwt_by_provider::UtmMarkInput {
                 key: "source".to_string(),
                 value: "word_of_mouth".to_string(),
             }]),

@@ -21,6 +21,7 @@ pub struct TestContext {
     notifications_microservice: NotificationsMicroservice,
     delivery_microservice: DeliveryMicroservice,
     saga_microservice: SagaMicroservice,
+    gateway_microservice: GatewayMicroservice,
 }
 
 macro_rules! graphql_request {
@@ -85,6 +86,10 @@ impl TestContext {
             saga_microservice: SagaMicroservice {
                 url: config.saga_microservice.url.clone(),
                 database_url: config.saga_microservice.database_url.clone(),
+                client: client.clone(),
+            },
+            gateway_microservice: GatewayMicroservice {
+                url: config.gateway_microservice.url.clone(),
                 client: client.clone(),
             },
             config,
@@ -160,6 +165,7 @@ impl TestContext {
         self.notifications_microservice.healthcheck()?;
         self.delivery_microservice.healthcheck()?;
         self.saga_microservice.healthcheck()?;
+        self.gateway_microservice.healthcheck()?;
         Ok(())
     }
 

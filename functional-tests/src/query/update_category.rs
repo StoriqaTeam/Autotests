@@ -1,7 +1,7 @@
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "graphql/schema.json",
-    query_path = "graphql/queries/update_category.graphql",
+    query_path = "graphql/queries/update_category.graphql"
 )]
 pub struct UpdateCategoryMutation;
 
