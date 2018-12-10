@@ -1,24 +1,27 @@
 query GetCategories { categories {
-    id,
-    rawId,
+    id
+    rawId
     name {
-        lang,
+        lang
         text
-    },
-    metaField,
-    parentId,
+    }
+    metaField
+    parentId
     parent {
-        id,
+        id
         rawId
-    },
-    level,
+    }
+    level
     children {
-        id,
-        rawId,
-    },
+        id
+        rawId
+        getAttributes {
+            id
+        }
+    }
     getAttributes {
         id
-    },
+    }
     slug
 }
 }

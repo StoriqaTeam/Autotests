@@ -8,10 +8,52 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn add_attribute_to_category() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    context.as_superadmin();
+    let category = context
+        .create_category(create_category::default_create_category_input())
+        .unwrap()
+        .create_category;
+    let attribute = context
+        .create_attribute(create_attribute::default_create_attribute_input())
+        .unwrap()
+        .create_attribute;
+    //when
+    let _ = context
+        .add_attribute_to_category(add_attribute_to_category::AddAttributeToCategoryInput {
+            cat_id: category.raw_id,
+            attr_id: attribute.raw_id,
+            ..add_attribute_to_category::default_add_attribute_to_categoryinput()
+        }).unwrap();
+    //then
+    let changed_category_attributes = context
+        .get_categories()
+        .unwrap()
+        .categories
+        .unwrap()
+        .children
+        .into_iter()
+        .filter(|cat| cat.id == category.id)
+        .next()
+        .unwrap()
+        .get_attributes;
+    assert_eq!(changed_category_attributes.len(), 1);
+    assert!(
+        changed_category_attributes
+            .iter()
+            .filter(|attr| attr.id == attribute.id)
+            .next()
+            .is_some()
+    );
+}
+
+#[test]
 pub fn delete_category() {
     //setup
     let mut context = TestContext::new();
-
     context.as_superadmin();
     //given
     let category = context

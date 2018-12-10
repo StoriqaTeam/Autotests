@@ -1,0 +1,5 @@
+mutation addAttributeToCategory($input: AddAttributeToCategoryInput!) {
+  addAttributeToCategory(input: $input) {
+    mock
+ }
+}

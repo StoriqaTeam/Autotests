@@ -170,6 +170,13 @@ impl TestContext {
     );
 
     graphql_request!(
+        add_attribute_to_category,
+        add_attribute_to_category,
+        AddAttributeToCategoryInput,
+        AddAttributeToCategoryMutation
+    );
+
+    graphql_request!(
         update_category,
         update_category,
         UpdateCategoryInput,

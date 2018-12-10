@@ -1,3 +1,4 @@
+pub mod add_attribute_to_category;
 pub mod create_attribute;
 pub mod create_attribute_value;
 pub mod create_base_product;
