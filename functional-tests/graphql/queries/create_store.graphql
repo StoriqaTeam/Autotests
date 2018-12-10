@@ -1,10 +1,10 @@
-mutation createStore($input:CreateStoreInput!) {
- createStore(input: $input) {
-    id,
-    rawId,
-    userId,
+mutation createStore($input: CreateStoreInput!) {
+  createStore(input: $input) {
+    id
+    rawId
+    userId
     storeManager {
-       id
+      id
       rawId
       email
       isActive
@@ -19,33 +19,33 @@ mutation createStore($input:CreateStoreInput!) {
       emarsysId
       createdAt
       updatedAt
-    },
+    }
     name {
-       lang,
-       text
-    },
-    isActive,
+      lang
+      text
+    }
+    isActive
     shortDescription {
-       lang,
-       text
-    },
+      lang
+      text
+    }
     longDescription {
-       lang,
-       text
-    },
-    slug,
-    createdAt,
-    updatedAt,
-    cover,
-    logo,
-    phone,
-    email,
-    facebookUrl,
-    twitterUrl,
-    instagramUrl,
-    defaultLanguage,
-    slogan,
-    rating,
+      lang
+      text
+    }
+    slug
+    createdAt
+    updatedAt
+    cover
+    logo
+    phone
+    email
+    facebookUrl
+    twitterUrl
+    instagramUrl
+    defaultLanguage
+    slogan
+    rating
     status
- }
+  }
 }

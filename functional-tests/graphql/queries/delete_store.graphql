@@ -1,0 +1,5 @@
+mutation DeleteStore($store_id: Int!) {
+  deleteStore(id: $store_id) {
+    mock
+  }
+}
