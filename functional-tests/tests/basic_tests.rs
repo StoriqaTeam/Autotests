@@ -8,6 +8,115 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn add_attribute_to_category() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    context.as_superadmin();
+    let category = context
+        .create_category(create_category::default_create_category_input())
+        .unwrap()
+        .create_category;
+    let attribute = context
+        .create_attribute(create_attribute::default_create_attribute_input())
+        .unwrap()
+        .create_attribute;
+    //when
+    let _ = context
+        .add_attribute_to_category(add_attribute_to_category::AddAttributeToCategoryInput {
+            cat_id: category.raw_id,
+            attr_id: attribute.raw_id,
+            ..add_attribute_to_category::default_add_attribute_to_categoryinput()
+        }).unwrap();
+    //then
+    let changed_category_attributes = context
+        .get_categories()
+        .unwrap()
+        .categories
+        .unwrap()
+        .children
+        .into_iter()
+        .filter(|cat| cat.id == category.id)
+        .next()
+        .unwrap()
+        .get_attributes;
+    assert_eq!(changed_category_attributes.len(), 1);
+    assert!(
+        changed_category_attributes
+            .iter()
+            .filter(|attr| attr.id == attribute.id)
+            .next()
+            .is_some()
+    );
+}
+
+#[test]
+pub fn delete_category() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let category = context
+        .create_category(create_category::default_create_category_input())
+        .unwrap()
+        .create_category;
+    //when
+    let _ = context
+        .delete_category(delete_category::DeleteCategoryInput {
+            cat_id: category.raw_id,
+            ..delete_category::default_delete_category_input()
+        }).unwrap()
+        .delete_category;
+    //then
+    let existing_categories = context
+        .get_categories()
+        .unwrap()
+        .categories
+        .unwrap()
+        .children;
+    assert!(existing_categories.is_empty());
+}
+
+#[test]
+pub fn update_category() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let category = context
+        .create_category(create_category::default_create_category_input())
+        .unwrap()
+        .create_category;
+    //when
+    let updated_category = context
+        .update_category(update_category::UpdateCategoryInput {
+            id: category.id,
+            ..update_category::default_update_category_input()
+        }).unwrap()
+        .update_category;
+    //then
+    let expected_values = update_category::default_update_category_input();
+    assert_eq!(updated_category.slug, expected_values.slug.unwrap());
+    assert_eq!(
+        updated_category.meta_field.unwrap(),
+        expected_values.meta_field.unwrap()
+    );
+    assert_eq!(
+        updated_category.parent_id.unwrap(),
+        expected_values.parent_id.unwrap()
+    );
+    assert_eq!(updated_category.level, expected_values.level.unwrap());
+}
+
+#[test]
+pub fn microservice_healthcheck() {
+    //given
+    let context = TestContext::new();
+    //then
+    let _ = context.microservice_healthcheck().unwrap();
+}
+
+#[test]
 pub fn create_base_product() {
     //setup
     let mut context = TestContext::new();
@@ -210,6 +319,13 @@ pub fn create_category() {
         Some(category.slug),
         create_category::default_create_category_input().slug
     );
+    let existing_categories = context
+        .get_categories()
+        .unwrap()
+        .categories
+        .unwrap()
+        .children;
+    assert_eq!(existing_categories.len(), 1);
 }
 
 #[test]

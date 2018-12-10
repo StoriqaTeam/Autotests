@@ -1,5 +1,5 @@
-mutation createCategory($input: CreateCategoryInput!) {
- createCategory(input: $input) {
+mutation updateCategory($input: UpdateCategoryInput!) {
+ updateCategory(input: $input) {
     id,
     rawId,
     name {

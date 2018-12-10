@@ -6,7 +6,7 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 
 use config::Config;
-use microservice::{StoresMicroservice, UsersMicroservice};
+use microservice::*;
 use query::*;
 
 pub struct TestContext {
@@ -15,6 +15,12 @@ pub struct TestContext {
     config: Config,
     users_microservice: UsersMicroservice,
     stores_microservice: StoresMicroservice,
+    orders_microservice: OrdersMicroservice,
+    warehouses_microservice: WarehousesMicroservice,
+    billing_microservice: BillingMicroservice,
+    notifications_microservice: NotificationsMicroservice,
+    delivery_microservice: DeliveryMicroservice,
+    saga_microservice: SagaMicroservice,
 }
 
 macro_rules! graphql_request {
@@ -49,6 +55,36 @@ impl TestContext {
             stores_microservice: StoresMicroservice {
                 url: config.stores_microservice.url.clone(),
                 database_url: config.stores_microservice.database_url.clone(),
+                client: client.clone(),
+            },
+            orders_microservice: OrdersMicroservice {
+                url: config.orders_microservice.url.clone(),
+                database_url: config.orders_microservice.database_url.clone(),
+                client: client.clone(),
+            },
+            warehouses_microservice: WarehousesMicroservice {
+                url: config.warehouses_microservice.url.clone(),
+                database_url: config.warehouses_microservice.database_url.clone(),
+                client: client.clone(),
+            },
+            billing_microservice: BillingMicroservice {
+                url: config.billing_microservice.url.clone(),
+                database_url: config.billing_microservice.database_url.clone(),
+                client: client.clone(),
+            },
+            notifications_microservice: NotificationsMicroservice {
+                url: config.notifications_microservice.url.clone(),
+                database_url: config.notifications_microservice.database_url.clone(),
+                client: client.clone(),
+            },
+            delivery_microservice: DeliveryMicroservice {
+                url: config.delivery_microservice.url.clone(),
+                database_url: config.delivery_microservice.database_url.clone(),
+                client: client.clone(),
+            },
+            saga_microservice: SagaMicroservice {
+                url: config.saga_microservice.url.clone(),
+                database_url: config.saga_microservice.database_url.clone(),
                 client: client.clone(),
             },
             config,
@@ -103,12 +139,58 @@ impl TestContext {
         }
     }
 
+    pub fn get_categories(&self) -> Result<get_categories::ResponseData, FailureError> {
+        let request_body =
+            get_categories::GetCategoriesQuery::build_query(get_categories::Variables {});
+        let response_body: Response<get_categories::ResponseData> =
+            self.graphql_request(request_body)?;
+        match (response_body.data, response_body.errors) {
+            (Some(data), None) => Ok(data),
+            (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
+            _ => unreachable!(),
+        }
+    }
+
+    pub fn microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.users_microservice.healthcheck()?;
+        self.stores_microservice.healthcheck()?;
+        self.orders_microservice.healthcheck()?;
+        self.warehouses_microservice.healthcheck()?;
+        self.billing_microservice.healthcheck()?;
+        self.notifications_microservice.healthcheck()?;
+        self.delivery_microservice.healthcheck()?;
+        self.saga_microservice.healthcheck()?;
+        Ok(())
+    }
+
     graphql_request!(
         create_category,
         create_category,
         CreateCategoryInput,
         CreateCategoryMutation
     );
+
+    graphql_request!(
+        add_attribute_to_category,
+        add_attribute_to_category,
+        AddAttributeToCategoryInput,
+        AddAttributeToCategoryMutation
+    );
+
+    graphql_request!(
+        update_category,
+        update_category,
+        UpdateCategoryInput,
+        UpdateCategoryMutation
+    );
+
+    graphql_request!(
+        delete_category,
+        delete_category,
+        DeleteCategoryInput,
+        DeleteCategoryMutation
+    );
+
     graphql_request!(
         create_user,
         create_user,

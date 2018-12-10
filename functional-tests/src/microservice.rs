@@ -16,6 +16,94 @@ pub struct StoresMicroservice {
     pub client: Client,
 }
 
+pub struct OrdersMicroservice {
+    pub database_url: String,
+    pub url: String,
+    pub client: Client,
+}
+
+pub struct BillingMicroservice {
+    pub database_url: String,
+    pub url: String,
+    pub client: Client,
+}
+
+pub struct DeliveryMicroservice {
+    pub database_url: String,
+    pub url: String,
+    pub client: Client,
+}
+
+pub struct WarehousesMicroservice {
+    pub database_url: String,
+    pub url: String,
+    pub client: Client,
+}
+
+pub struct SagaMicroservice {
+    pub database_url: String,
+    pub url: String,
+    pub client: Client,
+}
+
+pub struct NotificationsMicroservice {
+    pub database_url: String,
+    pub url: String,
+    pub client: Client,
+}
+
+impl OrdersMicroservice {
+    pub fn healthcheck(&self) -> Result<(), FailureError> {
+        healthcheck(&self.client, &self.url).map_err(|e| {
+            e.context("Healthcheck in orders microservice failed")
+                .into()
+        })
+    }
+}
+
+impl NotificationsMicroservice {
+    pub fn healthcheck(&self) -> Result<(), FailureError> {
+        healthcheck(&self.client, &self.url).map_err(|e| {
+            e.context("Healthcheck in notifications microservice failed")
+                .into()
+        })
+    }
+}
+
+impl BillingMicroservice {
+    pub fn healthcheck(&self) -> Result<(), FailureError> {
+        healthcheck(&self.client, &self.url).map_err(|e| {
+            e.context("Healthcheck in billing microservice failed")
+                .into()
+        })
+    }
+}
+
+impl DeliveryMicroservice {
+    pub fn healthcheck(&self) -> Result<(), FailureError> {
+        healthcheck(&self.client, &self.url).map_err(|e| {
+            e.context("Healthcheck in delivery microservice failed")
+                .into()
+        })
+    }
+}
+
+impl WarehousesMicroservice {
+    pub fn healthcheck(&self) -> Result<(), FailureError> {
+        healthcheck(&self.client, &self.url).map_err(|e| {
+            e.context("Healthcheck in warehouses microservice failed")
+                .into()
+        })
+    }
+}
+
+impl SagaMicroservice {
+    pub fn healthcheck(&self) -> Result<(), FailureError> {
+        healthcheck(&self.client, &self.url)
+            .map_err(|e| e.context("Healthcheck in saga microservice failed").into())
+    }
+}
+
 impl StoresMicroservice {
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
         let conn = PgConnection::establish(self.database_url.as_ref())?;
@@ -24,6 +112,13 @@ impl StoresMicroservice {
         let _ = diesel::sql_query("INSERT INTO user_roles (user_id, name) VALUES (1, 'superuser')")
             .execute(&conn)?;
         Ok(())
+    }
+
+    pub fn healthcheck(&self) -> Result<(), FailureError> {
+        healthcheck(&self.client, &self.url).map_err(|e| {
+            e.context("Healthcheck in stores microservice failed")
+                .into()
+        })
     }
 }
 
@@ -52,4 +147,17 @@ impl UsersMicroservice {
 
         Ok(())
     }
+
+    pub fn healthcheck(&self) -> Result<(), FailureError> {
+        healthcheck(&self.client, &self.url)
+            .map_err(|e| e.context("Healthcheck in users microservice failed").into())
+    }
+}
+
+fn healthcheck(client: &Client, url: &str) -> Result<(), FailureError> {
+    let response = client.get(&format!("{}/healthcheck", url)).send()?;
+    if !response.status().is_success() {
+        return Err(failure::format_err!("Healthcheck failed"));
+    }
+    Ok(())
 }
