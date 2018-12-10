@@ -177,6 +177,13 @@ impl TestContext {
     );
 
     graphql_request!(
+        delete_attribute_from_category,
+        delete_attribute_from_category,
+        DeleteAttributeFromCategory,
+        DeleteAttributeFromCategoryMutation
+    );
+
+    graphql_request!(
         add_attribute_to_category,
         add_attribute_to_category,
         AddAttributeToCategoryInput,
