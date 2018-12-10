@@ -52,6 +52,20 @@ pub struct NotificationsMicroservice {
     pub client: Client,
 }
 
+pub struct GatewayMicroservice {
+    pub url: String,
+    pub client: Client,
+}
+
+impl GatewayMicroservice {
+    pub fn healthcheck(&self) -> Result<(), FailureError> {
+        healthcheck(&self.client, &self.url).map_err(|e| {
+            e.context("Healthcheck in gateway microservice failed")
+                .into()
+        })
+    }
+}
+
 impl OrdersMicroservice {
     pub fn healthcheck(&self) -> Result<(), FailureError> {
         healthcheck(&self.client, &self.url).map_err(|e| {
@@ -142,8 +156,7 @@ impl UsersMicroservice {
         let _ = diesel::sql_query(format!(
             "UPDATE users SET email_verified=true WHERE email='{}';",
             email
-        ))
-        .execute(&conn)?;
+        )).execute(&conn)?;
 
         Ok(())
     }

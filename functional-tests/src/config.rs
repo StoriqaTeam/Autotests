@@ -24,6 +24,7 @@ pub struct Microservice {
 #[derive(Debug, Deserialize, Clone)]
 pub struct Gateway {
     pub graphql_url: String,
+    pub url: String,
 }
 
 impl Config {

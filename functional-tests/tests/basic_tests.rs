@@ -156,16 +156,14 @@ pub fn delete_attribute_value() {
         .create_attribute_value(create_attribute_value::CreateAttributeValueInput {
             raw_attribute_id: attribute.raw_id,
             ..create_attribute_value::default_create_attribute_value_input()
-        })
-        .unwrap()
+        }).unwrap()
         .create_attribute_value;
     //when
     let _ = context
         .delete_attribute_value(delete_attribute_value::DeleteAttributeValueInput {
             raw_id: new_value.raw_id,
             ..delete_attribute_value::default_delete_attribute_value_input()
-        })
-        .unwrap()
+        }).unwrap()
         .delete_attribute_value;
     //then
     let changed_attribute = context
@@ -194,8 +192,7 @@ pub fn update_attribute_value() {
         .create_attribute_value(create_attribute_value::CreateAttributeValueInput {
             raw_attribute_id: attribute.raw_id,
             ..create_attribute_value::default_create_attribute_value_input()
-        })
-        .unwrap()
+        }).unwrap()
         .create_attribute_value;
     //when
     let updated = context
@@ -203,8 +200,7 @@ pub fn update_attribute_value() {
             raw_id: new_value.raw_id,
             raw_attribute_id: attribute.raw_id,
             ..update_attribute_value::default_create_attribute_value_input()
-        })
-        .unwrap()
+        }).unwrap()
         .update_attribute_value;
     //then
     assert_eq!(
@@ -228,8 +224,7 @@ pub fn add_values_to_attribute() {
         .create_attribute_value(create_attribute_value::CreateAttributeValueInput {
             raw_attribute_id: attribute.raw_id,
             ..create_attribute_value::default_create_attribute_value_input()
-        })
-        .unwrap()
+        }).unwrap()
         .create_attribute_value;
     //then
     assert_eq!(new_value.attr_raw_id, attribute.raw_id);
@@ -254,8 +249,7 @@ pub fn create_attribute_with_values() {
                 },
             ]),
             ..create_attribute::default_create_attribute_input()
-        })
-        .unwrap()
+        }).unwrap()
         .create_attribute;
 }
 
@@ -286,8 +280,7 @@ pub fn create_subcategories() {
             parent_id: category_level_1.raw_id,
             slug: Some("category-slug-1".to_string()),
             ..create_category::default_create_category_input()
-        })
-        .unwrap()
+        }).unwrap()
         .create_category;
     //when
     let category_level_3 = context
@@ -295,8 +288,7 @@ pub fn create_subcategories() {
             parent_id: category_level_2.raw_id,
             slug: Some("category-slug-2".to_string()),
             ..create_category::default_create_category_input()
-        })
-        .unwrap()
+        }).unwrap()
         .create_category;
     //then
     assert_eq!(category_level_3.level, 3);
@@ -349,8 +341,7 @@ pub fn create_store() {
         .create_store(create_store::CreateStoreInput {
             user_id: user.raw_id,
             ..create_store::default_create_store_input()
-        })
-        .unwrap()
+        }).unwrap()
         .create_store;
     //then
     assert_eq!(store.user_id, user.raw_id);
@@ -391,15 +382,14 @@ pub fn create_user_with_additional_data() {
         .create_user(create_user::CreateUserInput {
             email: "referral@email.net".to_string(),
             ..create_user::default_create_user_input()
-        })
-        .unwrap();
+        }).unwrap();
 
     let new_user = create_user::CreateUserInput {
         additional_data: Some(create_user::NewUserAdditionalDataInput {
             country: Some("MMR".to_string()),
             referal: Some(referal.create_user.raw_id),
             referer: Some("localhost".to_string()),
-            utm_marks: Some(vec![create_user::UtmMark {
+            utm_marks: Some(vec![create_user::UtmMarkInput {
                 key: "source".to_string(),
                 value: "word_of_mouth".to_string(),
             }]),
@@ -410,6 +400,11 @@ pub fn create_user_with_additional_data() {
     let user = context.create_user(new_user).unwrap().create_user;
     //then
     assert_eq!(user.email, create_user::default_create_user_input().email);
+    assert_eq!(user.referal.unwrap(), referal.create_user.raw_id);
+    assert_eq!(user.country.unwrap(), "MMR".to_string());
+    assert_eq!(user.referer.unwrap(), "localhost".to_string());
+    assert_eq!(&user.utm_marks.as_ref().unwrap()[0].key, "source");
+    assert_eq!(&user.utm_marks.as_ref().unwrap()[0].value, "word_of_mouth");
 }
 
 #[test]
@@ -448,15 +443,14 @@ pub fn create_user_via_facebook_with_additional_data() {
         .create_user(create_user::CreateUserInput {
             email: "referral@email.net".to_string(),
             ..create_user::default_create_user_input()
-        })
-        .unwrap();
+        }).unwrap();
 
     let facebook_jwt = get_jwt_by_provider::CreateJWTProviderInput {
         additional_data: Some(get_jwt_by_provider::NewUserAdditionalDataInput {
             country: Some("MMR".to_string()),
             referal: Some(referal.create_user.raw_id),
             referer: Some("localhost".to_string()),
-            utm_marks: Some(vec![get_jwt_by_provider::UtmMark {
+            utm_marks: Some(vec![get_jwt_by_provider::UtmMarkInput {
                 key: "source".to_string(),
                 value: "word_of_mouth".to_string(),
             }]),
@@ -479,15 +473,14 @@ pub fn create_user_via_google_with_additional_data() {
         .create_user(create_user::CreateUserInput {
             email: "referral@email.net".to_string(),
             ..create_user::default_create_user_input()
-        })
-        .unwrap();
+        }).unwrap();
 
     let google_jwt = get_jwt_by_provider::CreateJWTProviderInput {
         additional_data: Some(get_jwt_by_provider::NewUserAdditionalDataInput {
             country: Some("MMR".to_string()),
             referal: Some(referal.create_user.raw_id),
             referer: Some("localhost".to_string()),
-            utm_marks: Some(vec![get_jwt_by_provider::UtmMark {
+            utm_marks: Some(vec![get_jwt_by_provider::UtmMarkInput {
                 key: "source".to_string(),
                 value: "word_of_mouth".to_string(),
             }]),
@@ -545,8 +538,7 @@ fn set_up_store(
             parent_id: category_level_1.raw_id,
             slug: Some("category-slug-1".to_string()),
             ..create_category::default_create_category_input()
-        })?
-        .create_category;
+        })?.create_category;
     let category_level_3 = context.create_category(create_category::CreateCategoryInput {
         parent_id: category_level_2.raw_id,
         slug: Some("category-slug-2".to_string()),
