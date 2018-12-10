@@ -12,6 +12,14 @@ use functional_tests::query::{
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn microservice_healthcheck() {
+    //given
+    let context = TestContext::new();
+    //then
+    let _ = context.microservice_healthcheck().unwrap();
+}
+
+#[test]
 pub fn create_base_product() {
     //setup
     let mut context = TestContext::new();

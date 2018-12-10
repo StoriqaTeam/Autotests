@@ -6,7 +6,7 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 
 use config::Config;
-use microservice::{StoresMicroservice, UsersMicroservice};
+use microservice::*;
 use query::{
     create_attribute, create_attribute_value, create_base_product, create_category, create_store,
     create_user, delete_attribute_value, get_attributes, get_jwt_by_email, get_jwt_by_provider,
@@ -19,6 +19,12 @@ pub struct TestContext {
     config: Config,
     users_microservice: UsersMicroservice,
     stores_microservice: StoresMicroservice,
+    orders_microservice: OrdersMicroservice,
+    warehouses_microservice: WarehousesMicroservice,
+    billing_microservice: BillingMicroservice,
+    notifications_microservice: NotificationsMicroservice,
+    delivery_microservice: DeliveryMicroservice,
+    saga_microservice: SagaMicroservice,
 }
 
 macro_rules! graphql_request {
@@ -53,6 +59,36 @@ impl TestContext {
             stores_microservice: StoresMicroservice {
                 url: config.stores_microservice.url.clone(),
                 database_url: config.stores_microservice.database_url.clone(),
+                client: client.clone(),
+            },
+            orders_microservice: OrdersMicroservice {
+                url: config.orders_microservice.url.clone(),
+                database_url: config.orders_microservice.database_url.clone(),
+                client: client.clone(),
+            },
+            warehouses_microservice: WarehousesMicroservice {
+                url: config.warehouses_microservice.url.clone(),
+                database_url: config.warehouses_microservice.database_url.clone(),
+                client: client.clone(),
+            },
+            billing_microservice: BillingMicroservice {
+                url: config.billing_microservice.url.clone(),
+                database_url: config.billing_microservice.database_url.clone(),
+                client: client.clone(),
+            },
+            notifications_microservice: NotificationsMicroservice {
+                url: config.notifications_microservice.url.clone(),
+                database_url: config.notifications_microservice.database_url.clone(),
+                client: client.clone(),
+            },
+            delivery_microservice: DeliveryMicroservice {
+                url: config.delivery_microservice.url.clone(),
+                database_url: config.delivery_microservice.database_url.clone(),
+                client: client.clone(),
+            },
+            saga_microservice: SagaMicroservice {
+                url: config.saga_microservice.url.clone(),
+                database_url: config.saga_microservice.database_url.clone(),
                 client: client.clone(),
             },
             config,
@@ -104,6 +140,18 @@ impl TestContext {
             (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
             _ => unreachable!(),
         }
+    }
+
+    pub fn microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.users_microservice.healthcheck()?;
+        self.stores_microservice.healthcheck()?;
+        self.orders_microservice.healthcheck()?;
+        self.warehouses_microservice.healthcheck()?;
+        self.billing_microservice.healthcheck()?;
+        self.notifications_microservice.healthcheck()?;
+        self.delivery_microservice.healthcheck()?;
+        self.saga_microservice.healthcheck()?;
+        Ok(())
     }
 
     graphql_request!(
