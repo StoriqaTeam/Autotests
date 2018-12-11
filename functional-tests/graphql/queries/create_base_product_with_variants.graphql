@@ -1,5 +1,5 @@
-mutation createBaseProduct($input: CreateBaseProductInput!) {
- createBaseProduct(input: $input) {
+mutation createBaseProductWithVariants($input: NewBaseProductWithVariantsInput!) {
+ createBaseProductWithVariants(input: $input) {
     id
     rawId
     name {
@@ -52,7 +52,7 @@ mutation createBaseProduct($input: CreateBaseProductInput!) {
         rawId
         attributeId
         baseProductId
-    },
+    }
     shipping{
         local {
             companyPackageId
@@ -61,7 +61,7 @@ mutation createBaseProduct($input: CreateBaseProductInput!) {
             companyPackageId
         }
         pickup {
-            price,
+            price
             pickup
         }
     }

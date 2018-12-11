@@ -1880,7 +1880,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "ResetActionOutput",
+                  "name": "ResetApplyActionOutput",
                   "ofType": null
                 }
               }
@@ -5120,6 +5120,38 @@
                   }
                 }
               }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Refresh JWT Token.",
+              "isDeprecated": false,
+              "name": "refreshJWT",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Revoke JWT Tokens.",
+              "isDeprecated": false,
+              "name": "revokeJWT",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
             }
           ],
           "inputFields": null,
@@ -6607,7 +6639,7 @@
             },
             {
               "defaultValue": null,
-              "description": "Alpha 3 country code of a user.",
+              "description": "Alpha 2 country code of a user.",
               "name": "country",
               "type": {
                 "kind": "SCALAR",
@@ -14328,6 +14360,22 @@
             {
               "args": [],
               "deprecationReason": null,
+              "description": "Base product raw id",
+              "isDeprecated": false,
+              "name": "baseProductId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
               "description": "If the product was disabled (deleted), isActive is false",
               "isDeprecated": false,
               "name": "isActive",
@@ -17394,12 +17442,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Alpha 3 country code of a user.",
+              "description": "User country.",
               "isDeprecated": false,
               "name": "country",
               "type": {
-                "kind": "SCALAR",
-                "name": "String",
+                "kind": "OBJECT",
+                "name": "Country",
                 "ofType": null
               }
             },

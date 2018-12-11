@@ -1,25 +1,25 @@
 mutation updateCategory($input: UpdateCategoryInput!) {
  updateCategory(input: $input) {
-    id,
-    rawId,
+    id
+    rawId
     name {
-        lang,
+        lang
         text
-    },
-    metaField,
-    parentId,
+    }
+    metaField
+    parentId
     parent {
-        id,
+        id
         rawId
-    },
-    level,
+    }
+    level
     children {
-        id,
-        rawId,
-    },
+        id
+        rawId
+    }
     getAttributes {
         id
-    },
+    }
     slug
  }
 }

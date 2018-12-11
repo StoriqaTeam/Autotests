@@ -1,0 +1,40 @@
+mutation UpdateBaseProduct($input: UpdateBaseProductInput!) {
+  updateBaseProduct(input: $input) {
+    id
+    rawId
+    name {
+      lang
+      text
+    }
+    shortDescription {
+      text
+      lang
+    }
+    longDescription {
+      lang
+      text
+    }
+    seoTitle {
+      lang
+      text
+    }
+    seoDescription {
+      text
+      lang
+    }
+    currency
+    rating
+    status
+    storeId
+    categoryId
+    createdAt
+    updatedAt
+    lengthCm
+    widthCm
+    heightCm
+    volumeCubicCm
+    weightG
+    views
+    slug
+  }
+}
