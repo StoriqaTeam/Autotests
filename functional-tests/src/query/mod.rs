@@ -8,6 +8,7 @@ pub mod create_product;
 pub mod create_store;
 pub mod create_user;
 pub mod deactivate_product;
+pub mod deactivate_base_product;
 pub mod delete_attribute;
 pub mod delete_attribute_from_category;
 pub mod delete_attribute_value;

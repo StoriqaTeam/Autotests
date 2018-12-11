@@ -8,6 +8,29 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn deactivate_base_product() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, _store, _category, base_product) =
+        set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
+    context.set_bearer(token);
+    //when
+    let _ = context
+        .deactivate_base_product(deactivate_base_product::DeactivateBaseProductInput {
+            id: base_product.create_base_product.id,
+            ..deactivate_base_product::default_deactivate_base_product_input()
+        })
+        .unwrap();
+    //then
+    let deactivated_base_product = context
+        .get_base_product(base_product.create_base_product.raw_id)
+        .unwrap()
+        .base_product;
+    assert!(deactivated_base_product.is_none());
+}
+
+#[test]
 pub fn update_base_product_test() {
     //setup
     let mut context = TestContext::new();
@@ -295,7 +318,8 @@ pub fn delete_attribute_from_category() {
     assert!(changed_category_attributes.is_empty());
 }
 
-pub fn microservice_healthcheck() {
+#[test]
+pub fn a_microservice_healthcheck() {
     //given
     let context = TestContext::new();
     //then

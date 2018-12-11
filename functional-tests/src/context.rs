@@ -325,6 +325,13 @@ impl TestContext {
     );
 
     graphql_request!(
+        deactivate_base_product,
+        deactivate_base_product,
+        DeactivateBaseProductInput,
+        DeactivateBaseProductMutation
+    );
+
+    graphql_request!(
         create_base_product_with_variants,
         create_base_product_with_variants,
         NewBaseProductWithVariantsInput,
