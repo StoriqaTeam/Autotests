@@ -243,6 +243,12 @@ impl TestContext {
         CreateStoreMutation
     );
     graphql_request!(
+        update_store,
+        update_store,
+        UpdateStoreInput,
+        UpdateStoreMutation
+    );
+    graphql_request!(
         create_attribute,
         create_attribute,
         CreateAttributeInput,

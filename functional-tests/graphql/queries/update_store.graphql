@@ -1,5 +1,5 @@
-mutation createStore($input: CreateStoreInput!) {
-  createStore(input: $input) {
+mutation updateStore($input: UpdateStoreInput!) {
+  updateStore(input: $input) {
     id
     rawId
     userId

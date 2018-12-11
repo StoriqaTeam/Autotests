@@ -8,6 +8,46 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn update_store() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, store, _) = set_up_store(&mut context).unwrap();
+    context.set_bearer(token);
+    //when
+    let updated_store = context
+        .update_store(update_store::UpdateStoreInput {
+            id: store.create_store.id,
+            ..update_store::default_update_store_input()
+        })
+        .unwrap()
+        .update_store;
+    //then
+    let expected_values = update_store::default_update_store_input();
+    verify_update_store_values(updated_store, expected_values);
+}
+
+#[test]
+pub fn update_store_does_not_update_rating() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, store, _) = set_up_store(&mut context).unwrap();
+    context.set_bearer(token);
+    let initial_rating = store.create_store.rating;
+    //when
+    let updated_store = context
+        .update_store(update_store::UpdateStoreInput {
+            id: store.create_store.id,
+            ..update_store::default_update_store_input()
+        })
+        .unwrap()
+        .update_store;
+    //then
+    assert!((updated_store.rating - initial_rating).abs() < 0.001);
+}
+
+#[test]
 pub fn delete_attribute() {
     //setup
     let mut context = TestContext::new();
@@ -650,4 +690,149 @@ fn set_up_store(
     })?;
     context.clear_bearer();
     Ok((user, token, store, category_level_3))
+}
+
+fn verify_update_store_values(
+    updated_store: update_store::RustUpdateStoreUpdateStore,
+    expected_values: update_store::UpdateStoreInput,
+) {
+    assert_eq!(
+        updated_store.name[0].text,
+        expected_values.name.unwrap()[0].text
+    );
+    assert_eq!(
+        updated_store.short_description[0].text,
+        expected_values.short_description.unwrap()[0].text
+    );
+    assert_eq!(
+        updated_store
+            .long_description
+            .expect("update_store.long_description is none")[0]
+            .text,
+        expected_values.long_description.unwrap()[0].text
+    );
+    assert_eq!(updated_store.slug, expected_values.slug.unwrap());
+    assert_eq!(
+        updated_store.cover.expect("update_store.cover is none"),
+        expected_values.cover.unwrap()
+    );
+    assert_eq!(
+        updated_store.logo.expect("update_store.logo is none"),
+        expected_values.logo.unwrap()
+    );
+    assert_eq!(
+        updated_store.phone.expect("update_store.phone is none"),
+        expected_values.phone.unwrap()
+    );
+    assert_eq!(
+        updated_store.email.expect("update_store.email is none"),
+        expected_values.email.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .instagram_url
+            .expect("update_store.instagram_url is none"),
+        expected_values.instagram_url.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .twitter_url
+            .expect("update_store.twitter_url is none"),
+        expected_values.twitter_url.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .facebook_url
+            .expect("update_store.facebook_url is none"),
+        expected_values.facebook_url.unwrap()
+    );
+    assert_eq!(
+        updated_store.slogan.expect("update_store.slogan is none"),
+        expected_values.slogan.unwrap()
+    );
+    assert!((updated_store.rating - expected_values.rating.unwrap()).abs() < 0.001);
+
+    assert_eq!(
+        updated_store
+            .address_full
+            .value
+            .expect("update_store.address_full.value is none"),
+        expected_values.address_full.value.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .country
+            .expect("update_store.address_full.country is none"),
+        expected_values.address_full.country.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .country_code
+            .expect("update_store.address_full.country_code is none"),
+        expected_values.address_full.country_code.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .administrative_area_level1
+            .expect("update_store.address_full.administrative_area_level1 is none"),
+        expected_values
+            .address_full
+            .administrative_area_level1
+            .unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .administrative_area_level2
+            .expect("update_store.address_full.administrative_area_level2 is none"),
+        expected_values
+            .address_full
+            .administrative_area_level2
+            .unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .locality
+            .expect("update_store.address_full.locality is none"),
+        expected_values.address_full.locality.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .political
+            .expect("update_store.address_full.political is none"),
+        expected_values.address_full.political.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .postal_code
+            .expect("update_store.address_full.postal_code is none"),
+        expected_values.address_full.postal_code.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .route
+            .expect("update_store.address_full.route is none"),
+        expected_values.address_full.route.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .street_number
+            .expect("update_store.address_full.street_number is none"),
+        expected_values.address_full.street_number.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .place_id
+            .expect("update_store.address_full.place_id is none"),
+        expected_values.address_full.place_id.unwrap()
+    );
 }
