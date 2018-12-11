@@ -35,24 +35,25 @@ pub fn default_create_base_product_with_variants_input() -> NewBaseProductWithVa
         category_id: 0,
         slug: Some("base-product-slug".to_string()),
         selected_attributes: vec![],
-        variants: vec![
-            CreateProductWithAttributesInput {
-                client_mutation_id: "".to_string(),
-                product: NewProduct {
-                    client_mutation_id: None,
-                    base_product_id: None,
-                    discount: Some(30.0),
-                    photo_main: Some("photo".to_string()),
-                    additional_photos: Some(vec!["additional_photo_1".to_string(), "additional_photo_2".to_string()]),
-                    vendor_code: "vendor_code".to_string(),
-                    cashback: Some(10.0),
-                    price: 100.0,
-                    pre_order: Some(false),
-                    pre_order_days: Some(100),
-                },
-                attributes: vec![],
-            }
-        ],
+        variants: vec![CreateProductWithAttributesInput {
+            client_mutation_id: "".to_string(),
+            product: NewProduct {
+                client_mutation_id: None,
+                base_product_id: None,
+                discount: Some(30.0),
+                photo_main: Some("photo".to_string()),
+                additional_photos: Some(vec![
+                    "additional_photo_1".to_string(),
+                    "additional_photo_2".to_string(),
+                ]),
+                vendor_code: "vendor_code".to_string(),
+                cashback: Some(10.0),
+                price: 100.0,
+                pre_order: Some(false),
+                pre_order_days: Some(100),
+            },
+            attributes: vec![],
+        }],
         length_cm: Some(10),
         width_cm: Some(10),
         height_cm: Some(10),
