@@ -8,6 +8,93 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn update_base_product_test() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, _store, _category, base_product) =
+        set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
+    context.set_bearer(token);
+    //when
+    let updated_base_product = context
+        .update_base_product(update_base_product::UpdateBaseProductInput {
+            id: base_product.create_base_product.id,
+            ..update_base_product::default_update_base_product_input()
+        })
+        .unwrap()
+        .update_base_product;
+    //then
+    let updated_base_product = context
+        .get_base_product(updated_base_product.raw_id)
+        .unwrap()
+        .base_product
+        .unwrap();
+    let expected_values = update_base_product::default_update_base_product_input();
+    assert!((updated_base_product.rating - expected_values.rating.unwrap()).abs() < 0.001);
+    assert_eq!(updated_base_product.slug, expected_values.slug.unwrap());
+    assert_eq!(updated_base_product.length_cm, expected_values.length_cm);
+    assert_eq!(updated_base_product.width_cm, expected_values.width_cm);
+    assert_eq!(updated_base_product.height_cm, expected_values.height_cm);
+    assert_eq!(updated_base_product.weight_g, expected_values.weight_g);
+    assert_eq!(
+        updated_base_product.name[0].text,
+        expected_values.name.unwrap()[0].text
+    );
+    assert_eq!(
+        updated_base_product.short_description[0].text,
+        expected_values.short_description.unwrap()[0].text
+    );
+    assert_eq!(
+        updated_base_product
+            .long_description
+            .expect("updated_base_product.long_description is none")[0]
+            .text,
+        expected_values.long_description.unwrap()[0].text
+    );
+    assert_eq!(
+        updated_base_product
+            .seo_title
+            .expect("updated_base_product.seo_title is none")[0]
+            .text,
+        expected_values.seo_title.unwrap()[0].text
+    );
+    assert_eq!(
+        updated_base_product
+            .seo_description
+            .expect("updated_base_product.seo_description is none")[0]
+            .text,
+        expected_values.seo_description.unwrap()[0].text
+    );
+}
+
+#[test]
+#[ignore]
+pub fn update_base_product_does_not_update_rating() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, _store, _category, base_product) =
+        set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
+    context.set_bearer(token);
+    let initial_rating = base_product.create_base_product.rating;
+    //when
+    let updated_base_product = context
+        .update_base_product(update_base_product::UpdateBaseProductInput {
+            id: base_product.create_base_product.id,
+            ..update_base_product::default_update_base_product_input()
+        })
+        .unwrap()
+        .update_base_product;
+    //then
+    let updated_base_product = context
+        .get_base_product(updated_base_product.raw_id)
+        .unwrap()
+        .base_product
+        .unwrap();
+    assert!((updated_base_product.rating - initial_rating).abs() < 0.001);
+}
+
+#[test]
 pub fn create_base_product_with_variants() {
     //setup
     let mut context = TestContext::new();
@@ -674,7 +761,7 @@ pub fn create_user_via_facebook_with_additional_data() {
 
     let facebook_jwt = get_jwt_by_provider::CreateJWTProviderInput {
         additional_data: Some(get_jwt_by_provider::NewUserAdditionalDataInput {
-            country: Some("MMR".to_string()),
+            country: Some("MM".to_string()),
             referal: Some(referal.create_user.raw_id),
             referer: Some("localhost".to_string()),
             utm_marks: Some(vec![get_jwt_by_provider::UtmMarkInput {
@@ -688,6 +775,7 @@ pub fn create_user_via_facebook_with_additional_data() {
     let user = context.create_user_jwt(facebook_jwt);
     //then
     assert!(user.is_ok());
+    panic!("Finish test");
 }
 
 #[test]
@@ -705,7 +793,7 @@ pub fn create_user_via_google_with_additional_data() {
 
     let google_jwt = get_jwt_by_provider::CreateJWTProviderInput {
         additional_data: Some(get_jwt_by_provider::NewUserAdditionalDataInput {
-            country: Some("MMR".to_string()),
+            country: Some("MM".to_string()),
             referal: Some(referal.create_user.raw_id),
             referer: Some("localhost".to_string()),
             utm_marks: Some(vec![get_jwt_by_provider::UtmMarkInput {
@@ -719,6 +807,7 @@ pub fn create_user_via_google_with_additional_data() {
     let user = context.create_user_jwt(google_jwt);
     //then
     assert!(user.is_ok());
+    panic!("Finish test");
 }
 
 #[test]
