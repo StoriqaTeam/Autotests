@@ -6,6 +6,7 @@ public enum Shop {
     STORENAME("//*[@data-test='name']"),
     WEBADDRESS("//*[@data-test='slug']"),
     SHORTDESCRIPTION("//*[@data-test='shortDescription']"),
+    LONGDESCRIPTION("//*[@data-test='longDescription']"),
     NEXTSTEPBUTTON("//*[@data-test='wizardBackButton']"),
     MAINLANGUAGE("//*[@data-test='wizardLanguagesSelect']"),
     ENGLISH("//*[@data-test='wizardLanguagesSelect']//*[contains(text(),'English')]"),
@@ -21,13 +22,15 @@ public enum Shop {
     ADDFIRSTPRODUCTFOTO("//*[@data-test='wizardUploaderProductFotoFirst']"),
     PRODUCTNAME("//*[@data-test='name']"),
     PRODUKTCATEGORY("//*[@data-test='categorySelector']"),
-    PRICE("//*[@data-test='price']"),
+    PRICE("//*[@data-test='wizardProductPriceInputInput']"),
     VENDORCODE("//*[@data-test='vendorCode']"),
     CASHEBACK("//*[@data-test='cashback']"),
     QUANTITY("//*[@data-test='quantity']"),
     CURRENCY("//*[@data-test='step3Currency']"),
     STQ("step3Currency_item"),
-    SAVEPRODUCTBUTTON("//*[@data-test='wizardSaveProductButton']");
+    SAVEPRODUCTBUTTON("//*[@data-test='wizardSaveProductButton']"),
+    SLOGAN("//*[@data-test='slogan']"),
+    SAVE("//*[@data-test='saveButton']");
 
     private final String cl;
 

@@ -3,6 +3,7 @@ package Registration;
 
 import helper.SeleniumRunner;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import Page.autorization_page.AutorizationLoc;
 import org.junit.runner.RunWith;
@@ -19,7 +20,15 @@ import static junit.framework.Assert.assertEquals;
 
 public class AutorizationTest {
 
-    WebDriver driver = new ChromeDriver();
+    WebDriver driver;
+
+    @Before
+    public void setUp(){
+        System.setProperty("webdriver.chrome.driver", "/Users/user/chromedriver");
+        driver = new ChromeDriver();
+    }
+
+    //WebDriver driver = new ChromeDriver();
 
     @Test
     public void Autorization_Test() throws InterruptedException {
@@ -32,7 +41,7 @@ public class AutorizationTest {
         driver.findElement(By.xpath(AutorizationLoc.PASSWORD.getCl())).sendKeys("1234567Qq");
         driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
         driver.findElement(By.xpath(AutorizationLoc.ENTER.getCl())).click();
-        driver.findElement(By.xpath("//div[normalize-space(text())='Hi, ivan P.']"));
+        driver.findElement(By.xpath("//div[normalize-space(text())='Hi, Russkii T.']"));
 
         driver.close();
     }

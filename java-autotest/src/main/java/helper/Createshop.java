@@ -18,12 +18,12 @@ public class Createshop {
 
     public void create_shop() throws InterruptedException {
 
-        //Autorization user = new Autorization(driver);
-        //user.autorization_login();
+        Autorization user = new Autorization(driver);
+        user.autorization_login();
 
 
         Assert.assertEquals("Storiqa", driver.getTitle());
-        driver.findElement(By.xpath("//div[normalize-space(text())='Hi, Test T.']"));
+        driver.findElement(By.xpath("//div[normalize-space(text())='Hi, Russkii T.']"));
         Assert.assertEquals("https://stage.stq.cloud/", driver.getCurrentUrl());
         driver.findElement(By.xpath(Shop.SELLONSTORIQA.getCl())).click();
         Assert.assertEquals("https://stage.stq.cloud/start-selling/en", driver.getCurrentUrl());

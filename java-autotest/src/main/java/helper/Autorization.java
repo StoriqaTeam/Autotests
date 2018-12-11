@@ -24,7 +24,7 @@ public class Autorization {
         driver.findElement(By.xpath(AutorizationLoc.PASSWORD.getCl())).sendKeys("1234567Qq");
         driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
         driver.findElement(By.xpath(AutorizationLoc.ENTER.getCl())).click();
-        driver.findElement(By.xpath("//div[normalize-space(text())='Hi, Test T.']"));
+        driver.findElement(By.xpath("//div[normalize-space(text())='Hi, Russkii T.']"));
         System.out.print("Page title is: " + driver.getTitle());       //Проверка title
     }
 }
