@@ -2,64 +2,70 @@ query getBaseProduct($id: Int!, $visibility: Visibility) {
   baseProduct(id: $id, visibility: $visibility) {
     id
     rawId
-    userId
-    storeManager {
-      id
-      rawId
-      email
-      isActive
-      phone
-      firstName
-      lastName
-      middleName
-      gender
-      birthdate
-      avatar
-      isBlocked
-      emarsysId
-      createdAt
-      updatedAt
-    }
     name {
-      lang
-      text
+        lang
+        text
     }
     isActive
     shortDescription {
-      lang
-      text
+        lang
+        text
     }
     longDescription {
-      lang
-      text
+        lang
+        text
     }
-    slug
-    createdAt
-    updatedAt
-    cover
-    logo
-    phone
-    email
-    facebookUrl
-    twitterUrl
-    instagramUrl
-    defaultLanguage
-    slogan
+    seoTitle {
+        lang,
+        text
+    }
+    seoDescription {
+        lang
+        text
+    }
+    currency
     rating
     status
-    addressFull {
-      value
-      country
-      countryCode
-      administrativeAreaLevel1
-      administrativeAreaLevel2
-      locality
-      political
-      postalCode
-      route
-      streetNumber
-      placeId
+    storeId
+    categoryId
+    createdAt
+    updatedAt
+    lengthCm
+    widthCm
+    heightCm
+    volumeCubicCm
+    weightG
+    moderatorComment{
+        id
+        rawId
+        moderatorId
+        baseProductId
+        comments
     }
+    category {
+        rawId
+    }
+    views
+    slug
+    customAttributes {
+        id,
+        rawId,
+        attributeId,
+        baseProductId
+    }
+    shipping{
+        local {
+            companyPackageId
+        }
+        international {
+            companyPackageId
+        }
+        pickup {
+            price,
+            pickup
+        }
+    }
+    isShippingAvailable
     products {
       edges {
         node {
@@ -75,8 +81,43 @@ query getBaseProduct($id: Int!, $visibility: Visibility) {
             price
             preOrder
             preOrderDays
-            customerPrice
-            attributes
+            customerPrice {
+                price
+                currency
+            }
+            attributes {
+                attribute {
+                    id
+                    rawId
+                    name {
+                        lang
+                        text
+                    }
+                    valueType
+                    metaField {
+                        uiElement
+                    }
+                    values {
+                        rawId
+                        code
+                        translations {
+                            lang
+                            text
+                        }
+                    }
+                }
+                attrId
+                attributeValueId
+                attributeValue {
+                    rawId
+                    code
+                    translations {
+                        lang
+                        text
+                    }
+                }
+                metaField
+            }
             quantity
         }
       }

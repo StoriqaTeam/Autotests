@@ -15,13 +15,56 @@ pub fn create_base_product_with_variants() {
     let (_user, token, store, category) = set_up_store(&mut context).unwrap();
     context.set_bearer(token);
     //when
-    context.create_base_product_with_variants(create_base_product_with_variants::NewBaseProductWithVariantsInput{
+    let base_product = context.create_base_product_with_variants(create_base_product_with_variants::NewBaseProductWithVariantsInput{
         store_id: store.create_store.raw_id,
         category_id: category.create_category.raw_id,
         ..create_base_product_with_variants::default_create_base_product_with_variants_input()
-    }).unwrap();
+    }).unwrap().create_base_product_with_variants;
     //then
-    panic!("Complete test");
+    let base_product = context
+        .get_base_product(base_product.raw_id)
+        .unwrap()
+        .base_product
+        .unwrap();
+    assert_eq!(
+        base_product
+            .products
+            .as_ref()
+            .expect("base_product.products is none")
+            .edges
+            .len(),
+        1
+    );
+    let variant = base_product.products.unwrap().edges.pop().unwrap().node;
+    assert_eq!(variant.discount, Some(30.0));
+    assert_eq!(variant.photo_main, Some("photo".to_string()));
+    assert_eq!(variant.vendor_code, "vendor_code".to_string());
+    assert_eq!(variant.cashback, Some(10.0));
+    assert_eq!(variant.price, 100.0);
+    assert_eq!(variant.pre_order, false);
+    assert_eq!(variant.pre_order_days, 100);
+    assert_eq!(
+        variant
+            .additional_photos
+            .as_ref()
+            .expect("variant.additional_photos is none")
+            .len(),
+        2
+    );
+    assert_eq!(
+        variant
+            .additional_photos
+            .as_ref()
+            .expect("variant.additional_photos is none")[0],
+        "additional_photo_1".to_string()
+    );
+    assert_eq!(
+        variant
+            .additional_photos
+            .as_ref()
+            .expect("variant.additional_photos is none")[1],
+        "additional_photo_2".to_string()
+    );
 }
 
 #[test]
@@ -50,6 +93,7 @@ pub fn update_store() {
 }
 
 #[test]
+#[ignore]
 pub fn update_store_does_not_update_rating() {
     //setup
     let mut context = TestContext::new();
@@ -567,11 +611,26 @@ pub fn create_user_with_additional_data() {
     let user = context.create_user(new_user).unwrap().create_user;
     //then
     assert_eq!(user.email, create_user::default_create_user_input().email);
-    assert_eq!(user.referal.expect("user.referal is none"), referal.create_user.raw_id);
-    assert_eq!(user.country.expect("user.country is none").alpha3, "MMR".to_string());
-    assert_eq!(user.referer.expect("user.referer is none"), "localhost".to_string());
-    assert_eq!(&user.utm_marks.as_ref().expect("user.utm_marks is none")[0].key, "source");
-    assert_eq!(&user.utm_marks.as_ref().expect("user.utm_marks is none")[0].value, "word_of_mouth");
+    assert_eq!(
+        user.referal.expect("user.referal is none"),
+        referal.create_user.raw_id
+    );
+    assert_eq!(
+        user.country.expect("user.country is none").alpha3,
+        "MMR".to_string()
+    );
+    assert_eq!(
+        user.referer.expect("user.referer is none"),
+        "localhost".to_string()
+    );
+    assert_eq!(
+        &user.utm_marks.as_ref().expect("user.utm_marks is none")[0].key,
+        "source"
+    );
+    assert_eq!(
+        &user.utm_marks.as_ref().expect("user.utm_marks is none")[0].value,
+        "word_of_mouth"
+    );
 }
 
 #[test]

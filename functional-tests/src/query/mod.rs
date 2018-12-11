@@ -14,6 +14,7 @@ pub mod delete_category;
 pub mod delete_store;
 pub mod delete_user;
 pub mod get_attributes;
+pub mod get_base_product;
 pub mod get_categories;
 pub mod get_jwt_by_email;
 pub mod get_jwt_by_provider;
