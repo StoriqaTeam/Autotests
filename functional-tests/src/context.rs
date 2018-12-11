@@ -314,13 +314,6 @@ impl TestContext {
     );
 
     graphql_request!(
-        update_store,
-        update_store,
-        UpdateStoreInput,
-        UpdateStoreMutation
-    );
-
-    graphql_request!(
         update_base_product,
         update_base_product,
         UpdateBaseProductInput,

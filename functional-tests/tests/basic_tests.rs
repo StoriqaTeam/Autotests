@@ -553,7 +553,7 @@ pub fn create_user_with_additional_data() {
 
     let new_user = create_user::CreateUserInput {
         additional_data: Some(create_user::NewUserAdditionalDataInput {
-            country: Some("MMR".to_string()),
+            country: Some("MM".to_string()),
             referal: Some(referal.create_user.raw_id),
             referer: Some("localhost".to_string()),
             utm_marks: Some(vec![create_user::UtmMarkInput {
@@ -567,11 +567,11 @@ pub fn create_user_with_additional_data() {
     let user = context.create_user(new_user).unwrap().create_user;
     //then
     assert_eq!(user.email, create_user::default_create_user_input().email);
-    assert_eq!(user.referal.unwrap(), referal.create_user.raw_id);
-    assert_eq!(user.country.unwrap(), "MMR".to_string());
-    assert_eq!(user.referer.unwrap(), "localhost".to_string());
-    assert_eq!(&user.utm_marks.as_ref().unwrap()[0].key, "source");
-    assert_eq!(&user.utm_marks.as_ref().unwrap()[0].value, "word_of_mouth");
+    assert_eq!(user.referal.expect("user.referal is none"), referal.create_user.raw_id);
+    assert_eq!(user.country.expect("user.country is none").alpha3, "MMR".to_string());
+    assert_eq!(user.referer.expect("user.referer is none"), "localhost".to_string());
+    assert_eq!(&user.utm_marks.as_ref().expect("user.utm_marks is none")[0].key, "source");
+    assert_eq!(&user.utm_marks.as_ref().expect("user.utm_marks is none")[0].value, "word_of_mouth");
 }
 
 #[test]

@@ -20,7 +20,14 @@ mutation CreateUser($input: CreateUserInput!) {
       key
       value
     }
-    country
+    country {
+      label
+      parent
+      level
+      alpha2
+      alpha3
+      numeric
+    }
     referer
   }
 }
