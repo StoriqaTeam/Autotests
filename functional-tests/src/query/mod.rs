@@ -20,3 +20,4 @@ pub mod update_attribute;
 pub mod update_attribute_value;
 pub mod update_category;
 pub mod update_store;
+pub mod create_base_product_with_variants;

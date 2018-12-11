@@ -1,0 +1,85 @@
+query getBaseProduct($id: Int!, $visibility: Visibility) {
+  baseProduct(id: $id, visibility: $visibility) {
+    id
+    rawId
+    userId
+    storeManager {
+      id
+      rawId
+      email
+      isActive
+      phone
+      firstName
+      lastName
+      middleName
+      gender
+      birthdate
+      avatar
+      isBlocked
+      emarsysId
+      createdAt
+      updatedAt
+    }
+    name {
+      lang
+      text
+    }
+    isActive
+    shortDescription {
+      lang
+      text
+    }
+    longDescription {
+      lang
+      text
+    }
+    slug
+    createdAt
+    updatedAt
+    cover
+    logo
+    phone
+    email
+    facebookUrl
+    twitterUrl
+    instagramUrl
+    defaultLanguage
+    slogan
+    rating
+    status
+    addressFull {
+      value
+      country
+      countryCode
+      administrativeAreaLevel1
+      administrativeAreaLevel2
+      locality
+      political
+      postalCode
+      route
+      streetNumber
+      placeId
+    }
+    products {
+      edges {
+        node {
+            id
+            rawId
+            isActive
+            discount
+            currency
+            photoMain
+            additionalPhotos
+            vendorCode
+            cashback
+            price
+            preOrder
+            preOrderDays
+            customerPrice
+            attributes
+            quantity
+        }
+      }
+    }
+  }
+}

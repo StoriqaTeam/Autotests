@@ -305,6 +305,13 @@ impl TestContext {
         CreateBaseProductMutation
     );
 
+    graphql_request!(
+        create_base_product_with_variants,
+        create_base_product_with_variants,
+        NewBaseProductWithVariantsInput,
+        CreateBaseProductWithVariantsMutation
+    );
+
     pub fn delete_store(&self, store_id: i64) -> Result<delete_store::ResponseData, FailureError> {
         let request_body =
             delete_store::DeleteStoreMutation::build_query(delete_store::Variables { store_id });

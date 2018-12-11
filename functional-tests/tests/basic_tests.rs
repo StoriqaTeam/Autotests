@@ -8,6 +8,23 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn create_base_product_with_variants() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, store, category) = set_up_store(&mut context).unwrap();
+    context.set_bearer(token);
+    //when
+    context.create_base_product_with_variants(create_base_product_with_variants::NewBaseProductWithVariantsInput{
+        store_id: store.create_store.raw_id,
+        category_id: category.create_category.raw_id,
+        ..create_base_product_with_variants::default_create_base_product_with_variants_input()
+    }).unwrap();
+    //then
+    panic!("Complete test");
+}
+
+#[test]
 pub fn update_store() {
     //setup
     let mut context = TestContext::new();
