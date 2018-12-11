@@ -1,7 +1,8 @@
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "graphql/schema.json",
-    query_path = "graphql/queries/update_store.graphql"
+    query_path = "graphql/queries/update_store.graphql",
+    response_derives = "Debug, PartialEq"
 )]
 pub struct UpdateStoreMutation;
 

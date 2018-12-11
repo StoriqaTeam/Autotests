@@ -1,4 +1,4 @@
-mutation updateStore($input: UpdateStoreInput!) {
+mutation UpdateStore($input: UpdateStoreInput!) {
   updateStore(input: $input) {
     id
     rawId

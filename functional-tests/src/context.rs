@@ -298,6 +298,7 @@ impl TestContext {
         DeleteAttributeValueInput,
         DeleteAttributeValueMutation
     );
+
     graphql_request!(
         create_base_product,
         create_base_product,
@@ -310,6 +311,34 @@ impl TestContext {
         create_base_product_with_variants,
         NewBaseProductWithVariantsInput,
         CreateBaseProductWithVariantsMutation
+    );
+
+    graphql_request!(
+        update_store,
+        update_store,
+        UpdateStoreInput,
+        UpdateStoreMutation
+    );
+
+    graphql_request!(
+        update_base_product,
+        update_base_product,
+        UpdateBaseProductInput,
+        UpdateBaseProductMutation
+    );
+
+    graphql_request!(
+        update_product,
+        update_product,
+        UpdateProductWithAttributesInput,
+        UpdateProductMutation
+    );
+
+    graphql_request!(
+        create_product,
+        create_product,
+        CreateProductWithAttributesInput,
+        CreateProductMutation
     );
 
     pub fn delete_store(&self, store_id: i64) -> Result<delete_store::ResponseData, FailureError> {

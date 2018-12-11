@@ -1880,7 +1880,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "ResetActionOutput",
+                  "name": "ResetApplyActionOutput",
                   "ofType": null
                 }
               }
@@ -5118,6 +5118,38 @@
                       "ofType": null
                     }
                   }
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Refresh JWT Token.",
+              "isDeprecated": false,
+              "name": "refreshJWT",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Revoke JWT Tokens.",
+              "isDeprecated": false,
+              "name": "revokeJWT",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
                 }
               }
             }
@@ -14315,6 +14347,22 @@
               "description": "Unique int id",
               "isDeprecated": false,
               "name": "rawId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Base product raw id",
+              "isDeprecated": false,
+              "name": "baseProductId",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
