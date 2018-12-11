@@ -156,6 +156,20 @@ impl TestContext {
         }
     }
 
+    pub fn get_store(&self, store_id: i64) -> Result<get_store::ResponseData, FailureError> {
+        let request_body = get_store::GetStoreQuery::build_query(get_store::Variables {
+            id: store_id,
+            visibility: Some(get_store::Visibility::Active),
+        });
+        let response_body: Response<get_store::ResponseData> =
+            self.graphql_request(request_body)?;
+        match (response_body.data, response_body.errors) {
+            (Some(data), None) => Ok(data),
+            (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
+            _ => unreachable!(),
+        }
+    }
+
     pub fn microservice_healthcheck(&self) -> Result<(), FailureError> {
         self.users_microservice.healthcheck()?;
         self.stores_microservice.healthcheck()?;

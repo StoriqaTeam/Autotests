@@ -23,6 +23,11 @@ pub fn update_store() {
         .unwrap()
         .update_store;
     //then
+    let updated_store = context
+        .get_store(updated_store.raw_id)
+        .unwrap()
+        .store
+        .unwrap();
     let expected_values = update_store::default_update_store_input();
     verify_update_store_values(updated_store, expected_values);
 }
@@ -44,6 +49,11 @@ pub fn update_store_does_not_update_rating() {
         .unwrap()
         .update_store;
     //then
+    let updated_store = context
+        .get_store(updated_store.raw_id)
+        .unwrap()
+        .store
+        .unwrap();
     assert!((updated_store.rating - initial_rating).abs() < 0.001);
 }
 
@@ -693,7 +703,7 @@ fn set_up_store(
 }
 
 fn verify_update_store_values(
-    updated_store: update_store::RustUpdateStoreUpdateStore,
+    updated_store: get_store::RustGetStoreStore,
     expected_values: update_store::UpdateStoreInput,
 ) {
     assert_eq!(
