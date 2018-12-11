@@ -1,0 +1,17 @@
+mutation UpdateProduct($input: UpdateProductWithAttributesInput!) {
+  updateProduct(input: $input) {
+    id
+    rawId
+    baseProductId
+    discount
+    currency
+    photoMain
+    additionalPhotos
+    vendorCode
+    cashback
+    price
+    preOrder
+    preOrderDays
+    customerPrice
+  }
+}
