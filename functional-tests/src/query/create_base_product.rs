@@ -1,7 +1,8 @@
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "graphql/schema.json",
-    query_path = "graphql/queries/create_base_product.graphql"
+    query_path = "graphql/queries/create_base_product.graphql",
+    response_derives = "Debug, PartialEq"
 )]
 pub struct CreateBaseProductMutation;
 
