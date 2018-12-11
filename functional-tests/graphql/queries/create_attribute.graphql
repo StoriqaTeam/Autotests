@@ -1,21 +1,21 @@
 mutation createAttribute($input: CreateAttributeInput!) {
  createAttribute(input: $input) {
-    id,
-    rawId,
+    id
+    rawId
     name {
-        lang,
+        lang
         text
-    },
-    valueType,
+    }
+    valueType
     metaField {
         uiElement
-    },
+    }
     values {
-        rawId,
-        attrRawId,
-        code,
+        rawId
+        attrRawId
+        code
         translations {
-            lang,
+            lang
             text
         }
     }

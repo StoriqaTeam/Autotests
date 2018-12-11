@@ -1,70 +1,70 @@
 mutation createBaseProductWithVariants($input: NewBaseProductWithVariantsInput!) {
  createBaseProductWithVariants(input: $input) {
-    id,
-    rawId,
+    id
+    rawId
     name {
-        lang,
+        lang
         text
-    },
-    isActive,
+    }
+    isActive
     shortDescription {
-        lang,
+        lang
         text
-    },
+    }
     longDescription {
-        lang,
+        lang
         text
-    },
+    }
     seoTitle {
-        lang,
+        lang
         text
-    },
+    }
     seoDescription {
-        lang,
+        lang
         text
-    },
-    currency,
-    rating,
-    status,
-    storeId,
-    categoryId,
-    createdAt,
-    updatedAt,
-    lengthCm,
-    widthCm,
-    heightCm,
-    volumeCubicCm,
-    weightG,
+    }
+    currency
+    rating
+    status
+    storeId
+    categoryId
+    createdAt
+    updatedAt
+    lengthCm
+    widthCm
+    heightCm
+    volumeCubicCm
+    weightG
     moderatorComment{
-        id,
-        rawId,
-        moderatorId,
-        baseProductId,
+        id
+        rawId
+        moderatorId
+        baseProductId
         comments
-    },
+    }
     category {
         rawId
-    },
-    views,
-    slug,
+    }
+    views
+    slug
     customAttributes {
-        id,
-        rawId,
-        attributeId,
+        id
+        rawId
+        attributeId
         baseProductId
-    },
+    }
     shipping{
         local {
             companyPackageId
-        },
+        }
         international {
             companyPackageId
-        },
+        }
         pickup {
-            price,
+            price
             pickup
         }
-    },
+    }
     isShippingAvailable
  }
 }
