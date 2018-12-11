@@ -1,5 +1,5 @@
-mutation createAttribute($input: CreateAttributeInput!) {
- createAttribute(input: $input) {
+mutation updateAttribute($input: UpdateAttributeInput!) {
+ updateAttribute(input: $input) {
     id
     rawId
     name {

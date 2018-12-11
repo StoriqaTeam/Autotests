@@ -1,0 +1,5 @@
+mutation deleteAttributeFromCategory($input: DeleteAttributeFromCategory!) {
+  deleteAttributeFromCategory(input: $input) {
+    mock
+ }
+}

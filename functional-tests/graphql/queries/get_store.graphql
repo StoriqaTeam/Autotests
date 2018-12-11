@@ -1,5 +1,5 @@
-mutation UpdateStore($input: UpdateStoreInput!) {
-  updateStore(input: $input) {
+query getStore($id: Int!, $visibility: Visibility) {
+  store(id: $id, visibility: $visibility) {
     id
     rawId
     userId

@@ -156,6 +156,38 @@ impl TestContext {
         }
     }
 
+    pub fn get_store(&self, store_id: i64) -> Result<get_store::ResponseData, FailureError> {
+        let request_body = get_store::GetStoreQuery::build_query(get_store::Variables {
+            id: store_id,
+            visibility: Some(get_store::Visibility::Active),
+        });
+        let response_body: Response<get_store::ResponseData> =
+            self.graphql_request(request_body)?;
+        match (response_body.data, response_body.errors) {
+            (Some(data), None) => Ok(data),
+            (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
+            _ => unreachable!(),
+        }
+    }
+
+    pub fn get_base_product(
+        &self,
+        base_product_id: i64,
+    ) -> Result<get_base_product::ResponseData, FailureError> {
+        let request_body =
+            get_base_product::GetBaseProductQuery::build_query(get_base_product::Variables {
+                id: base_product_id,
+                visibility: Some(get_base_product::Visibility::Active),
+            });
+        let response_body: Response<get_base_product::ResponseData> =
+            self.graphql_request(request_body)?;
+        match (response_body.data, response_body.errors) {
+            (Some(data), None) => Ok(data),
+            (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
+            _ => unreachable!(),
+        }
+    }
+
     pub fn microservice_healthcheck(&self) -> Result<(), FailureError> {
         self.users_microservice.healthcheck()?;
         self.stores_microservice.healthcheck()?;
@@ -174,6 +206,13 @@ impl TestContext {
         create_category,
         CreateCategoryInput,
         CreateCategoryMutation
+    );
+
+    graphql_request!(
+        delete_attribute_from_category,
+        delete_attribute_from_category,
+        DeleteAttributeFromCategory,
+        DeleteAttributeFromCategoryMutation
     );
 
     graphql_request!(
@@ -236,10 +275,28 @@ impl TestContext {
         CreateStoreMutation
     );
     graphql_request!(
+        update_store,
+        update_store,
+        UpdateStoreInput,
+        UpdateStoreMutation
+    );
+    graphql_request!(
         create_attribute,
         create_attribute,
         CreateAttributeInput,
         CreateAttributeMutation
+    );
+    graphql_request!(
+        update_attribute,
+        update_attribute,
+        UpdateAttributeInput,
+        UpdateAttributeMutation
+    );
+    graphql_request!(
+        delete_attribute,
+        delete_attribute,
+        DeleteAttributeInput,
+        DeleteAttributeMutation
     );
     graphql_request!(
         create_attribute_value,
@@ -259,6 +316,7 @@ impl TestContext {
         DeleteAttributeValueInput,
         DeleteAttributeValueMutation
     );
+
     graphql_request!(
         create_base_product,
         create_base_product,
@@ -267,10 +325,10 @@ impl TestContext {
     );
 
     graphql_request!(
-        update_store,
-        update_store,
-        UpdateStoreInput,
-        UpdateStoreMutation
+        create_base_product_with_variants,
+        create_base_product_with_variants,
+        NewBaseProductWithVariantsInput,
+        CreateBaseProductWithVariantsMutation
     );
 
     graphql_request!(

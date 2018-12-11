@@ -6639,7 +6639,7 @@
             },
             {
               "defaultValue": null,
-              "description": "Alpha 3 country code of a user.",
+              "description": "Alpha 2 country code of a user.",
               "name": "country",
               "type": {
                 "kind": "SCALAR",
@@ -17442,12 +17442,12 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Alpha 3 country code of a user.",
+              "description": "User country.",
               "isDeprecated": false,
               "name": "country",
               "type": {
-                "kind": "SCALAR",
-                "name": "String",
+                "kind": "OBJECT",
+                "name": "Country",
                 "ofType": null
               }
             },

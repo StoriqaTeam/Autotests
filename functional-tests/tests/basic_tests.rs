@@ -8,6 +8,206 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn create_base_product_with_variants() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, store, category) = set_up_store(&mut context).unwrap();
+    context.set_bearer(token);
+    //when
+    let base_product = context.create_base_product_with_variants(create_base_product_with_variants::NewBaseProductWithVariantsInput{
+        store_id: store.create_store.raw_id,
+        category_id: category.create_category.raw_id,
+        ..create_base_product_with_variants::default_create_base_product_with_variants_input()
+    }).unwrap().create_base_product_with_variants;
+    //then
+    let base_product = context
+        .get_base_product(base_product.raw_id)
+        .unwrap()
+        .base_product
+        .unwrap();
+    assert_eq!(
+        base_product
+            .products
+            .as_ref()
+            .expect("base_product.products is none")
+            .edges
+            .len(),
+        1
+    );
+    let variant = base_product.products.unwrap().edges.pop().unwrap().node;
+    assert_eq!(variant.discount, Some(30.0));
+    assert_eq!(variant.photo_main, Some("photo".to_string()));
+    assert_eq!(variant.vendor_code, "vendor_code".to_string());
+    assert_eq!(variant.cashback, Some(10.0));
+    assert_eq!(variant.price, 100.0);
+    assert_eq!(variant.pre_order, false);
+    assert_eq!(variant.pre_order_days, 100);
+    assert_eq!(
+        variant
+            .additional_photos
+            .as_ref()
+            .expect("variant.additional_photos is none")
+            .len(),
+        2
+    );
+    assert_eq!(
+        variant
+            .additional_photos
+            .as_ref()
+            .expect("variant.additional_photos is none")[0],
+        "additional_photo_1".to_string()
+    );
+    assert_eq!(
+        variant
+            .additional_photos
+            .as_ref()
+            .expect("variant.additional_photos is none")[1],
+        "additional_photo_2".to_string()
+    );
+}
+
+#[test]
+pub fn update_store() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, store, _) = set_up_store(&mut context).unwrap();
+    context.set_bearer(token);
+    //when
+    let updated_store = context
+        .update_store(update_store::UpdateStoreInput {
+            id: store.create_store.id,
+            ..update_store::default_update_store_input()
+        })
+        .unwrap()
+        .update_store;
+    //then
+    let updated_store = context
+        .get_store(updated_store.raw_id)
+        .unwrap()
+        .store
+        .unwrap();
+    let expected_values = update_store::default_update_store_input();
+    verify_update_store_values(updated_store, expected_values);
+}
+
+#[test]
+#[ignore]
+pub fn update_store_does_not_update_rating() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, store, _) = set_up_store(&mut context).unwrap();
+    context.set_bearer(token);
+    let initial_rating = store.create_store.rating;
+    //when
+    let updated_store = context
+        .update_store(update_store::UpdateStoreInput {
+            id: store.create_store.id,
+            ..update_store::default_update_store_input()
+        })
+        .unwrap()
+        .update_store;
+    //then
+    let updated_store = context
+        .get_store(updated_store.raw_id)
+        .unwrap()
+        .store
+        .unwrap();
+    assert!((updated_store.rating - initial_rating).abs() < 0.001);
+}
+
+#[test]
+pub fn delete_attribute() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let attribute = context
+        .create_attribute(create_attribute::default_create_attribute_input())
+        .unwrap()
+        .create_attribute;
+    //when
+    let _ = context
+        .delete_attribute(delete_attribute::DeleteAttributeInput {
+            id: attribute.id,
+            ..delete_attribute::default_delete_attribute_input()
+        })
+        .unwrap();
+    //then
+    let all_attribute = context.get_attributes().unwrap().attributes.unwrap();
+    assert!(all_attribute.is_empty());
+}
+
+#[test]
+pub fn update_attribute() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let attribute = context
+        .create_attribute(create_attribute::default_create_attribute_input())
+        .unwrap()
+        .create_attribute;
+    //when
+    let updated_attribute = context
+        .update_attribute(update_attribute::UpdateAttributeInput {
+            id: attribute.id,
+            ..update_attribute::default_update_attribute_input()
+        })
+        .unwrap()
+        .update_attribute;
+    //then
+    assert_eq!(updated_attribute.name[0].text, "Update category");
+}
+
+#[test]
+pub fn delete_attribute_from_category() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    context.as_superadmin();
+    let category = context
+        .create_category(create_category::default_create_category_input())
+        .unwrap()
+        .create_category;
+    let attribute = context
+        .create_attribute(create_attribute::default_create_attribute_input())
+        .unwrap()
+        .create_attribute;
+    let _ = context
+        .add_attribute_to_category(add_attribute_to_category::AddAttributeToCategoryInput {
+            cat_id: category.raw_id,
+            attr_id: attribute.raw_id,
+            ..add_attribute_to_category::default_add_attribute_to_categoryinput()
+        })
+        .unwrap();
+    //when
+    let _ = context
+        .delete_attribute_from_category(
+            delete_attribute_from_category::DeleteAttributeFromCategory {
+                cat_id: category.raw_id,
+                attr_id: attribute.raw_id,
+                ..delete_attribute_from_category::default_delete_attribute_from_category_input()
+            },
+        )
+        .unwrap();
+    //then
+    let changed_category_attributes = context
+        .get_categories()
+        .unwrap()
+        .categories
+        .unwrap()
+        .children
+        .into_iter()
+        .filter(|cat| cat.id == category.id)
+        .next()
+        .unwrap()
+        .get_attributes;
+    assert!(changed_category_attributes.is_empty());
+}
+
 pub fn microservice_healthcheck() {
     //given
     let context = TestContext::new();
@@ -397,7 +597,7 @@ pub fn create_user_with_additional_data() {
 
     let new_user = create_user::CreateUserInput {
         additional_data: Some(create_user::NewUserAdditionalDataInput {
-            country: Some("MMR".to_string()),
+            country: Some("MM".to_string()),
             referal: Some(referal.create_user.raw_id),
             referer: Some("localhost".to_string()),
             utm_marks: Some(vec![create_user::UtmMarkInput {
@@ -411,11 +611,26 @@ pub fn create_user_with_additional_data() {
     let user = context.create_user(new_user).unwrap().create_user;
     //then
     assert_eq!(user.email, create_user::default_create_user_input().email);
-    assert_eq!(user.referal.unwrap(), referal.create_user.raw_id);
-    assert_eq!(user.country.unwrap(), "MMR".to_string());
-    assert_eq!(user.referer.unwrap(), "localhost".to_string());
-    assert_eq!(&user.utm_marks.as_ref().unwrap()[0].key, "source");
-    assert_eq!(&user.utm_marks.as_ref().unwrap()[0].value, "word_of_mouth");
+    assert_eq!(
+        user.referal.expect("user.referal is none"),
+        referal.create_user.raw_id
+    );
+    assert_eq!(
+        user.country.expect("user.country is none").alpha3,
+        "MMR".to_string()
+    );
+    assert_eq!(
+        user.referer.expect("user.referer is none"),
+        "localhost".to_string()
+    );
+    assert_eq!(
+        &user.utm_marks.as_ref().expect("user.utm_marks is none")[0].key,
+        "source"
+    );
+    assert_eq!(
+        &user.utm_marks.as_ref().expect("user.utm_marks is none")[0].value,
+        "word_of_mouth"
+    );
 }
 
 #[test]
@@ -720,6 +935,151 @@ fn set_up_store(
     })?;
     context.clear_bearer();
     Ok((user, token, store, category_level_3))
+}
+
+fn verify_update_store_values(
+    updated_store: get_store::RustGetStoreStore,
+    expected_values: update_store::UpdateStoreInput,
+) {
+    assert_eq!(
+        updated_store.name[0].text,
+        expected_values.name.unwrap()[0].text
+    );
+    assert_eq!(
+        updated_store.short_description[0].text,
+        expected_values.short_description.unwrap()[0].text
+    );
+    assert_eq!(
+        updated_store
+            .long_description
+            .expect("update_store.long_description is none")[0]
+            .text,
+        expected_values.long_description.unwrap()[0].text
+    );
+    assert_eq!(updated_store.slug, expected_values.slug.unwrap());
+    assert_eq!(
+        updated_store.cover.expect("update_store.cover is none"),
+        expected_values.cover.unwrap()
+    );
+    assert_eq!(
+        updated_store.logo.expect("update_store.logo is none"),
+        expected_values.logo.unwrap()
+    );
+    assert_eq!(
+        updated_store.phone.expect("update_store.phone is none"),
+        expected_values.phone.unwrap()
+    );
+    assert_eq!(
+        updated_store.email.expect("update_store.email is none"),
+        expected_values.email.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .instagram_url
+            .expect("update_store.instagram_url is none"),
+        expected_values.instagram_url.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .twitter_url
+            .expect("update_store.twitter_url is none"),
+        expected_values.twitter_url.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .facebook_url
+            .expect("update_store.facebook_url is none"),
+        expected_values.facebook_url.unwrap()
+    );
+    assert_eq!(
+        updated_store.slogan.expect("update_store.slogan is none"),
+        expected_values.slogan.unwrap()
+    );
+    assert!((updated_store.rating - expected_values.rating.unwrap()).abs() < 0.001);
+
+    assert_eq!(
+        updated_store
+            .address_full
+            .value
+            .expect("update_store.address_full.value is none"),
+        expected_values.address_full.value.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .country
+            .expect("update_store.address_full.country is none"),
+        expected_values.address_full.country.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .country_code
+            .expect("update_store.address_full.country_code is none"),
+        expected_values.address_full.country_code.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .administrative_area_level1
+            .expect("update_store.address_full.administrative_area_level1 is none"),
+        expected_values
+            .address_full
+            .administrative_area_level1
+            .unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .administrative_area_level2
+            .expect("update_store.address_full.administrative_area_level2 is none"),
+        expected_values
+            .address_full
+            .administrative_area_level2
+            .unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .locality
+            .expect("update_store.address_full.locality is none"),
+        expected_values.address_full.locality.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .political
+            .expect("update_store.address_full.political is none"),
+        expected_values.address_full.political.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .postal_code
+            .expect("update_store.address_full.postal_code is none"),
+        expected_values.address_full.postal_code.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .route
+            .expect("update_store.address_full.route is none"),
+        expected_values.address_full.route.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .street_number
+            .expect("update_store.address_full.street_number is none"),
+        expected_values.address_full.street_number.unwrap()
+    );
+    assert_eq!(
+        updated_store
+            .address_full
+            .place_id
+            .expect("update_store.address_full.place_id is none"),
+        expected_values.address_full.place_id.unwrap()
+    );
 }
 
 fn set_up_base_product(

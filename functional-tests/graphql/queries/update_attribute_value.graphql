@@ -1,12 +1,12 @@
 mutation updateAttributeValue($input: UpdateAttributeValueInput!) {
  updateAttributeValue(input: $input) {
-    rawId,
-    attrRawId,
-    code,
+    rawId
+    attrRawId
+    code
     translations {
-        lang,
+        lang
         text
-    },
+    }
     attribute {
         rawId
     }

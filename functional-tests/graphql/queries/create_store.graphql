@@ -47,5 +47,18 @@ mutation createStore($input: CreateStoreInput!) {
     slogan
     rating
     status
+    addressFull {
+      value
+      country
+      countryCode
+      administrativeAreaLevel1
+      administrativeAreaLevel2
+      locality
+      political
+      postalCode
+      route
+      streetNumber
+      placeId
+    }
   }
 }
