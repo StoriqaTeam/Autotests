@@ -359,6 +359,13 @@ impl TestContext {
         DeactivateProductMutation
     );
 
+    graphql_request!(
+        create_delivery_company,
+        create_delivery_company,
+        NewCompanyInput,
+        CreateCompanyMutation
+    );
+
     pub fn delete_store(&self, store_id: i64) -> Result<delete_store::ResponseData, FailureError> {
         let request_body =
             delete_store::DeleteStoreMutation::build_query(delete_store::Variables { store_id });

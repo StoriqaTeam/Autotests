@@ -763,6 +763,7 @@ pub fn update_store_in_status_draft() {
 pub fn update_base_product_in_status_draft() {
     //setup
     let mut context = TestContext::new();
+    //given
     let (_user, token, _store, _category, base_product) =
         set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
     context.set_bearer(token);
@@ -797,6 +798,7 @@ pub fn update_base_product_in_status_draft() {
 pub fn create_product_without_attributes() {
     //setup
     let mut context = TestContext::new();
+    //given
     let (_user, token, _store, _category, base_product) =
         set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
     context.set_bearer(token);
@@ -829,6 +831,7 @@ pub fn create_product_without_attributes() {
 pub fn deactivate_product() {
     //setup
     let mut context = TestContext::new();
+    //given
     let (_user, token, _store, _category, base_product) =
         set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
     context.set_bearer(token);
@@ -864,6 +867,7 @@ pub fn deactivate_product() {
 pub fn create_product_without_base_product() {
     //setup
     let mut context = TestContext::new();
+    //given
     let (_user, token, _store, _category, base_product) =
         set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
     context.set_bearer(token);
@@ -888,6 +892,7 @@ pub fn create_product_without_base_product() {
 pub fn update_product_without_attributes() {
     //setup
     let mut context = TestContext::new();
+    //given
     let (_user, token, _store, _category, base_product) =
         set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
     context.set_bearer(token);
@@ -928,6 +933,46 @@ pub fn update_product_without_attributes() {
     assert_eq!(update_product.id, new_product.id);
     assert_eq!(update_product.pre_order, true);
     assert_eq!(update_product.pre_order_days, 15);
+}
+
+#[test]
+pub fn create_delivery_company() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let company_payload = create_delivery_company::NewCompanyInput {
+        name: "Test company".to_string(),
+        label: "TEST".to_string(),
+        description: Some("Test description".to_string()),
+        deliveries_from: vec!["RUS".to_string()],
+        logo: "test loge URL".to_string(),
+        ..create_delivery_company::default_create_company_input()
+    };
+    //when
+    let create_company = context
+        .create_delivery_company(company_payload.clone())
+        .expect("Cannot get data from create_delivery_company")
+        .create_company;
+
+    let rus_country = create_company
+        .deliveries_from
+        .iter()
+        .flat_map(|root| {
+            root.children
+                .iter()
+                .flat_map(|region| region.children.iter())
+        })
+        .find(|c| c.alpha3 == "RUS".to_string());
+    //then
+    assert_eq!(
+        rus_country.map(|c| c.alpha3.clone()),
+        Some("RUS".to_string())
+    );
+    assert_eq!(create_company.label, company_payload.label);
+    assert_eq!(create_company.name, company_payload.name);
+    assert_eq!(create_company.description, company_payload.description);
+    assert_eq!(create_company.logo, company_payload.logo);
 }
 
 fn set_up_store(
