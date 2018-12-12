@@ -206,8 +206,7 @@ impl TestContext {
         Ok(())
     }
 
-    pub fn request<T: GraphqlRequest, S: Into<T>>(&self, input: S) -> Result<T::Output, FailureError> {
-        let request: T = input.into();
+    pub fn request<T: GraphqlRequest>(&self, input: T) -> Result<T::Output, FailureError> {
         let payload: serde_json::Value = input.into();
         let response_body: serde_json::Value = self.graphql_request(payload)?;
         T::response(response_body)
@@ -246,13 +245,6 @@ impl TestContext {
         delete_category,
         DeleteCategoryInput,
         DeleteCategoryMutation
-    );
-
-    graphql_request!(
-        create_user,
-        create_user,
-        CreateUserInput,
-        CreateUserMutation
     );
 
     graphql_request!(

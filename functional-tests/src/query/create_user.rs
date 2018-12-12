@@ -1,6 +1,6 @@
+use failure::Error as FailureError;
 use graphql_client::GraphQLQuery;
 use graphql_client::Response;
-use failure::Error as FailureError;
 
 use request::GraphqlRequest;
 
@@ -34,16 +34,14 @@ impl GraphqlRequest for CreateUserInput {
         match (response_body.data, response_body.errors) {
             (Some(data), None) => Ok(data.create_user),
             (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
-            _ => unreachable!()
+            _ => unreachable!(),
         }
     }
 }
 
 impl From<CreateUserInput> for serde_json::Value {
     fn from(val: CreateUserInput) -> serde_json::Value {
-        let request_body = CreateUserMutation::build_query(
-            Variables { input: val },
-        );
+        let request_body = CreateUserMutation::build_query(Variables { input: val });
         serde_json::to_value(request_body).expect("failed to serialize CreateUserInput")
     }
 }

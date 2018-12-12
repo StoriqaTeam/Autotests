@@ -13,9 +13,8 @@ pub fn verify_email() {
     let mut context = TestContext::new();
     //given
     let user = context
-        .create_user(create_user::default_create_user_input())
-        .expect("context.create_user failed")
-        .create_user;
+        .request(create_user::default_create_user_input())
+        .expect("createUser failed");
     let verification_token = context
         .get_email_verification_token(&user.email)
         .expect("context.get_email_verification_token");
@@ -48,9 +47,8 @@ pub fn deactivate_user() {
     let mut context = TestContext::new();
     //given
     let user = context
-        .create_user(create_user::default_create_user_input())
-        .unwrap()
-        .create_user;
+        .request(create_user::default_create_user_input())
+        .expect("createUser failed");
     //when
     context.as_superadmin();
     let deactivated_user = context
@@ -70,9 +68,8 @@ pub fn update_user() {
     let mut context = TestContext::new();
     //given
     let user = context
-        .create_user(create_user::default_create_user_input())
-        .unwrap()
-        .create_user;
+        .request(create_user::default_create_user_input())
+        .expect("createUser failed");
     context.verify_user_email(&user.email).unwrap();
     let token: String = context
         .get_jwt_by_email(get_jwt_by_email::default_create_jwt_email_input())
@@ -769,9 +766,8 @@ pub fn create_store() {
     let mut context = TestContext::new();
     //given
     let user = context
-        .create_user(create_user::default_create_user_input())
-        .unwrap()
-        .create_user;
+        .request(create_user::default_create_user_input())
+        .expect("createUser failed");
     context.verify_user_email(&user.email).unwrap();
     let token: String = context
         .get_jwt_by_email(get_jwt_by_email::default_create_jwt_email_input())
@@ -798,7 +794,7 @@ pub fn create_user() {
     //given
     let new_user = create_user::default_create_user_input();
     //when
-    let user = context.create_user(new_user).unwrap().create_user;
+    let user = context.request(new_user).expect("createUser failed");
     //then
     assert_eq!(user.email, create_user::default_create_user_input().email);
 }
@@ -809,7 +805,7 @@ pub fn delete_user() {
     let mut context = TestContext::new();
     //given
     let new_user = create_user::default_create_user_input();
-    let user = context.create_user(new_user).unwrap().create_user;
+    let user = context.request(new_user).expect("createUser failed");
     //when
     context.as_superadmin();
     let delete_result = context.delete_user(user.raw_id);
@@ -823,16 +819,16 @@ pub fn create_user_with_additional_data() {
     let context = TestContext::new();
     //given
     let referal = context
-        .create_user(create_user::CreateUserInput {
+        .request(create_user::CreateUserInput {
             email: "referral@email.net".to_string(),
             ..create_user::default_create_user_input()
         })
-        .unwrap();
+        .expect("createUser failed");
 
     let new_user = create_user::CreateUserInput {
         additional_data: Some(create_user::NewUserAdditionalDataInput {
             country: Some("MM".to_string()),
-            referal: Some(referal.create_user.raw_id),
+            referal: Some(referal.raw_id),
             referer: Some("localhost".to_string()),
             utm_marks: Some(vec![create_user::UtmMarkInput {
                 key: "source".to_string(),
@@ -842,13 +838,10 @@ pub fn create_user_with_additional_data() {
         ..create_user::default_create_user_input()
     };
     //when
-    let user = context.create_user(new_user).unwrap().create_user;
+    let user = context.request(new_user).expect("createUser failed");
     //then
     assert_eq!(user.email, create_user::default_create_user_input().email);
-    assert_eq!(
-        user.referal.expect("user.referal is none"),
-        referal.create_user.raw_id
-    );
+    assert_eq!(user.referal.expect("user.referal is none"), referal.raw_id);
     assert_eq!(
         user.country.expect("user.country is none").alpha3,
         "MMR".to_string()
@@ -900,16 +893,16 @@ pub fn create_user_via_facebook_with_additional_data() {
     let context = TestContext::new();
     //given
     let referal = context
-        .create_user(create_user::CreateUserInput {
+        .request(create_user::CreateUserInput {
             email: "referral@email.net".to_string(),
             ..create_user::default_create_user_input()
         })
-        .unwrap();
+        .expect("createUser failed");
 
     let facebook_jwt = get_jwt_by_provider::CreateJWTProviderInput {
         additional_data: Some(get_jwt_by_provider::NewUserAdditionalDataInput {
             country: Some("MM".to_string()),
-            referal: Some(referal.create_user.raw_id),
+            referal: Some(referal.raw_id),
             referer: Some("localhost".to_string()),
             utm_marks: Some(vec![get_jwt_by_provider::UtmMarkInput {
                 key: "source".to_string(),
@@ -932,16 +925,16 @@ pub fn create_user_via_google_with_additional_data() {
     let context = TestContext::new();
     //given
     let referal = context
-        .create_user(create_user::CreateUserInput {
+        .request(create_user::CreateUserInput {
             email: "referral@email.net".to_string(),
             ..create_user::default_create_user_input()
         })
-        .unwrap();
+        .expect("createUser failed");
 
     let google_jwt = get_jwt_by_provider::CreateJWTProviderInput {
         additional_data: Some(get_jwt_by_provider::NewUserAdditionalDataInput {
             country: Some("MM".to_string()),
-            referal: Some(referal.create_user.raw_id),
+            referal: Some(referal.raw_id),
             referer: Some("localhost".to_string()),
             utm_marks: Some(vec![get_jwt_by_provider::UtmMarkInput {
                 key: "source".to_string(),
@@ -1261,22 +1254,22 @@ fn set_up_store(
     context: &mut TestContext,
 ) -> Result<
     (
-        create_user::ResponseData,
+        create_user::RustCreateUserCreateUser,
         String,
         create_store::ResponseData,
         create_category::ResponseData,
     ),
     FailureError,
 > {
-    let user = context.create_user(create_user::default_create_user_input())?;
-    context.verify_user_email(&user.create_user.email).unwrap();
+    let user = context.request(create_user::default_create_user_input())?;
+    context.verify_user_email(&user.email).unwrap();
     let token: String = context
         .get_jwt_by_email(get_jwt_by_email::default_create_jwt_email_input())?
         .get_jwt_by_email
         .token;
     context.set_bearer(token.clone());
     let store = context.create_store(create_store::CreateStoreInput {
-        user_id: user.create_user.raw_id,
+        user_id: user.raw_id,
         ..create_store::default_create_store_input()
     })?;
     context.as_superadmin();
@@ -1448,7 +1441,7 @@ fn set_up_base_product(
     context: &mut TestContext,
 ) -> Result<
     (
-        create_user::ResponseData,
+        create_user::RustCreateUserCreateUser,
         String,
         create_store::ResponseData,
         create_category::ResponseData,
