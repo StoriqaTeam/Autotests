@@ -1,0 +1,32 @@
+mutation updateCompany($input: UpdateCompanyInput!) {
+  updateCompany(input: $input) {
+    id
+    rawId
+    name
+    label
+    description
+    currency
+    logo
+    deliveriesFrom {
+      label
+      parent
+      alpha2
+      alpha3
+      numeric
+      children {
+        label
+        parent
+        alpha2
+        alpha3
+        numeric
+        children {
+          label
+          parent
+          alpha2
+          alpha3
+          numeric
+        }
+      }
+    }
+  }
+}
