@@ -20,12 +20,11 @@ pub fn verify_email() {
         .expect("context.get_email_verification_token");
     //when
     let verification = context
-        .verify_email(verify_email::VerifyEmailApply {
+        .request(verify_email::VerifyEmailApply {
             token: verification_token.clone(),
             ..verify_email::default_verify_email_input()
         })
-        .expect("context.verify_email failed")
-        .verify_email;
+        .expect("verify_email failed");
     //then
     assert_eq!(verification.success, true);
     assert_eq!(verification.email, user.email);
@@ -70,20 +69,18 @@ pub fn update_user() {
         .expect("createUser failed");
     context.verify_user_email(&user.email).unwrap();
     let token: String = context
-        .get_jwt_by_email(get_jwt_by_email::default_create_jwt_email_input())
-        .unwrap()
-        .get_jwt_by_email
+        .request(get_jwt_by_email::default_create_jwt_email_input())
+        .expect("get_jwt_by_email faile")
         .token;
     context.set_bearer(token);
     //when
     let updated_user = context
-        .update_user(update_user::UpdateUserInput {
+        .request(update_user::UpdateUserInput {
             id: user.id,
             is_active: Some(false),
             ..update_user::default_update_user_input()
         })
-        .unwrap()
-        .update_user;
+        .expect("update_user failed");
     //then
     let expected_values = update_user::default_update_user_input();
     assert_eq!(updated_user.is_active, false);
@@ -154,7 +151,7 @@ pub fn update_base_product_test() {
     context.set_bearer(token);
     //when
     let updated_base_product = context
-        .update_base_product(update_base_product::UpdateBaseProductInput {
+        .request(update_base_product::UpdateBaseProductInput {
             id: base_product.id,
             length_cm: Some(20),
             width_cm: Some(30),
@@ -162,8 +159,7 @@ pub fn update_base_product_test() {
             weight_g: Some(2000),
             ..update_base_product::default_update_base_product_input()
         })
-        .unwrap()
-        .update_base_product;
+        .expect("update_base_product failed");
     //then
     let updated_base_product = context
         .get_base_product(updated_base_product.raw_id)
@@ -220,12 +216,11 @@ pub fn update_base_product_does_not_update_rating() {
     let initial_rating = base_product.rating;
     //when
     let updated_base_product = context
-        .update_base_product(update_base_product::UpdateBaseProductInput {
+        .request(update_base_product::UpdateBaseProductInput {
             id: base_product.id,
             ..update_base_product::default_update_base_product_input()
         })
-        .unwrap()
-        .update_base_product;
+        .expect("update_base_product failed");
     //then
     let updated_base_product = context
         .get_base_product(updated_base_product.raw_id)
@@ -304,12 +299,11 @@ pub fn update_store() {
     context.set_bearer(token);
     //when
     let updated_store = context
-        .update_store(update_store::UpdateStoreInput {
+        .request(update_store::UpdateStoreInput {
             id: store.id,
             ..update_store::default_update_store_input()
         })
-        .unwrap()
-        .update_store;
+        .expect("update_store failed");
     //then
     let updated_store = context
         .get_store(updated_store.raw_id)
@@ -331,12 +325,11 @@ pub fn update_store_does_not_update_rating() {
     let initial_rating = store.rating;
     //when
     let updated_store = context
-        .update_store(update_store::UpdateStoreInput {
+        .request(update_store::UpdateStoreInput {
             id: store.id,
             ..update_store::default_update_store_input()
         })
-        .unwrap()
-        .update_store;
+        .expect("update_store failed");
     //then
     let updated_store = context
         .get_store(updated_store.raw_id)
@@ -378,12 +371,11 @@ pub fn update_attribute() {
         .expect("create_attribute failed");
     //when
     let updated_attribute = context
-        .update_attribute(update_attribute::UpdateAttributeInput {
+        .request(update_attribute::UpdateAttributeInput {
             id: attribute.id,
             ..update_attribute::default_update_attribute_input()
         })
-        .unwrap()
-        .update_attribute;
+        .expect("update_attribute failed");
     //then
     assert_eq!(updated_attribute.name[0].text, "Update category");
 }
@@ -517,12 +509,11 @@ pub fn update_category() {
         .expect("create_category failed");
     //when
     let updated_category = context
-        .update_category(update_category::UpdateCategoryInput {
+        .request(update_category::UpdateCategoryInput {
             id: category.id,
             ..update_category::default_update_category_input()
         })
-        .unwrap()
-        .update_category;
+        .expect("update_category failed");
     //then
     let expected_values = update_category::default_update_category_input();
     assert_eq!(updated_category.slug, expected_values.slug.unwrap());
@@ -614,13 +605,12 @@ pub fn update_attribute_value() {
         .expect("create_attribute_value failed");
     //when
     let updated = context
-        .update_attribute_value(update_attribute_value::UpdateAttributeValueInput {
+        .request(update_attribute_value::UpdateAttributeValueInput {
             raw_id: new_value.raw_id,
             raw_attribute_id: attribute.raw_id,
             ..update_attribute_value::default_create_attribute_value_input()
         })
-        .unwrap()
-        .update_attribute_value;
+        .expect("update_attribute_value failed");
     //then
     assert_eq!(
         Some(updated.code),
@@ -745,9 +735,8 @@ pub fn create_store() {
         .expect("createUser failed");
     context.verify_user_email(&user.email).unwrap();
     let token: String = context
-        .get_jwt_by_email(get_jwt_by_email::default_create_jwt_email_input())
-        .unwrap()
-        .get_jwt_by_email
+        .request(get_jwt_by_email::default_create_jwt_email_input())
+        .expect("get_jwt_by_email failed")
         .token;
     context.set_bearer(token);
     //when
@@ -842,7 +831,7 @@ pub fn create_user_via_facebook() {
     //given
     let facebook_jwt = get_jwt_by_provider::facebook_create_jwt_provider_input();
     //when
-    let user = context.create_user_jwt(facebook_jwt);
+    let user = context.request(facebook_jwt);
     //then
     assert!(user.is_ok());
 }
@@ -855,7 +844,7 @@ pub fn create_user_via_google() {
     //given
     let google_jwt = get_jwt_by_provider::google_create_jwt_provider_input();
     //when
-    let user = context.create_user_jwt(google_jwt);
+    let user = context.request(google_jwt);
     //then
     assert!(user.is_ok());
 }
@@ -886,7 +875,7 @@ pub fn create_user_via_facebook_with_additional_data() {
         ..get_jwt_by_provider::facebook_create_jwt_provider_input()
     };
     //when
-    let user = context.create_user_jwt(facebook_jwt);
+    let user = context.request(facebook_jwt);
     //then
     assert!(user.is_ok());
     panic!("Finish test");
@@ -918,7 +907,7 @@ pub fn create_user_via_google_with_additional_data() {
         ..get_jwt_by_provider::google_create_jwt_provider_input()
     };
     //when
-    let user = context.create_user_jwt(google_jwt);
+    let user = context.request(google_jwt);
     //then
     assert!(user.is_ok());
     panic!("Finish test");
@@ -948,13 +937,13 @@ pub fn update_store_in_status_draft() {
     context.set_bearer(token);
 
     //when
-    let update_result = context.update_store(update_store::UpdateStoreInput {
+    let update_result = context.request(update_store::UpdateStoreInput {
         id: store.id.clone(),
         email: Some("example@example.com".to_string()),
         ..update_store::default_update_store_input()
     });
 
-    let update_store = update_result.expect("Cannot get update store").update_store;
+    let update_store = update_result.expect("Cannot get update store");
 
     //then
     assert_eq!(update_store.email, Some("example@example.com".to_string()));
@@ -978,9 +967,8 @@ pub fn update_base_product_in_status_draft() {
     };
 
     let update_base_product = context
-        .update_base_product(update_base_product_payload)
-        .expect("Cannot get update base_product")
-        .update_base_product;
+        .request(update_base_product_payload)
+        .expect("Cannot get update base_product");
 
     //then
     assert_eq!(update_base_product.id, base_product.id);
@@ -1109,9 +1097,8 @@ pub fn update_product_without_attributes() {
     };
 
     let update_product = context
-        .update_product(update_product_payload)
-        .expect("Cannot get update product")
-        .update_product;
+        .request(update_product_payload)
+        .expect("Cannot get update product");
     //then
     assert_eq!(base_product.status, create_base_product::Status::DRAFT);
     assert_eq!(update_product.id, new_product.id);
@@ -1175,9 +1162,8 @@ pub fn update_delivery_company() {
         ..update_delivery_company::default_update_company_input()
     };
     let update_company = context
-        .update_delivery_company(update_company_payload)
-        .expect("Cannot get data from update_delivery_company")
-        .update_company;
+        .request(update_company_payload)
+        .expect("Cannot get data from update_delivery_company");
     //then
     assert_eq!(update_company.id, create_company.id);
     assert_eq!(update_company.name, "Test company plus update".to_string());
@@ -1216,8 +1202,7 @@ fn set_up_store(
     let user = context.request(create_user::default_create_user_input())?;
     context.verify_user_email(&user.email).unwrap();
     let token: String = context
-        .get_jwt_by_email(get_jwt_by_email::default_create_jwt_email_input())?
-        .get_jwt_by_email
+        .request(get_jwt_by_email::default_create_jwt_email_input())?
         .token;
     context.set_bearer(token.clone());
     let store = context.request(create_store::CreateStoreInput {
