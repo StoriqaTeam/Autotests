@@ -1212,6 +1212,32 @@ pub fn create_delivery_company() {
 }
 
 #[test]
+pub fn update_delivery_company() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let company_payload = create_delivery_company::default_create_company_input();
+    let create_company = context
+        .create_delivery_company(company_payload)
+        .expect("Cannot get data from create_delivery_company")
+        .create_company;
+    //when
+    let update_company_payload = update_delivery_company::UpdateCompanyInput {
+        id: create_company.id.clone(),
+        name: Some("Test company plus update".to_string()),
+        ..update_delivery_company::default_update_company_input()
+    };
+    let update_company = context
+        .update_delivery_company(update_company_payload)
+        .expect("Cannot get data from update_delivery_company")
+        .update_company;
+    //then
+    assert_eq!(update_company.id, create_company.id);
+    assert_eq!(update_company.name, "Test company plus update".to_string());
+}
+
+#[test]
 pub fn delete_delivery_company() {
     //setup
     let mut context = TestContext::new();

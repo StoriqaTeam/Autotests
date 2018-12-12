@@ -397,6 +397,13 @@ impl TestContext {
         CreateCompanyMutation
     );
 
+    graphql_request!(
+        update_delivery_company,
+        update_delivery_company,
+        UpdateCompanyInput,
+        UpdateCompanyMutation
+    );
+
     pub fn delete_store(&self, store_id: i64) -> Result<delete_store::ResponseData, FailureError> {
         let request_body =
             delete_store::DeleteStoreMutation::build_query(delete_store::Variables { store_id });

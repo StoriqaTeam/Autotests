@@ -28,6 +28,7 @@ pub mod update_attribute;
 pub mod update_attribute_value;
 pub mod update_base_product;
 pub mod update_category;
+pub mod update_delivery_company;
 pub mod update_product;
 pub mod update_store;
 pub mod update_user;
