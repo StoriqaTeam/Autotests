@@ -36,9 +36,9 @@ pub fn default_update_base_product_input() -> UpdateBaseProductInput {
         category_id: None,
         rating: Some(1.0),
         slug: Some("updated-slug".to_string()),
-        length_cm: Some(20),
-        width_cm: Some(20),
-        height_cm: Some(20),
-        weight_g: Some(2000),
+        length_cm: None,
+        width_cm: None,
+        height_cm: None,
+        weight_g: None,
     }
 }

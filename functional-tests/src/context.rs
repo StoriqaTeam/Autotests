@@ -101,8 +101,12 @@ impl TestContext {
         context
     }
 
-    pub fn verify_email(&self, email: &str) -> Result<(), FailureError> {
+    pub fn verify_user_email(&self, email: &str) -> Result<(), FailureError> {
         self.users_microservice.verify_email(email)
+    }
+
+    pub fn get_email_verification_token(&self, email: &str) -> Result<String, FailureError> {
+        self.users_microservice.get_email_verification_token(email)
     }
 
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
@@ -281,6 +285,12 @@ impl TestContext {
         get_jwt_by_email,
         CreateJWTEmailInput,
         GetJwtByEmailMutation
+    );
+    graphql_request!(
+        verify_email,
+        verify_email,
+        VerifyEmailApply,
+        VerifyEmailMutation
     );
     graphql_request!(
         create_store,

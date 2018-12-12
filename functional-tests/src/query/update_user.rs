@@ -11,7 +11,7 @@ pub fn default_update_user_input() -> UpdateUserInput {
     UpdateUserInput {
         client_mutation_id: "".to_string(),
         id: "".to_string(),
-        is_active: Some(false),
+        is_active: None,
         phone: Some("9876543".to_string()),
         first_name: Some("updated user".to_string()),
         last_name: Some("updated userovsky".to_string()),

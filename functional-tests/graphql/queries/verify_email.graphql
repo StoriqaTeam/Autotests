@@ -1,0 +1,7 @@
+mutation VerifyEmail($input: VerifyEmailApply!) {
+  verifyEmail(input: $input) {
+    success
+    token
+    email
+  }
+}

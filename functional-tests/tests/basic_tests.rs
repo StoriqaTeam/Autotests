@@ -8,6 +8,41 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn verify_email() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let user = context
+        .create_user(create_user::default_create_user_input())
+        .expect("context.create_user failed")
+        .create_user;
+    let verification_token = context
+        .get_email_verification_token(&user.email)
+        .expect("context.get_email_verification_token");
+    //when
+    let verification = context
+        .verify_email(verify_email::VerifyEmailApply {
+            token: verification_token.clone(),
+            ..verify_email::default_verify_email_input()
+        })
+        .expect("context.verify_email failed")
+        .verify_email;
+    //then
+    assert_eq!(verification.success, true);
+    assert_eq!(verification.email, user.email);
+    context.set_bearer(verification.token);
+    //only verified user can create store
+    let store = context
+        .create_store(create_store::CreateStoreInput {
+            user_id: user.raw_id,
+            ..create_store::default_create_store_input()
+        })
+        .expect("context.create_store failed")
+        .create_store;
+    assert_eq!(store.user_id, user.raw_id);
+}
+
+#[test]
 pub fn deactivate_user() {
     //setup
     let mut context = TestContext::new();
@@ -38,7 +73,7 @@ pub fn update_user() {
         .create_user(create_user::default_create_user_input())
         .unwrap()
         .create_user;
-    context.verify_email(&user.email).unwrap();
+    context.verify_user_email(&user.email).unwrap();
     let token: String = context
         .get_jwt_by_email(get_jwt_by_email::default_create_jwt_email_input())
         .unwrap()
@@ -49,13 +84,14 @@ pub fn update_user() {
     let updated_user = context
         .update_user(update_user::UpdateUserInput {
             id: user.id,
+            is_active: Some(false),
             ..update_user::default_update_user_input()
         })
         .unwrap()
         .update_user;
     //then
     let expected_values = update_user::default_update_user_input();
-    assert_eq!(updated_user.is_active, expected_values.is_active.unwrap());
+    assert_eq!(updated_user.is_active, false);
     assert_eq!(
         updated_user.phone.expect("updated_user.phone is none"),
         expected_values.phone.unwrap()
@@ -125,6 +161,10 @@ pub fn update_base_product_test() {
     let updated_base_product = context
         .update_base_product(update_base_product::UpdateBaseProductInput {
             id: base_product.create_base_product.id,
+            length_cm: Some(20),
+            width_cm: Some(30),
+            height_cm: Some(40),
+            weight_g: Some(2000),
             ..update_base_product::default_update_base_product_input()
         })
         .unwrap()
@@ -138,10 +178,10 @@ pub fn update_base_product_test() {
     let expected_values = update_base_product::default_update_base_product_input();
     assert!((updated_base_product.rating - expected_values.rating.unwrap()).abs() < 0.001);
     assert_eq!(updated_base_product.slug, expected_values.slug.unwrap());
-    assert_eq!(updated_base_product.length_cm, expected_values.length_cm);
-    assert_eq!(updated_base_product.width_cm, expected_values.width_cm);
-    assert_eq!(updated_base_product.height_cm, expected_values.height_cm);
-    assert_eq!(updated_base_product.weight_g, expected_values.weight_g);
+    assert_eq!(updated_base_product.length_cm, Some(20));
+    assert_eq!(updated_base_product.width_cm, Some(30));
+    assert_eq!(updated_base_product.height_cm, Some(40));
+    assert_eq!(updated_base_product.weight_g, Some(2000));
     assert_eq!(
         updated_base_product.name[0].text,
         expected_values.name.unwrap()[0].text
@@ -732,7 +772,7 @@ pub fn create_store() {
         .create_user(create_user::default_create_user_input())
         .unwrap()
         .create_user;
-    context.verify_email(&user.email).unwrap();
+    context.verify_user_email(&user.email).unwrap();
     let token: String = context
         .get_jwt_by_email(get_jwt_by_email::default_create_jwt_email_input())
         .unwrap()
@@ -1138,7 +1178,7 @@ fn set_up_store(
     FailureError,
 > {
     let user = context.create_user(create_user::default_create_user_input())?;
-    context.verify_email(&user.create_user.email).unwrap();
+    context.verify_user_email(&user.create_user.email).unwrap();
     let token: String = context
         .get_jwt_by_email(get_jwt_by_email::default_create_jwt_email_input())?
         .get_jwt_by_email
