@@ -8,6 +8,67 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn update_user() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let user = context
+        .create_user(create_user::default_create_user_input())
+        .unwrap()
+        .create_user;
+    context.verify_email(&user.email).unwrap();
+    let token: String = context
+        .get_jwt_by_email(get_jwt_by_email::default_create_jwt_email_input())
+        .unwrap()
+        .get_jwt_by_email
+        .token;
+    context.set_bearer(token);
+    //when
+    let updated_user = context
+        .update_user(update_user::UpdateUserInput {
+            id: user.id,
+            ..update_user::default_update_user_input()
+        })
+        .unwrap()
+        .update_user;
+    //then
+    let expected_values = update_user::default_update_user_input();
+    assert_eq!(updated_user.is_active, expected_values.is_active.unwrap());
+    assert_eq!(
+        updated_user.phone.expect("updated_user.phone is none"),
+        expected_values.phone.unwrap()
+    );
+    assert_eq!(
+        updated_user
+            .first_name
+            .expect("updated_user.first_name is none"),
+        expected_values.first_name.unwrap()
+    );
+    assert_eq!(
+        updated_user
+            .last_name
+            .expect("updated_user.last_name is none"),
+        expected_values.last_name.unwrap()
+    );
+    assert_eq!(
+        updated_user
+            .middle_name
+            .expect("updated_user.middle_name is none"),
+        expected_values.middle_name.unwrap()
+    );
+    assert_eq!(
+        updated_user
+            .birthdate
+            .expect("updated_user.birthdate is none"),
+        expected_values.birthdate.unwrap()
+    );
+    assert_eq!(
+        updated_user.avatar.expect("updated_user.avatar is none"),
+        expected_values.avatar.unwrap()
+    );
+}
+
+#[test]
 pub fn deactivate_base_product() {
     //setup
     let mut context = TestContext::new();
