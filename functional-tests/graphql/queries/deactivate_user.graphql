@@ -1,0 +1,33 @@
+mutation DeactivateUser($input: DeactivateUserInput!) {
+  deactivateUser(input: $input) {
+    id
+    rawId
+    email
+    isActive
+    phone
+    firstName
+    lastName
+    middleName
+    gender
+    birthdate
+    avatar
+    isBlocked
+    emarsysId
+    createdAt
+    updatedAt
+    referal
+    utmMarks {
+      key
+      value
+    }
+    country {
+      label
+      parent
+      level
+      alpha2
+      alpha3
+      numeric
+    }
+    referer
+  }
+}
