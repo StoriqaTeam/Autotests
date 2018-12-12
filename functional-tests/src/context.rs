@@ -8,6 +8,7 @@ use serde::Serialize;
 use config::Config;
 use microservice::*;
 use query::*;
+use request::GraphqlRequest;
 
 pub struct TestContext {
     bearer: Option<String>,
@@ -203,6 +204,13 @@ impl TestContext {
         self.saga_microservice.healthcheck()?;
         self.gateway_microservice.healthcheck()?;
         Ok(())
+    }
+
+    pub fn request<T: GraphqlRequest, S: Into<T>>(&self, input: S) -> Result<T::Output, FailureError> {
+        let request: T = input.into();
+        let payload: serde_json::Value = input.into();
+        let response_body: serde_json::Value = self.graphql_request(payload)?;
+        T::response(response_body)
     }
 
     graphql_request!(
