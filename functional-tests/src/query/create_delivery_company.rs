@@ -28,8 +28,22 @@ impl Clone for NewCompanyInput {
             label: self.label.clone(),
             description: self.description.clone(),
             deliveries_from: self.deliveries_from.clone(),
-            currency: Currency::STQ, // TODO: need derive Clone
+            currency: self.currency.clone(),
             logo: self.logo.clone(),
+        }
+    }
+}
+
+impl Clone for Currency {
+    fn clone(&self) -> Self {
+        match self {
+            &Currency::RUB => Currency::RUB,
+            &Currency::EUR => Currency::EUR,
+            &Currency::USD => Currency::USD,
+            &Currency::BTC => Currency::BTC,
+            &Currency::ETH => Currency::ETH,
+            &Currency::STQ => Currency::STQ,
+            &Currency::Other(ref value) => Currency::Other(value.clone()),
         }
     }
 }
