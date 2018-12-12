@@ -1,0 +1,21 @@
+mutation deactivateProduct($input: DeactivateProductInput!) {
+  deactivateProduct(input: $input) {
+    id
+    rawId
+    baseProductId
+    isActive
+    discount
+    currency
+    photoMain
+    additionalPhotos
+    vendorCode
+    cashback
+    price
+    preOrder
+    preOrderDays
+    customerPrice {
+      price
+      currency
+    }
+  }
+}

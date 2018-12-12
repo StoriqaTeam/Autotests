@@ -826,6 +826,41 @@ pub fn create_product_without_attributes() {
 }
 
 #[test]
+pub fn deactivate_product() {
+    //setup
+    let mut context = TestContext::new();
+    let (_user, token, _store, _category, base_product) =
+        set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
+    context.set_bearer(token);
+    let product_payload = create_product::CreateProductWithAttributesInput {
+        product: create_product::NewProduct {
+            base_product_id: Some(base_product.create_base_product.raw_id),
+            ..create_product::default_new_product()
+        },
+        ..create_product::default_create_product_input()
+    };
+
+    let new_product = context
+        .create_product(product_payload)
+        .expect("Cannot get data from create_product")
+        .create_product;
+
+    let deactivate_product_payload = deactivate_product::DeactivateProductInput {
+        id: new_product.id.clone(),
+        ..deactivate_product::default_update_base_product_input()
+    };
+
+    //when
+    let product = context
+        .deactivate_product(deactivate_product_payload)
+        .expect("Cannot get data from deactivate_product")
+        .deactivate_product;
+    //then
+    assert_eq!(new_product.id, product.id);
+    assert_eq!(product.is_active, false);
+}
+
+#[test]
 pub fn create_product_without_base_product() {
     //setup
     let mut context = TestContext::new();
