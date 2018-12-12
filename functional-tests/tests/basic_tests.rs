@@ -8,6 +8,239 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn verify_email() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let user = context
+        .create_user(create_user::default_create_user_input())
+        .expect("context.create_user failed")
+        .create_user;
+    let verification_token = context
+        .get_email_verification_token(&user.email)
+        .expect("context.get_email_verification_token");
+    //when
+    let verification = context
+        .verify_email(verify_email::VerifyEmailApply {
+            token: verification_token.clone(),
+            ..verify_email::default_verify_email_input()
+        })
+        .expect("context.verify_email failed")
+        .verify_email;
+    //then
+    assert_eq!(verification.success, true);
+    assert_eq!(verification.email, user.email);
+    context.set_bearer(verification.token);
+    //only verified user can create store
+    let store = context
+        .create_store(create_store::CreateStoreInput {
+            user_id: user.raw_id,
+            ..create_store::default_create_store_input()
+        })
+        .expect("context.create_store failed")
+        .create_store;
+    assert_eq!(store.user_id, user.raw_id);
+}
+
+#[test]
+pub fn deactivate_user() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let user = context
+        .create_user(create_user::default_create_user_input())
+        .unwrap()
+        .create_user;
+    //when
+    context.as_superadmin();
+    let deactivated_user = context
+        .deactivate_user(deactivate_user::DeactivateUserInput {
+            id: user.id,
+            ..deactivate_user::default_deactivate_user_input()
+        })
+        .unwrap()
+        .deactivate_user;
+    //then
+    assert_eq!(deactivated_user.is_active, false);
+}
+
+#[test]
+pub fn update_user() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let user = context
+        .create_user(create_user::default_create_user_input())
+        .unwrap()
+        .create_user;
+    context.verify_user_email(&user.email).unwrap();
+    let token: String = context
+        .get_jwt_by_email(get_jwt_by_email::default_create_jwt_email_input())
+        .unwrap()
+        .get_jwt_by_email
+        .token;
+    context.set_bearer(token);
+    //when
+    let updated_user = context
+        .update_user(update_user::UpdateUserInput {
+            id: user.id,
+            is_active: Some(false),
+            ..update_user::default_update_user_input()
+        })
+        .unwrap()
+        .update_user;
+    //then
+    let expected_values = update_user::default_update_user_input();
+    assert_eq!(updated_user.is_active, false);
+    assert_eq!(
+        updated_user.phone.expect("updated_user.phone is none"),
+        expected_values.phone.unwrap()
+    );
+    assert_eq!(
+        updated_user
+            .first_name
+            .expect("updated_user.first_name is none"),
+        expected_values.first_name.unwrap()
+    );
+    assert_eq!(
+        updated_user
+            .last_name
+            .expect("updated_user.last_name is none"),
+        expected_values.last_name.unwrap()
+    );
+    assert_eq!(
+        updated_user
+            .middle_name
+            .expect("updated_user.middle_name is none"),
+        expected_values.middle_name.unwrap()
+    );
+    assert_eq!(
+        updated_user
+            .birthdate
+            .expect("updated_user.birthdate is none"),
+        expected_values.birthdate.unwrap()
+    );
+    assert_eq!(
+        updated_user.avatar.expect("updated_user.avatar is none"),
+        expected_values.avatar.unwrap()
+    );
+}
+
+#[test]
+pub fn deactivate_base_product() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, _store, _category, base_product) =
+        set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
+    context.set_bearer(token);
+    //when
+    let _ = context
+        .deactivate_base_product(deactivate_base_product::DeactivateBaseProductInput {
+            id: base_product.create_base_product.id,
+            ..deactivate_base_product::default_deactivate_base_product_input()
+        })
+        .unwrap();
+    //then
+    let deactivated_base_product = context
+        .get_base_product(base_product.create_base_product.raw_id)
+        .unwrap()
+        .base_product;
+    assert!(deactivated_base_product.is_none());
+}
+
+#[test]
+pub fn update_base_product_test() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, _store, _category, base_product) =
+        set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
+    context.set_bearer(token);
+    //when
+    let updated_base_product = context
+        .update_base_product(update_base_product::UpdateBaseProductInput {
+            id: base_product.create_base_product.id,
+            length_cm: Some(20),
+            width_cm: Some(30),
+            height_cm: Some(40),
+            weight_g: Some(2000),
+            ..update_base_product::default_update_base_product_input()
+        })
+        .unwrap()
+        .update_base_product;
+    //then
+    let updated_base_product = context
+        .get_base_product(updated_base_product.raw_id)
+        .unwrap()
+        .base_product
+        .unwrap();
+    let expected_values = update_base_product::default_update_base_product_input();
+    assert!((updated_base_product.rating - expected_values.rating.unwrap()).abs() < 0.001);
+    assert_eq!(updated_base_product.slug, expected_values.slug.unwrap());
+    assert_eq!(updated_base_product.length_cm, Some(20));
+    assert_eq!(updated_base_product.width_cm, Some(30));
+    assert_eq!(updated_base_product.height_cm, Some(40));
+    assert_eq!(updated_base_product.weight_g, Some(2000));
+    assert_eq!(
+        updated_base_product.name[0].text,
+        expected_values.name.unwrap()[0].text
+    );
+    assert_eq!(
+        updated_base_product.short_description[0].text,
+        expected_values.short_description.unwrap()[0].text
+    );
+    assert_eq!(
+        updated_base_product
+            .long_description
+            .expect("updated_base_product.long_description is none")[0]
+            .text,
+        expected_values.long_description.unwrap()[0].text
+    );
+    assert_eq!(
+        updated_base_product
+            .seo_title
+            .expect("updated_base_product.seo_title is none")[0]
+            .text,
+        expected_values.seo_title.unwrap()[0].text
+    );
+    assert_eq!(
+        updated_base_product
+            .seo_description
+            .expect("updated_base_product.seo_description is none")[0]
+            .text,
+        expected_values.seo_description.unwrap()[0].text
+    );
+}
+
+#[test]
+#[ignore]
+pub fn update_base_product_does_not_update_rating() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, _store, _category, base_product) =
+        set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
+    context.set_bearer(token);
+    let initial_rating = base_product.create_base_product.rating;
+    //when
+    let updated_base_product = context
+        .update_base_product(update_base_product::UpdateBaseProductInput {
+            id: base_product.create_base_product.id,
+            ..update_base_product::default_update_base_product_input()
+        })
+        .unwrap()
+        .update_base_product;
+    //then
+    let updated_base_product = context
+        .get_base_product(updated_base_product.raw_id)
+        .unwrap()
+        .base_product
+        .unwrap();
+    assert!((updated_base_product.rating - initial_rating).abs() < 0.001);
+}
+
+#[test]
 pub fn create_base_product_with_variants() {
     //setup
     let mut context = TestContext::new();
@@ -208,7 +441,8 @@ pub fn delete_attribute_from_category() {
     assert!(changed_category_attributes.is_empty());
 }
 
-pub fn microservice_healthcheck() {
+#[test]
+pub fn a_microservice_healthcheck() {
     //given
     let context = TestContext::new();
     //then
@@ -538,7 +772,7 @@ pub fn create_store() {
         .create_user(create_user::default_create_user_input())
         .unwrap()
         .create_user;
-    context.verify_email(&user.email).unwrap();
+    context.verify_user_email(&user.email).unwrap();
     let token: String = context
         .get_jwt_by_email(get_jwt_by_email::default_create_jwt_email_input())
         .unwrap()
@@ -674,7 +908,7 @@ pub fn create_user_via_facebook_with_additional_data() {
 
     let facebook_jwt = get_jwt_by_provider::CreateJWTProviderInput {
         additional_data: Some(get_jwt_by_provider::NewUserAdditionalDataInput {
-            country: Some("MMR".to_string()),
+            country: Some("MM".to_string()),
             referal: Some(referal.create_user.raw_id),
             referer: Some("localhost".to_string()),
             utm_marks: Some(vec![get_jwt_by_provider::UtmMarkInput {
@@ -688,6 +922,7 @@ pub fn create_user_via_facebook_with_additional_data() {
     let user = context.create_user_jwt(facebook_jwt);
     //then
     assert!(user.is_ok());
+    panic!("Finish test");
 }
 
 #[test]
@@ -705,7 +940,7 @@ pub fn create_user_via_google_with_additional_data() {
 
     let google_jwt = get_jwt_by_provider::CreateJWTProviderInput {
         additional_data: Some(get_jwt_by_provider::NewUserAdditionalDataInput {
-            country: Some("MMR".to_string()),
+            country: Some("MM".to_string()),
             referal: Some(referal.create_user.raw_id),
             referer: Some("localhost".to_string()),
             utm_marks: Some(vec![get_jwt_by_provider::UtmMarkInput {
@@ -719,6 +954,7 @@ pub fn create_user_via_google_with_additional_data() {
     let user = context.create_user_jwt(google_jwt);
     //then
     assert!(user.is_ok());
+    panic!("Finish test");
 }
 
 #[test]
@@ -763,6 +999,7 @@ pub fn update_store_in_status_draft() {
 pub fn update_base_product_in_status_draft() {
     //setup
     let mut context = TestContext::new();
+    //given
     let (_user, token, _store, _category, base_product) =
         set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
     context.set_bearer(token);
@@ -797,6 +1034,7 @@ pub fn update_base_product_in_status_draft() {
 pub fn create_product_without_attributes() {
     //setup
     let mut context = TestContext::new();
+    //given
     let (_user, token, _store, _category, base_product) =
         set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
     context.set_bearer(token);
@@ -826,9 +1064,46 @@ pub fn create_product_without_attributes() {
 }
 
 #[test]
+pub fn deactivate_product() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, _store, _category, base_product) =
+        set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
+    context.set_bearer(token);
+    let product_payload = create_product::CreateProductWithAttributesInput {
+        product: create_product::NewProduct {
+            base_product_id: Some(base_product.create_base_product.raw_id),
+            ..create_product::default_new_product()
+        },
+        ..create_product::default_create_product_input()
+    };
+
+    let new_product = context
+        .create_product(product_payload)
+        .expect("Cannot get data from create_product")
+        .create_product;
+
+    let deactivate_product_payload = deactivate_product::DeactivateProductInput {
+        id: new_product.id.clone(),
+        ..deactivate_product::default_deactivate_product_input()
+    };
+
+    //when
+    let product = context
+        .deactivate_product(deactivate_product_payload)
+        .expect("Cannot get data from deactivate_product")
+        .deactivate_product;
+    //then
+    assert_eq!(new_product.id, product.id);
+    assert_eq!(product.is_active, false);
+}
+
+#[test]
 pub fn create_product_without_base_product() {
     //setup
     let mut context = TestContext::new();
+    //given
     let (_user, token, _store, _category, base_product) =
         set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
     context.set_bearer(token);
@@ -853,6 +1128,7 @@ pub fn create_product_without_base_product() {
 pub fn update_product_without_attributes() {
     //setup
     let mut context = TestContext::new();
+    //given
     let (_user, token, _store, _category, base_product) =
         set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
     context.set_bearer(token);
@@ -895,6 +1171,92 @@ pub fn update_product_without_attributes() {
     assert_eq!(update_product.pre_order_days, 15);
 }
 
+#[test]
+pub fn create_delivery_company() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let company_payload = create_delivery_company::NewCompanyInput {
+        name: "Test company".to_string(),
+        label: "TEST".to_string(),
+        description: Some("Test description".to_string()),
+        deliveries_from: vec!["RUS".to_string()],
+        logo: "test loge URL".to_string(),
+        ..create_delivery_company::default_create_company_input()
+    };
+    //when
+    let create_company = context
+        .create_delivery_company(company_payload.clone())
+        .expect("Cannot get data from create_delivery_company")
+        .create_company;
+
+    let rus_country = create_company
+        .deliveries_from
+        .iter()
+        .flat_map(|root| {
+            root.children
+                .iter()
+                .flat_map(|region| region.children.iter())
+        })
+        .find(|c| c.alpha3 == "RUS".to_string());
+    //then
+    assert_eq!(
+        rus_country.map(|c| c.alpha3.clone()),
+        Some("RUS".to_string())
+    );
+    assert_eq!(create_company.label, company_payload.label);
+    assert_eq!(create_company.name, company_payload.name);
+    assert_eq!(create_company.description, company_payload.description);
+    assert_eq!(create_company.logo, company_payload.logo);
+}
+
+#[test]
+pub fn update_delivery_company() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let company_payload = create_delivery_company::default_create_company_input();
+    let create_company = context
+        .create_delivery_company(company_payload)
+        .expect("Cannot get data from create_delivery_company")
+        .create_company;
+    //when
+    let update_company_payload = update_delivery_company::UpdateCompanyInput {
+        id: create_company.id.clone(),
+        name: Some("Test company plus update".to_string()),
+        ..update_delivery_company::default_update_company_input()
+    };
+    let update_company = context
+        .update_delivery_company(update_company_payload)
+        .expect("Cannot get data from update_delivery_company")
+        .update_company;
+    //then
+    assert_eq!(update_company.id, create_company.id);
+    assert_eq!(update_company.name, "Test company plus update".to_string());
+}
+
+#[test]
+pub fn delete_delivery_company() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let company_payload = create_delivery_company::default_create_company_input();
+    let create_company = context
+        .create_delivery_company(company_payload)
+        .expect("Cannot get data from create_delivery_company")
+        .create_company;
+    //when
+    let delete_company = context
+        .delete_delivery_company(create_company.raw_id)
+        .expect("Cannot get data from delete_delivery_company")
+        .delete_company;
+    //then
+    assert_eq!(create_company.raw_id, delete_company.raw_id);
+}
+
 fn set_up_store(
     context: &mut TestContext,
 ) -> Result<
@@ -907,7 +1269,7 @@ fn set_up_store(
     FailureError,
 > {
     let user = context.create_user(create_user::default_create_user_input())?;
-    context.verify_email(&user.create_user.email).unwrap();
+    context.verify_user_email(&user.create_user.email).unwrap();
     let token: String = context
         .get_jwt_by_email(get_jwt_by_email::default_create_jwt_email_input())?
         .get_jwt_by_email

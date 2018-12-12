@@ -1,0 +1,33 @@
+mutation createCompany($input: NewCompanyInput!) {
+  createCompany(input: $input) {
+    id
+    rawId
+    name
+    label
+    description
+    currency
+    logo
+    deliveriesFrom {
+      label
+      parent
+      level
+      alpha2
+      alpha3
+      numeric
+      children {
+        label
+        parent
+        alpha2
+        alpha3
+        numeric
+        children {
+          label
+          parent
+          alpha2
+          alpha3
+          numeric
+        }
+      }
+    }
+  }
+}

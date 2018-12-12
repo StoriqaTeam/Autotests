@@ -1,0 +1,6 @@
+mutation deleteCompany($id: Int!) {
+  deleteCompany(id: $id) {
+    id
+    rawId
+  }
+}
