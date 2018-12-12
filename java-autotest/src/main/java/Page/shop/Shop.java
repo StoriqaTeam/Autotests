@@ -30,7 +30,9 @@ public enum Shop {
     STQ("step3Currency_item"),
     SAVEPRODUCTBUTTON("//*[@data-test='wizardSaveProductButton']"),
     SLOGAN("//*[@data-test='slogan']"),
-    SAVE("//*[@data-test='saveButton']");
+    SAVE("//*[@data-test='saveButton']"),
+    STORAGESSETTINGS("//*[@data-test='store-menu-storages']"),
+    EDITSTORAGEADMIN("//*[@data-test='editStorageDataButton']");
 
     private final String cl;
 
