@@ -1211,6 +1211,26 @@ pub fn create_delivery_company() {
     assert_eq!(create_company.logo, company_payload.logo);
 }
 
+#[test]
+pub fn delete_delivery_company() {
+    //setup
+    let mut context = TestContext::new();
+    context.as_superadmin();
+    //given
+    let company_payload = create_delivery_company::default_create_company_input();
+    let create_company = context
+        .create_delivery_company(company_payload)
+        .expect("Cannot get data from create_delivery_company")
+        .create_company;
+    //when
+    let delete_company = context
+        .delete_delivery_company(create_company.raw_id)
+        .expect("Cannot get data from delete_delivery_company")
+        .delete_company;
+    //then
+    assert_eq!(create_company.raw_id, delete_company.raw_id);
+}
+
 fn set_up_store(
     context: &mut TestContext,
 ) -> Result<

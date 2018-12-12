@@ -410,6 +410,23 @@ impl TestContext {
         }
     }
 
+    pub fn delete_delivery_company(
+        &self,
+        id: i64,
+    ) -> Result<delete_delivery_company::ResponseData, FailureError> {
+        let request_body = delete_delivery_company::DeleteCompanyMutation::build_query(
+            delete_delivery_company::Variables { id },
+        );
+        let response_body: Response<delete_delivery_company::ResponseData> =
+            self.graphql_request(request_body)?;
+
+        match (response_body.data, response_body.errors) {
+            (Some(data), None) => Ok(data),
+            (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
+            _ => unreachable!(),
+        }
+    }
+
     fn graphql_request<T: Serialize, S: DeserializeOwned>(
         &self,
         data: T,
