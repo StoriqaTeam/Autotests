@@ -32,12 +32,11 @@ pub fn verify_email() {
     context.set_bearer(verification.token);
     //only verified user can create store
     let store = context
-        .create_store(create_store::CreateStoreInput {
+        .request(create_store::CreateStoreInput {
             user_id: user.raw_id,
             ..create_store::default_create_store_input()
         })
-        .expect("context.create_store failed")
-        .create_store;
+        .expect("create_store failed");
     assert_eq!(store.user_id, user.raw_id);
 }
 
@@ -52,12 +51,11 @@ pub fn deactivate_user() {
     //when
     context.as_superadmin();
     let deactivated_user = context
-        .deactivate_user(deactivate_user::DeactivateUserInput {
+        .request(deactivate_user::DeactivateUserInput {
             id: user.id,
             ..deactivate_user::default_deactivate_user_input()
         })
-        .unwrap()
-        .deactivate_user;
+        .expect("deactivate_user failed");
     //then
     assert_eq!(deactivated_user.is_active, false);
 }
@@ -133,14 +131,14 @@ pub fn deactivate_base_product() {
     context.set_bearer(token);
     //when
     let _ = context
-        .deactivate_base_product(deactivate_base_product::DeactivateBaseProductInput {
-            id: base_product.create_base_product.id,
+        .request(deactivate_base_product::DeactivateBaseProductInput {
+            id: base_product.id,
             ..deactivate_base_product::default_deactivate_base_product_input()
         })
-        .unwrap();
+        .expect("deactivate_base_product failed");
     //then
     let deactivated_base_product = context
-        .get_base_product(base_product.create_base_product.raw_id)
+        .get_base_product(base_product.raw_id)
         .unwrap()
         .base_product;
     assert!(deactivated_base_product.is_none());
@@ -157,7 +155,7 @@ pub fn update_base_product_test() {
     //when
     let updated_base_product = context
         .update_base_product(update_base_product::UpdateBaseProductInput {
-            id: base_product.create_base_product.id,
+            id: base_product.id,
             length_cm: Some(20),
             width_cm: Some(30),
             height_cm: Some(40),
@@ -219,11 +217,11 @@ pub fn update_base_product_does_not_update_rating() {
     let (_user, token, _store, _category, base_product) =
         set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
     context.set_bearer(token);
-    let initial_rating = base_product.create_base_product.rating;
+    let initial_rating = base_product.rating;
     //when
     let updated_base_product = context
         .update_base_product(update_base_product::UpdateBaseProductInput {
-            id: base_product.create_base_product.id,
+            id: base_product.id,
             ..update_base_product::default_update_base_product_input()
         })
         .unwrap()
@@ -245,11 +243,11 @@ pub fn create_base_product_with_variants() {
     let (_user, token, store, category) = set_up_store(&mut context).unwrap();
     context.set_bearer(token);
     //when
-    let base_product = context.create_base_product_with_variants(create_base_product_with_variants::NewBaseProductWithVariantsInput{
-        store_id: store.create_store.raw_id,
-        category_id: category.create_category.raw_id,
+    let base_product = context.request(create_base_product_with_variants::NewBaseProductWithVariantsInput{
+        store_id: store.raw_id,
+        category_id: category.raw_id,
         ..create_base_product_with_variants::default_create_base_product_with_variants_input()
-    }).unwrap().create_base_product_with_variants;
+    }).expect("create_base_product_with_variants failed");
     //then
     let base_product = context
         .get_base_product(base_product.raw_id)
@@ -307,7 +305,7 @@ pub fn update_store() {
     //when
     let updated_store = context
         .update_store(update_store::UpdateStoreInput {
-            id: store.create_store.id,
+            id: store.id,
             ..update_store::default_update_store_input()
         })
         .unwrap()
@@ -330,11 +328,11 @@ pub fn update_store_does_not_update_rating() {
     //given
     let (_user, token, store, _) = set_up_store(&mut context).unwrap();
     context.set_bearer(token);
-    let initial_rating = store.create_store.rating;
+    let initial_rating = store.rating;
     //when
     let updated_store = context
         .update_store(update_store::UpdateStoreInput {
-            id: store.create_store.id,
+            id: store.id,
             ..update_store::default_update_store_input()
         })
         .unwrap()
@@ -355,16 +353,15 @@ pub fn delete_attribute() {
     context.as_superadmin();
     //given
     let attribute = context
-        .create_attribute(create_attribute::default_create_attribute_input())
-        .unwrap()
-        .create_attribute;
+        .request(create_attribute::default_create_attribute_input())
+        .expect("create_attribute failed");
     //when
     let _ = context
-        .delete_attribute(delete_attribute::DeleteAttributeInput {
+        .request(delete_attribute::DeleteAttributeInput {
             id: attribute.id,
             ..delete_attribute::default_delete_attribute_input()
         })
-        .unwrap();
+        .expect("delete_attribute failed");
     //then
     let all_attribute = context.get_attributes().unwrap().attributes.unwrap();
     assert!(all_attribute.is_empty());
@@ -377,9 +374,8 @@ pub fn update_attribute() {
     context.as_superadmin();
     //given
     let attribute = context
-        .create_attribute(create_attribute::default_create_attribute_input())
-        .unwrap()
-        .create_attribute;
+        .request(create_attribute::default_create_attribute_input())
+        .expect("create_attribute failed");
     //when
     let updated_attribute = context
         .update_attribute(update_attribute::UpdateAttributeInput {
@@ -399,30 +395,28 @@ pub fn delete_attribute_from_category() {
     //given
     context.as_superadmin();
     let category = context
-        .create_category(create_category::default_create_category_input())
-        .unwrap()
-        .create_category;
+        .request(create_category::default_create_category_input())
+        .expect("create_category failed");
     let attribute = context
-        .create_attribute(create_attribute::default_create_attribute_input())
-        .unwrap()
-        .create_attribute;
+        .request(create_attribute::default_create_attribute_input())
+        .expect("create_attribute failed");
     let _ = context
-        .add_attribute_to_category(add_attribute_to_category::AddAttributeToCategoryInput {
+        .request(add_attribute_to_category::AddAttributeToCategoryInput {
             cat_id: category.raw_id,
             attr_id: attribute.raw_id,
             ..add_attribute_to_category::default_add_attribute_to_categoryinput()
         })
-        .unwrap();
+        .expect("add_attribute_to_category failed");
     //when
     let _ = context
-        .delete_attribute_from_category(
+        .request(
             delete_attribute_from_category::DeleteAttributeFromCategory {
                 cat_id: category.raw_id,
                 attr_id: attribute.raw_id,
                 ..delete_attribute_from_category::default_delete_attribute_from_category_input()
             },
         )
-        .unwrap();
+        .expect("delete_attribute_from_category failed");
     //then
     let changed_category_attributes = context
         .get_categories()
@@ -453,21 +447,19 @@ pub fn add_attribute_to_category() {
     //given
     context.as_superadmin();
     let category = context
-        .create_category(create_category::default_create_category_input())
-        .unwrap()
-        .create_category;
+        .request(create_category::default_create_category_input())
+        .expect("create_category failed");
     let attribute = context
-        .create_attribute(create_attribute::default_create_attribute_input())
-        .unwrap()
-        .create_attribute;
+        .request(create_attribute::default_create_attribute_input())
+        .expect("create_attribute failed");
     //when
     let _ = context
-        .add_attribute_to_category(add_attribute_to_category::AddAttributeToCategoryInput {
+        .request(add_attribute_to_category::AddAttributeToCategoryInput {
             cat_id: category.raw_id,
             attr_id: attribute.raw_id,
             ..add_attribute_to_category::default_add_attribute_to_categoryinput()
         })
-        .unwrap();
+        .expect("add_attribute_to_category failed");
     //then
     let changed_category_attributes = context
         .get_categories()
@@ -495,17 +487,15 @@ pub fn delete_category() {
     context.as_superadmin();
     //given
     let category = context
-        .create_category(create_category::default_create_category_input())
-        .unwrap()
-        .create_category;
+        .request(create_category::default_create_category_input())
+        .expect("create_category failed");
     //when
     let _ = context
-        .delete_category(delete_category::DeleteCategoryInput {
+        .request(delete_category::DeleteCategoryInput {
             cat_id: category.raw_id,
             ..delete_category::default_delete_category_input()
         })
-        .unwrap()
-        .delete_category;
+        .expect("delete_category failed");
     //then
     let existing_categories = context
         .get_categories()
@@ -523,9 +513,8 @@ pub fn update_category() {
     context.as_superadmin();
     //given
     let category = context
-        .create_category(create_category::default_create_category_input())
-        .unwrap()
-        .create_category;
+        .request(create_category::default_create_category_input())
+        .expect("create_category failed");
     //when
     let updated_category = context
         .update_category(update_category::UpdateCategoryInput {
@@ -556,15 +545,14 @@ pub fn create_base_product() {
     let (_user, token, store, category) = set_up_store(&mut context).unwrap();
     context.set_bearer(token);
     let new_base_product = create_base_product::CreateBaseProductInput {
-        store_id: store.create_store.raw_id,
-        category_id: category.create_category.raw_id,
+        store_id: store.raw_id,
+        category_id: category.raw_id,
         ..create_base_product::default_create_base_product_input()
     };
     //when
     let base_product = context
-        .create_base_product(new_base_product)
-        .unwrap()
-        .create_base_product;
+        .request(new_base_product)
+        .expect("create_base_product failed");
     //then
     assert_eq!(
         base_product.slug,
@@ -581,24 +569,21 @@ pub fn delete_attribute_value() {
     context.as_superadmin();
     //given
     let attribute = context
-        .create_attribute(create_attribute::default_create_attribute_input())
-        .unwrap()
-        .create_attribute;
+        .request(create_attribute::default_create_attribute_input())
+        .expect("create_attribute failed");
     let new_value = context
-        .create_attribute_value(create_attribute_value::CreateAttributeValueInput {
+        .request(create_attribute_value::CreateAttributeValueInput {
             raw_attribute_id: attribute.raw_id,
             ..create_attribute_value::default_create_attribute_value_input()
         })
-        .unwrap()
-        .create_attribute_value;
+        .expect("create_attribute_value failed");
     //when
     let _ = context
-        .delete_attribute_value(delete_attribute_value::DeleteAttributeValueInput {
+        .request(delete_attribute_value::DeleteAttributeValueInput {
             raw_id: new_value.raw_id,
             ..delete_attribute_value::default_delete_attribute_value_input()
         })
-        .unwrap()
-        .delete_attribute_value;
+        .expect("delete_attribute_value failed");
     //then
     let changed_attribute = context
         .get_attributes()
@@ -619,16 +604,14 @@ pub fn update_attribute_value() {
     context.as_superadmin();
     //given
     let attribute = context
-        .create_attribute(create_attribute::default_create_attribute_input())
-        .unwrap()
-        .create_attribute;
+        .request(create_attribute::default_create_attribute_input())
+        .expect("create_attribute failed");
     let new_value = context
-        .create_attribute_value(create_attribute_value::CreateAttributeValueInput {
+        .request(create_attribute_value::CreateAttributeValueInput {
             raw_attribute_id: attribute.raw_id,
             ..create_attribute_value::default_create_attribute_value_input()
         })
-        .unwrap()
-        .create_attribute_value;
+        .expect("create_attribute_value failed");
     //when
     let updated = context
         .update_attribute_value(update_attribute_value::UpdateAttributeValueInput {
@@ -652,17 +635,15 @@ pub fn add_values_to_attribute() {
     context.as_superadmin();
     //given
     let attribute = context
-        .create_attribute(create_attribute::default_create_attribute_input())
-        .unwrap()
-        .create_attribute;
+        .request(create_attribute::default_create_attribute_input())
+        .expect("create_attribute failed");
     //when
     let new_value = context
-        .create_attribute_value(create_attribute_value::CreateAttributeValueInput {
+        .request(create_attribute_value::CreateAttributeValueInput {
             raw_attribute_id: attribute.raw_id,
             ..create_attribute_value::default_create_attribute_value_input()
         })
-        .unwrap()
-        .create_attribute_value;
+        .expect("create_attribute_value failed");
     //then
     assert_eq!(new_value.attr_raw_id, attribute.raw_id);
     assert_eq!(new_value.attribute.unwrap().raw_id, attribute.raw_id);
@@ -675,7 +656,7 @@ pub fn create_attribute_with_values() {
     context.as_superadmin();
     //then
     let _attribute = context
-        .create_attribute(create_attribute::CreateAttributeInput {
+        .request(create_attribute::CreateAttributeInput {
             values: Some(vec![
                 create_attribute::CreateAttributeValueWithAttributeInput {
                     code: "attribute_code".to_string(),
@@ -687,8 +668,7 @@ pub fn create_attribute_with_values() {
             ]),
             ..create_attribute::default_create_attribute_input()
         })
-        .unwrap()
-        .create_attribute;
+        .expect("create_attribute failed");
 }
 
 #[test]
@@ -698,9 +678,8 @@ pub fn create_attribute() {
     context.as_superadmin();
     //then
     let _attribute = context
-        .create_attribute(create_attribute::default_create_attribute_input())
-        .unwrap()
-        .create_attribute;
+        .request(create_attribute::default_create_attribute_input())
+        .expect("create_attribute failed");
 }
 
 #[test]
@@ -710,26 +689,23 @@ pub fn create_subcategories() {
     context.as_superadmin();
     //given
     let category_level_1 = context
-        .create_category(create_category::default_create_category_input())
-        .unwrap()
-        .create_category;
+        .request(create_category::default_create_category_input())
+        .expect("create_category failed");
     let category_level_2 = context
-        .create_category(create_category::CreateCategoryInput {
+        .request(create_category::CreateCategoryInput {
             parent_id: category_level_1.raw_id,
             slug: Some("category-slug-1".to_string()),
             ..create_category::default_create_category_input()
         })
-        .unwrap()
-        .create_category;
+        .expect("create_category failed");
     //when
     let category_level_3 = context
-        .create_category(create_category::CreateCategoryInput {
+        .request(create_category::CreateCategoryInput {
             parent_id: category_level_2.raw_id,
             slug: Some("category-slug-2".to_string()),
             ..create_category::default_create_category_input()
         })
-        .unwrap()
-        .create_category;
+        .expect("create_category failed");
     //then
     assert_eq!(category_level_3.level, 3);
 }
@@ -743,9 +719,8 @@ pub fn create_category() {
     let new_category = create_category::default_create_category_input();
     //when
     let category = context
-        .create_category(new_category)
-        .unwrap()
-        .create_category;
+        .request(new_category)
+        .expect("create_category failed");
     //then
     assert_eq!(
         Some(category.slug),
@@ -777,12 +752,11 @@ pub fn create_store() {
     context.set_bearer(token);
     //when
     let store = context
-        .create_store(create_store::CreateStoreInput {
+        .request(create_store::CreateStoreInput {
             user_id: user.raw_id,
             ..create_store::default_create_store_input()
         })
-        .unwrap()
-        .create_store;
+        .expect("create_store failed");
     //then
     assert_eq!(store.user_id, user.raw_id);
 }
@@ -959,7 +933,7 @@ pub fn delete_store() {
     context.set_bearer(token);
     //when
     context.as_superadmin();
-    let delete_result = context.delete_store(store.create_store.raw_id);
+    let delete_result = context.delete_store(store.raw_id);
     //then
     assert!(delete_result.is_ok())
 }
@@ -975,7 +949,7 @@ pub fn update_store_in_status_draft() {
 
     //when
     let update_result = context.update_store(update_store::UpdateStoreInput {
-        id: store.create_store.id.clone(),
+        id: store.id.clone(),
         email: Some("example@example.com".to_string()),
         ..update_store::default_update_store_input()
     });
@@ -984,7 +958,7 @@ pub fn update_store_in_status_draft() {
 
     //then
     assert_eq!(update_store.email, Some("example@example.com".to_string()));
-    assert_eq!(update_store.id, store.create_store.id);
+    assert_eq!(update_store.id, store.id);
     assert_eq!(update_store.status, update_store::Status::DRAFT)
 }
 
@@ -998,11 +972,8 @@ pub fn update_base_product_in_status_draft() {
     context.set_bearer(token);
     //when
     let update_base_product_payload = update_base_product::UpdateBaseProductInput {
-        id: base_product.create_base_product.id.clone(),
-        slug: Some(format!(
-            "{}-{}",
-            base_product.create_base_product.slug, "plus"
-        )),
+        id: base_product.id.clone(),
+        slug: Some(format!("{}-{}", base_product.slug, "plus")),
         ..update_base_product::default_update_base_product_input()
     };
 
@@ -1012,10 +983,10 @@ pub fn update_base_product_in_status_draft() {
         .update_base_product;
 
     //then
-    assert_eq!(update_base_product.id, base_product.create_base_product.id);
+    assert_eq!(update_base_product.id, base_product.id);
     assert_eq!(
         update_base_product.slug,
-        format!("{}-{}", base_product.create_base_product.slug, "plus")
+        format!("{}-{}", base_product.slug, "plus")
     );
     assert_eq!(
         update_base_product.status,
@@ -1034,26 +1005,19 @@ pub fn create_product_without_attributes() {
     //when
     let product_payload = create_product::CreateProductWithAttributesInput {
         product: create_product::NewProduct {
-            base_product_id: Some(base_product.create_base_product.raw_id),
+            base_product_id: Some(base_product.raw_id),
             ..create_product::default_new_product()
         },
         ..create_product::default_create_product_input()
     };
 
     let new_product = context
-        .create_product(product_payload)
-        .expect("Cannot get data from create_product")
-        .create_product;
+        .request(product_payload)
+        .expect("Cannot get data from create_product");
 
     //then
-    assert_eq!(
-        base_product.create_base_product.status,
-        create_base_product::Status::DRAFT
-    );
-    assert_eq!(
-        new_product.base_product_id,
-        base_product.create_base_product.raw_id
-    );
+    assert_eq!(base_product.status, create_base_product::Status::DRAFT);
+    assert_eq!(new_product.base_product_id, base_product.raw_id);
 }
 
 #[test]
@@ -1066,16 +1030,15 @@ pub fn deactivate_product() {
     context.set_bearer(token);
     let product_payload = create_product::CreateProductWithAttributesInput {
         product: create_product::NewProduct {
-            base_product_id: Some(base_product.create_base_product.raw_id),
+            base_product_id: Some(base_product.raw_id),
             ..create_product::default_new_product()
         },
         ..create_product::default_create_product_input()
     };
 
     let new_product = context
-        .create_product(product_payload)
-        .expect("Cannot get data from create_product")
-        .create_product;
+        .request(product_payload)
+        .expect("Cannot get data from create_product");
 
     let deactivate_product_payload = deactivate_product::DeactivateProductInput {
         id: new_product.id.clone(),
@@ -1084,9 +1047,8 @@ pub fn deactivate_product() {
 
     //when
     let product = context
-        .deactivate_product(deactivate_product_payload)
-        .expect("Cannot get data from deactivate_product")
-        .deactivate_product;
+        .request(deactivate_product_payload)
+        .expect("Cannot get data from deactivate_product");
     //then
     assert_eq!(new_product.id, product.id);
     assert_eq!(product.is_active, false);
@@ -1106,13 +1068,10 @@ pub fn create_product_without_base_product() {
         ..create_product::default_create_product_input()
     };
 
-    let new_product = context.create_product(product_payload);
+    let new_product = context.request(product_payload);
 
     //then
-    assert_eq!(
-        base_product.create_base_product.status,
-        create_base_product::Status::DRAFT
-    );
+    assert_eq!(base_product.status, create_base_product::Status::DRAFT);
     assert!(new_product.is_err());
 }
 
@@ -1127,16 +1086,15 @@ pub fn update_product_without_attributes() {
     context.set_bearer(token);
     let product_payload = create_product::CreateProductWithAttributesInput {
         product: create_product::NewProduct {
-            base_product_id: Some(base_product.create_base_product.raw_id),
+            base_product_id: Some(base_product.raw_id),
             ..create_product::default_new_product()
         },
         ..create_product::default_create_product_input()
     };
 
     let new_product = context
-        .create_product(product_payload)
-        .expect("Cannot get data from create_product")
-        .create_product;
+        .request(product_payload)
+        .expect("Cannot get data from create_product");
 
     //when
     let update_product_payload = update_product::UpdateProductWithAttributesInput {
@@ -1155,10 +1113,7 @@ pub fn update_product_without_attributes() {
         .expect("Cannot get update product")
         .update_product;
     //then
-    assert_eq!(
-        base_product.create_base_product.status,
-        create_base_product::Status::DRAFT
-    );
+    assert_eq!(base_product.status, create_base_product::Status::DRAFT);
     assert_eq!(update_product.id, new_product.id);
     assert_eq!(update_product.pre_order, true);
     assert_eq!(update_product.pre_order_days, 15);
@@ -1180,9 +1135,8 @@ pub fn create_delivery_company() {
     };
     //when
     let create_company = context
-        .create_delivery_company(company_payload.clone())
-        .expect("Cannot get data from create_delivery_company")
-        .create_company;
+        .request(company_payload.clone())
+        .expect("Cannot get data from create_delivery_company");
 
     let rus_country = create_company
         .deliveries_from
@@ -1212,9 +1166,8 @@ pub fn update_delivery_company() {
     //given
     let company_payload = create_delivery_company::default_create_company_input();
     let create_company = context
-        .create_delivery_company(company_payload)
-        .expect("Cannot get data from create_delivery_company")
-        .create_company;
+        .request(company_payload)
+        .expect("Cannot get data from create_delivery_company");
     //when
     let update_company_payload = update_delivery_company::UpdateCompanyInput {
         id: create_company.id.clone(),
@@ -1238,9 +1191,8 @@ pub fn delete_delivery_company() {
     //given
     let company_payload = create_delivery_company::default_create_company_input();
     let create_company = context
-        .create_delivery_company(company_payload)
-        .expect("Cannot get data from create_delivery_company")
-        .create_company;
+        .request(company_payload)
+        .expect("Cannot get data from create_delivery_company");
     //when
     let delete_company = context
         .delete_delivery_company(create_company.raw_id)
@@ -1256,8 +1208,8 @@ fn set_up_store(
     (
         create_user::RustCreateUserCreateUser,
         String,
-        create_store::ResponseData,
-        create_category::ResponseData,
+        create_store::RustCreateStoreCreateStore,
+        create_category::RustCreateCategoryCreateCategory,
     ),
     FailureError,
 > {
@@ -1268,22 +1220,18 @@ fn set_up_store(
         .get_jwt_by_email
         .token;
     context.set_bearer(token.clone());
-    let store = context.create_store(create_store::CreateStoreInput {
+    let store = context.request(create_store::CreateStoreInput {
         user_id: user.raw_id,
         ..create_store::default_create_store_input()
     })?;
     context.as_superadmin();
-    let category_level_1 = context
-        .create_category(create_category::default_create_category_input())?
-        .create_category;
-    let category_level_2 = context
-        .create_category(create_category::CreateCategoryInput {
-            parent_id: category_level_1.raw_id,
-            slug: Some("category-slug-1".to_string()),
-            ..create_category::default_create_category_input()
-        })?
-        .create_category;
-    let category_level_3 = context.create_category(create_category::CreateCategoryInput {
+    let category_level_1 = context.request(create_category::default_create_category_input())?;
+    let category_level_2 = context.request(create_category::CreateCategoryInput {
+        parent_id: category_level_1.raw_id,
+        slug: Some("category-slug-1".to_string()),
+        ..create_category::default_create_category_input()
+    })?;
+    let category_level_3 = context.request(create_category::CreateCategoryInput {
         parent_id: category_level_2.raw_id,
         slug: Some("category-slug-2".to_string()),
         ..create_category::default_create_category_input()
@@ -1443,9 +1391,9 @@ fn set_up_base_product(
     (
         create_user::RustCreateUserCreateUser,
         String,
-        create_store::ResponseData,
-        create_category::ResponseData,
-        create_base_product::ResponseData,
+        create_store::RustCreateStoreCreateStore,
+        create_category::RustCreateCategoryCreateCategory,
+        create_base_product::RustCreateBaseProductCreateBaseProduct,
     ),
     FailureError,
 > {
@@ -1454,11 +1402,11 @@ fn set_up_base_product(
     context.set_bearer(token.clone());
 
     let new_base_product = create_base_product::CreateBaseProductInput {
-        store_id: store.create_store.raw_id,
-        category_id: category.create_category.raw_id,
+        store_id: store.raw_id,
+        category_id: category.raw_id,
         ..create_base_product::default_create_base_product_input()
     };
-    let base_product = context.create_base_product(new_base_product)?;
+    let base_product = context.request(new_base_product)?;
     context.clear_bearer();
 
     Ok((user, token, store, category, base_product))

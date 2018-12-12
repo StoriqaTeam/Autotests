@@ -1,3 +1,9 @@
+use failure::Error as FailureError;
+use graphql_client::GraphQLQuery;
+use graphql_client::Response;
+
+use request::GraphqlRequest;
+
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "graphql/schema.json",
@@ -39,5 +45,27 @@ pub fn default_create_base_product_input() -> CreateBaseProductInput {
         width_cm: Some(10),
         height_cm: Some(10),
         weight_g: Some(1000),
+    }
+}
+
+type GraphqlRequestOutput = RustCreateBaseProductCreateBaseProduct;
+
+impl GraphqlRequest for CreateBaseProductInput {
+    type Output = GraphqlRequestOutput;
+
+    fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {
+        let response_body: Response<ResponseData> = serde_json::from_value(body)?;
+        match (response_body.data, response_body.errors) {
+            (Some(data), None) => Ok(data.create_base_product),
+            (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
+            _ => unreachable!(),
+        }
+    }
+}
+
+impl From<CreateBaseProductInput> for serde_json::Value {
+    fn from(val: CreateBaseProductInput) -> serde_json::Value {
+        let request_body = CreateBaseProductMutation::build_query(Variables { input: val });
+        serde_json::to_value(request_body).expect("failed to serialize CreateBaseProductMutation")
     }
 }

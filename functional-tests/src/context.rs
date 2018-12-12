@@ -213,27 +213,6 @@ impl TestContext {
     }
 
     graphql_request!(
-        create_category,
-        create_category,
-        CreateCategoryInput,
-        CreateCategoryMutation
-    );
-
-    graphql_request!(
-        delete_attribute_from_category,
-        delete_attribute_from_category,
-        DeleteAttributeFromCategory,
-        DeleteAttributeFromCategoryMutation
-    );
-
-    graphql_request!(
-        add_attribute_to_category,
-        add_attribute_to_category,
-        AddAttributeToCategoryInput,
-        AddAttributeToCategoryMutation
-    );
-
-    graphql_request!(
         update_category,
         update_category,
         UpdateCategoryInput,
@@ -241,24 +220,10 @@ impl TestContext {
     );
 
     graphql_request!(
-        delete_category,
-        delete_category,
-        DeleteCategoryInput,
-        DeleteCategoryMutation
-    );
-
-    graphql_request!(
         update_user,
         update_user,
         UpdateUserInput,
         UpdateUserMutation
-    );
-
-    graphql_request!(
-        deactivate_user,
-        deactivate_user,
-        DeactivateUserInput,
-        DeactivateUserMutation
     );
 
     pub fn delete_user(&self, user_id: i64) -> Result<delete_user::ResponseData, FailureError> {
@@ -293,22 +258,10 @@ impl TestContext {
         VerifyEmailMutation
     );
     graphql_request!(
-        create_store,
-        create_store,
-        CreateStoreInput,
-        CreateStoreMutation
-    );
-    graphql_request!(
         update_store,
         update_store,
         UpdateStoreInput,
         UpdateStoreMutation
-    );
-    graphql_request!(
-        create_attribute,
-        create_attribute,
-        CreateAttributeInput,
-        CreateAttributeMutation
     );
     graphql_request!(
         update_attribute,
@@ -317,49 +270,10 @@ impl TestContext {
         UpdateAttributeMutation
     );
     graphql_request!(
-        delete_attribute,
-        delete_attribute,
-        DeleteAttributeInput,
-        DeleteAttributeMutation
-    );
-    graphql_request!(
-        create_attribute_value,
-        create_attribute_value,
-        CreateAttributeValueInput,
-        CreateAttributeValueMutation
-    );
-    graphql_request!(
         update_attribute_value,
         update_attribute_value,
         UpdateAttributeValueInput,
         UpdateAttributeValueMutation
-    );
-    graphql_request!(
-        delete_attribute_value,
-        delete_attribute_value,
-        DeleteAttributeValueInput,
-        DeleteAttributeValueMutation
-    );
-
-    graphql_request!(
-        create_base_product,
-        create_base_product,
-        CreateBaseProductInput,
-        CreateBaseProductMutation
-    );
-
-    graphql_request!(
-        deactivate_base_product,
-        deactivate_base_product,
-        DeactivateBaseProductInput,
-        DeactivateBaseProductMutation
-    );
-
-    graphql_request!(
-        create_base_product_with_variants,
-        create_base_product_with_variants,
-        NewBaseProductWithVariantsInput,
-        CreateBaseProductWithVariantsMutation
     );
 
     graphql_request!(
@@ -374,27 +288,6 @@ impl TestContext {
         update_product,
         UpdateProductWithAttributesInput,
         UpdateProductMutation
-    );
-
-    graphql_request!(
-        create_product,
-        create_product,
-        CreateProductWithAttributesInput,
-        CreateProductMutation
-    );
-
-    graphql_request!(
-        deactivate_product,
-        deactivate_product,
-        DeactivateProductInput,
-        DeactivateProductMutation
-    );
-
-    graphql_request!(
-        create_delivery_company,
-        create_delivery_company,
-        NewCompanyInput,
-        CreateCompanyMutation
     );
 
     graphql_request!(
