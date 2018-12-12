@@ -7,7 +7,7 @@ pub struct DeactivateProductMutation;
 
 pub use self::deactivate_product_mutation::*;
 
-pub fn default_update_base_product_input() -> DeactivateProductInput {
+pub fn default_deactivate_product_input() -> DeactivateProductInput {
     DeactivateProductInput {
         client_mutation_id: "".to_string(),
         id: "".to_string(),

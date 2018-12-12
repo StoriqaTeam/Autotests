@@ -250,6 +250,13 @@ impl TestContext {
         UpdateUserMutation
     );
 
+    graphql_request!(
+        deactivate_user,
+        deactivate_user,
+        DeactivateUserInput,
+        DeactivateUserMutation
+    );
+
     pub fn delete_user(&self, user_id: i64) -> Result<delete_user::ResponseData, FailureError> {
         let request_body =
             delete_user::DeleteUserMutation::build_query(delete_user::Variables { user_id });

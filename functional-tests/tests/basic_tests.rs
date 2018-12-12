@@ -8,6 +8,28 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn deactivate_user() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let user = context
+        .create_user(create_user::default_create_user_input())
+        .unwrap()
+        .create_user;
+    //when
+    context.as_superadmin();
+    let deactivated_user = context
+        .deactivate_user(deactivate_user::DeactivateUserInput {
+            id: user.id,
+            ..deactivate_user::default_deactivate_user_input()
+        })
+        .unwrap()
+        .deactivate_user;
+    //then
+    assert_eq!(deactivated_user.is_active, false);
+}
+
+#[test]
 pub fn update_user() {
     //setup
     let mut context = TestContext::new();
@@ -1021,7 +1043,7 @@ pub fn deactivate_product() {
 
     let deactivate_product_payload = deactivate_product::DeactivateProductInput {
         id: new_product.id.clone(),
-        ..deactivate_product::default_update_base_product_input()
+        ..deactivate_product::default_deactivate_product_input()
     };
 
     //when
