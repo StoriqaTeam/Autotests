@@ -101,8 +101,12 @@ impl TestContext {
         context
     }
 
-    pub fn verify_email(&self, email: &str) -> Result<(), FailureError> {
+    pub fn verify_user_email(&self, email: &str) -> Result<(), FailureError> {
         self.users_microservice.verify_email(email)
+    }
+
+    pub fn get_email_verification_token(&self, email: &str) -> Result<String, FailureError> {
+        self.users_microservice.get_email_verification_token(email)
     }
 
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
@@ -243,6 +247,20 @@ impl TestContext {
         CreateUserMutation
     );
 
+    graphql_request!(
+        update_user,
+        update_user,
+        UpdateUserInput,
+        UpdateUserMutation
+    );
+
+    graphql_request!(
+        deactivate_user,
+        deactivate_user,
+        DeactivateUserInput,
+        DeactivateUserMutation
+    );
+
     pub fn delete_user(&self, user_id: i64) -> Result<delete_user::ResponseData, FailureError> {
         let request_body =
             delete_user::DeleteUserMutation::build_query(delete_user::Variables { user_id });
@@ -267,6 +285,12 @@ impl TestContext {
         get_jwt_by_email,
         CreateJWTEmailInput,
         GetJwtByEmailMutation
+    );
+    graphql_request!(
+        verify_email,
+        verify_email,
+        VerifyEmailApply,
+        VerifyEmailMutation
     );
     graphql_request!(
         create_store,
@@ -322,6 +346,13 @@ impl TestContext {
         create_base_product,
         CreateBaseProductInput,
         CreateBaseProductMutation
+    );
+
+    graphql_request!(
+        deactivate_base_product,
+        deactivate_base_product,
+        DeactivateBaseProductInput,
+        DeactivateBaseProductMutation
     );
 
     graphql_request!(
