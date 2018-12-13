@@ -8,6 +8,7 @@ use serde::Serialize;
 use config::Config;
 use microservice::*;
 use query::*;
+use request::GraphqlRequest;
 
 pub struct TestContext {
     bearer: Option<String>,
@@ -22,23 +23,6 @@ pub struct TestContext {
     delivery_microservice: DeliveryMicroservice,
     saga_microservice: SagaMicroservice,
     gateway_microservice: GatewayMicroservice,
-}
-
-macro_rules! graphql_request {
-    ($func_name:ident, $mod_name:ident, $input:ident, $struct_name:ident) => {
-        pub fn $func_name(&self, input: $mod_name::$input) -> Result<$mod_name::ResponseData, FailureError> {
-            let request_body = $mod_name::$struct_name::build_query(
-                $mod_name::Variables { input },
-            );
-            let response_body: Response<$mod_name::ResponseData> =
-                self.graphql_request(request_body)?;
-            match (response_body.data, response_body.errors) {
-                (Some(data), None) => Ok(data),
-                (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
-                _ => unreachable!()
-            }
-        }
-    }
 }
 
 impl TestContext {
@@ -121,13 +105,12 @@ impl TestContext {
 
     pub fn as_superadmin(&mut self) {
         let token: String = self
-            .get_jwt_by_email(get_jwt_by_email::CreateJWTEmailInput {
+            .request(get_jwt_by_email::CreateJWTEmailInput {
                 client_mutation_id: "".to_string(),
                 email: "admin@storiqa.com".to_string(),
                 password: "bqF5BkdsCS".to_string(),
             })
-            .unwrap()
-            .get_jwt_by_email
+            .expect("get_jwt_by_email failed")
             .token;
         self.bearer = Some(token);
     }
@@ -205,61 +188,11 @@ impl TestContext {
         Ok(())
     }
 
-    graphql_request!(
-        create_category,
-        create_category,
-        CreateCategoryInput,
-        CreateCategoryMutation
-    );
-
-    graphql_request!(
-        delete_attribute_from_category,
-        delete_attribute_from_category,
-        DeleteAttributeFromCategory,
-        DeleteAttributeFromCategoryMutation
-    );
-
-    graphql_request!(
-        add_attribute_to_category,
-        add_attribute_to_category,
-        AddAttributeToCategoryInput,
-        AddAttributeToCategoryMutation
-    );
-
-    graphql_request!(
-        update_category,
-        update_category,
-        UpdateCategoryInput,
-        UpdateCategoryMutation
-    );
-
-    graphql_request!(
-        delete_category,
-        delete_category,
-        DeleteCategoryInput,
-        DeleteCategoryMutation
-    );
-
-    graphql_request!(
-        create_user,
-        create_user,
-        CreateUserInput,
-        CreateUserMutation
-    );
-
-    graphql_request!(
-        update_user,
-        update_user,
-        UpdateUserInput,
-        UpdateUserMutation
-    );
-
-    graphql_request!(
-        deactivate_user,
-        deactivate_user,
-        DeactivateUserInput,
-        DeactivateUserMutation
-    );
+    pub fn request<T: GraphqlRequest>(&self, input: T) -> Result<T::Output, FailureError> {
+        let payload: serde_json::Value = input.into();
+        let response_body: serde_json::Value = self.graphql_request(payload)?;
+        T::response(response_body)
+    }
 
     pub fn delete_user(&self, user_id: i64) -> Result<delete_user::ResponseData, FailureError> {
         let request_body =
@@ -273,136 +206,6 @@ impl TestContext {
             _ => unreachable!(),
         }
     }
-
-    graphql_request!(
-        create_user_jwt,
-        get_jwt_by_provider,
-        CreateJWTProviderInput,
-        GetJwtByProviderMutation
-    );
-    graphql_request!(
-        get_jwt_by_email,
-        get_jwt_by_email,
-        CreateJWTEmailInput,
-        GetJwtByEmailMutation
-    );
-    graphql_request!(
-        verify_email,
-        verify_email,
-        VerifyEmailApply,
-        VerifyEmailMutation
-    );
-    graphql_request!(
-        create_store,
-        create_store,
-        CreateStoreInput,
-        CreateStoreMutation
-    );
-    graphql_request!(
-        update_store,
-        update_store,
-        UpdateStoreInput,
-        UpdateStoreMutation
-    );
-    graphql_request!(
-        create_attribute,
-        create_attribute,
-        CreateAttributeInput,
-        CreateAttributeMutation
-    );
-    graphql_request!(
-        update_attribute,
-        update_attribute,
-        UpdateAttributeInput,
-        UpdateAttributeMutation
-    );
-    graphql_request!(
-        delete_attribute,
-        delete_attribute,
-        DeleteAttributeInput,
-        DeleteAttributeMutation
-    );
-    graphql_request!(
-        create_attribute_value,
-        create_attribute_value,
-        CreateAttributeValueInput,
-        CreateAttributeValueMutation
-    );
-    graphql_request!(
-        update_attribute_value,
-        update_attribute_value,
-        UpdateAttributeValueInput,
-        UpdateAttributeValueMutation
-    );
-    graphql_request!(
-        delete_attribute_value,
-        delete_attribute_value,
-        DeleteAttributeValueInput,
-        DeleteAttributeValueMutation
-    );
-
-    graphql_request!(
-        create_base_product,
-        create_base_product,
-        CreateBaseProductInput,
-        CreateBaseProductMutation
-    );
-
-    graphql_request!(
-        deactivate_base_product,
-        deactivate_base_product,
-        DeactivateBaseProductInput,
-        DeactivateBaseProductMutation
-    );
-
-    graphql_request!(
-        create_base_product_with_variants,
-        create_base_product_with_variants,
-        NewBaseProductWithVariantsInput,
-        CreateBaseProductWithVariantsMutation
-    );
-
-    graphql_request!(
-        update_base_product,
-        update_base_product,
-        UpdateBaseProductInput,
-        UpdateBaseProductMutation
-    );
-
-    graphql_request!(
-        update_product,
-        update_product,
-        UpdateProductWithAttributesInput,
-        UpdateProductMutation
-    );
-
-    graphql_request!(
-        create_product,
-        create_product,
-        CreateProductWithAttributesInput,
-        CreateProductMutation
-    );
-
-    graphql_request!(
-        deactivate_product,
-        deactivate_product,
-        DeactivateProductInput,
-        DeactivateProductMutation
-    );
-
-    graphql_request!(
-        create_delivery_company,
-        create_delivery_company,
-        NewCompanyInput,
-        CreateCompanyMutation
-    );
-
-    graphql_request!(
-        update_delivery_company,
-        update_delivery_company,
-        UpdateCompanyInput,
-        UpdateCompanyMutation
-    );
 
     pub fn delete_store(&self, store_id: i64) -> Result<delete_store::ResponseData, FailureError> {
         let request_body =
