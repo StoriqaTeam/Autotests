@@ -46,14 +46,14 @@ pub fn default_create_base_product_with_variants_input() -> NewBaseProductWithVa
             product: NewProduct {
                 client_mutation_id: None,
                 base_product_id: None,
-                discount: Some(30.0),
+                discount: Some(0.3),
                 photo_main: Some("photo".to_string()),
                 additional_photos: Some(vec![
                     "additional_photo_1".to_string(),
                     "additional_photo_2".to_string(),
                 ]),
                 vendor_code: "vendor_code".to_string(),
-                cashback: Some(10.0),
+                cashback: Some(0.1),
                 price: 100.0,
                 pre_order: Some(false),
                 pre_order_days: Some(100),

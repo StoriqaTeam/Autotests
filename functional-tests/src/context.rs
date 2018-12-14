@@ -188,6 +188,51 @@ impl TestContext {
         Ok(())
     }
 
+    pub fn users_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.users_microservice.healthcheck()?;
+        Ok(())
+    }
+
+    pub fn stores_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.stores_microservice.healthcheck()?;
+        Ok(())
+    }
+
+    pub fn orders_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.orders_microservice.healthcheck()?;
+        Ok(())
+    }
+
+    pub fn warehouses_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.warehouses_microservice.healthcheck()?;
+        Ok(())
+    }
+
+    pub fn billing_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.billing_microservice.healthcheck()?;
+        Ok(())
+    }
+
+    pub fn notifications_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.notifications_microservice.healthcheck()?;
+        Ok(())
+    }
+
+    pub fn delivery_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.delivery_microservice.healthcheck()?;
+        Ok(())
+    }
+
+    pub fn saga_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.saga_microservice.healthcheck()?;
+        Ok(())
+    }
+
+    pub fn gateway_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.gateway_microservice.healthcheck()?;
+        Ok(())
+    }
+
     pub fn request<T: GraphqlRequest>(&self, input: T) -> Result<T::Output, FailureError> {
         let payload: serde_json::Value = input.into();
         let response_body: serde_json::Value = self.graphql_request(payload)?;
