@@ -162,14 +162,6 @@ impl UsersMicroservice {
         Ok(())
     }
 
-    pub fn get_email_verification_token(&self, email: &str) -> Result<String, FailureError> {
-        let url = format!("{}/users/email_verify_token", self.url);
-        let payload = serde_json::json!({ "email": email });
-        let mut response = self.client.post(&url).json(&payload).send()?;
-        let token = response.json()?;
-        Ok(token)
-    }
-
     pub fn healthcheck(&self) -> Result<(), FailureError> {
         healthcheck(&self.client, &self.url)
             .map_err(|e| e.context("Healthcheck in users microservice failed").into())

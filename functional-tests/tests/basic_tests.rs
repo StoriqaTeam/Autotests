@@ -15,9 +15,15 @@ pub fn verify_email() {
     let user = context
         .request(create_user::default_create_user_input())
         .expect("createUser failed");
+    context.as_superadmin();
     let verification_token = context
-        .get_email_verification_token(&user.email)
-        .expect("context.get_email_verification_token");
+        .request(get_existing_reset_token::ExistingResetTokenInput {
+            user_id: user.raw_id,
+            token_type: get_existing_reset_token::TokenTypeInput::EMAIL_VERIFY,
+        })
+        .expect("get_existing_reset_token failed")
+        .token;
+    context.clear_bearer();
     //when
     let verification = context
         .request(verify_email::VerifyEmailApply {
