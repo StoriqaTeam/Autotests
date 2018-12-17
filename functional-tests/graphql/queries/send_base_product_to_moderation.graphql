@@ -1,0 +1,126 @@
+mutation sendBaseProductToModeration($id: Int!) {
+  sendBaseProductToModeration(id: $id) {
+    id
+    rawId
+    name {
+        lang
+        text
+    }
+    isActive
+    shortDescription {
+        lang
+        text
+    }
+    longDescription {
+        lang
+        text
+    }
+    seoTitle {
+        lang,
+        text
+    }
+    seoDescription {
+        lang
+        text
+    }
+    currency
+    rating
+    status
+    storeId
+    categoryId
+    createdAt
+    updatedAt
+    lengthCm
+    widthCm
+    heightCm
+    volumeCubicCm
+    weightG
+    moderatorComment{
+        id
+        rawId
+        moderatorId
+        baseProductId
+        comments
+    }
+    category {
+        rawId
+    }
+    views
+    slug
+    customAttributes {
+        id,
+        rawId,
+        attributeId,
+        baseProductId
+    }
+    shipping{
+        local {
+            companyPackageId
+        }
+        international {
+            companyPackageId
+        }
+        pickup {
+            price,
+            pickup
+        }
+    }
+    isShippingAvailable
+    products {
+      edges {
+        node {
+            id
+            rawId
+            isActive
+            discount
+            currency
+            photoMain
+            additionalPhotos
+            vendorCode
+            cashback
+            price
+            preOrder
+            preOrderDays
+            customerPrice {
+                price
+                currency
+            }
+            attributes {
+                attribute {
+                    id
+                    rawId
+                    name {
+                        lang
+                        text
+                    }
+                    valueType
+                    metaField {
+                        uiElement
+                    }
+                    values {
+                        rawId
+                        code
+                        translations {
+                            lang
+                            text
+                        }
+                    }
+                }
+                attrId
+                attributeValueId
+                attributeValue {
+                    rawId
+                    code
+                    translations {
+                        lang
+                        text
+                    }
+                }
+                metaField
+            }
+            quantity
+        }
+      }
+    }
+  }
+}

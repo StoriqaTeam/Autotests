@@ -7,7 +7,8 @@ use request::GraphqlRequest;
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "graphql/schema.json",
-    query_path = "graphql/queries/create_store.graphql"
+    query_path = "graphql/queries/create_store.graphql",
+    response_derives = "Debug, PartialEq"
 )]
 pub struct CreateStoreMutation;
 

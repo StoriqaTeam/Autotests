@@ -1,0 +1,57 @@
+mutation addInCartV2($input: AddInCartInputV2!) {
+  addInCartV2(input: $input) {
+    id
+    stores {
+        edges {
+            node {
+                id
+                rawId
+                name {
+                    lang
+                    text
+                }
+                rating
+                logo
+                cover
+                productsCost
+                productsCostWithoutDiscounts
+                coupons {
+                    id
+                    rawId
+                    code
+                    title
+                    storeId
+                    scope
+                    percent
+                    quantity
+                    usedQuantity
+                    expiredAt
+                    isActive
+                    createdAt
+                    updatedAt
+                    baseProducts {
+                        id
+                        rawId
+                    }
+                }
+                couponsDiscount
+                deliveryCost
+                totalCost
+                totalCostWithoutDiscounts
+                totalCount
+                products {
+                    id
+                    rawId
+                }
+            }
+        }
+    }
+    productsCost
+    productsCostWithoutDiscounts
+    couponsDiscounts
+    deliveryCost
+    totalCost
+    totalCostWithoutDiscounts
+    totalCount
+ }
+}

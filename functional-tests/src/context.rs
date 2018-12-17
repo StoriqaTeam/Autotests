@@ -92,6 +92,7 @@ impl TestContext {
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
         self.users_microservice.clear_all_data()?;
         self.stores_microservice.clear_all_data()?;
+        self.orders_microservice.clear_all_data()?;
         Ok(())
     }
 
