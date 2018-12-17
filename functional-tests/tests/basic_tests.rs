@@ -10,7 +10,231 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
-pub fn delete_product_from_cart_when_product_is_deactivated() {
+pub fn delete_products_from_carts_when_store_status_is_changed() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let store_1 = create_store_with_several_products(&mut context, "store-1")
+        .expect("create_store_with_several_products failed to create store 1");
+    let store_2 = create_store_with_several_products(&mut context, "store-2")
+        .expect("create_store_with_several_products failed to create store 2");
+    let buyer_1 =
+        create_user_with_products_in_carts(&mut context, "buyer-1@mail.com", &[&store_1, &store_2])
+            .expect("create_user_with_products_in_carts failed to create buyer 1");
+    let buyer_2 =
+        create_user_with_products_in_carts(&mut context, "buyer-2@mail.com", &[&store_1, &store_2])
+            .expect("create_user_with_products_in_carts failed to create buyer 2");
+    //when
+    context.as_superadmin();
+    let _ = context
+        .request(set_moderation_status_store::StoreModerateInput {
+            id: store_1.store.id.clone(),
+            status: set_moderation_status_store::Status::DRAFT,
+        })
+        .expect("set_moderation_status_store failed");
+    //then
+    let desired_products_in_cart: HashSet<i64> = vec![
+        //without store_1.product_1.product_1
+        //without store_1.product_1.product_2
+        //without store_1.product_2.product_1
+        //without store_1.product_2.product_2
+        store_2.product_1.product_1.raw_id,
+        store_2.product_1.product_2.raw_id,
+        store_2.product_2.product_1.raw_id,
+        store_2.product_2.product_2.raw_id,
+    ]
+    .into_iter()
+    .collect();
+    //first buyer
+    assert_eq!(
+        user_has_products_in_cart(&mut context, buyer_1.token),
+        desired_products_in_cart,
+        "products mismatch for buyer_1"
+    );
+    //second buyer
+    assert_eq!(
+        user_has_products_in_cart(&mut context, buyer_2.token),
+        desired_products_in_cart,
+        "products mismatch for buyer_2"
+    );
+}
+
+#[test]
+pub fn delete_products_from_carts_when_base_product_status_is_changed() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let store_1 = create_store_with_several_products(&mut context, "store-1")
+        .expect("create_store_with_several_products failed to create store 1");
+    let store_2 = create_store_with_several_products(&mut context, "store-2")
+        .expect("create_store_with_several_products failed to create store 2");
+    let buyer_1 =
+        create_user_with_products_in_carts(&mut context, "buyer-1@mail.com", &[&store_1, &store_2])
+            .expect("create_user_with_products_in_carts failed to create buyer 1");
+    let buyer_2 =
+        create_user_with_products_in_carts(&mut context, "buyer-2@mail.com", &[&store_1, &store_2])
+            .expect("create_user_with_products_in_carts failed to create buyer 2");
+    //when
+    context.as_superadmin();
+    let _ = context
+        .request(
+            set_moderation_status_base_product::BaseProductModerateInput {
+                id: store_1.product_1.base_product.id.clone(),
+                status: set_moderation_status_base_product::Status::DRAFT,
+            },
+        )
+        .expect("set_moderation_status_base_product failed");
+    //then
+    let desired_products_in_cart: HashSet<i64> = vec![
+        //without store_1.product_1.product_1
+        //without store_1.product_1.product_2
+        store_1.product_2.product_1.raw_id,
+        store_1.product_2.product_2.raw_id,
+        store_2.product_1.product_1.raw_id,
+        store_2.product_1.product_2.raw_id,
+        store_2.product_2.product_1.raw_id,
+        store_2.product_2.product_2.raw_id,
+    ]
+    .into_iter()
+    .collect();
+    //first buyer
+    assert_eq!(
+        user_has_products_in_cart(&mut context, buyer_1.token),
+        desired_products_in_cart,
+        "products mismatch for buyer_1"
+    );
+    //second buyer
+    assert_eq!(
+        user_has_products_in_cart(&mut context, buyer_2.token),
+        desired_products_in_cart,
+        "products mismatch for buyer_2"
+    );
+}
+
+#[test]
+pub fn deactivate_store() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, store, _category) = set_up_store(&mut context).expect("set_up_store failed");
+    context.set_bearer(token.clone());
+    //when
+    let _ = context
+        .request(deactivate_store::DeactivateStoreInput {
+            id: store.id.clone(),
+            ..deactivate_store::default_deactivate_store_input()
+        })
+        .expect("deactivate_store failed");
+    //then
+    let store = context
+        .get_store(store.raw_id)
+        .expect("get_store failed")
+        .store;
+    assert!(store.is_none(), "store should be deactivated")
+}
+
+#[test]
+pub fn delete_products_from_carts_when_store_is_deactivated() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let store_1 = create_store_with_several_products(&mut context, "store-1")
+        .expect("create_store_with_several_products failed to create store 1");
+    let store_2 = create_store_with_several_products(&mut context, "store-2")
+        .expect("create_store_with_several_products failed to create store 2");
+    let buyer_1 =
+        create_user_with_products_in_carts(&mut context, "buyer-1@mail.com", &[&store_1, &store_2])
+            .expect("create_user_with_products_in_carts failed to create buyer 1");
+    let buyer_2 =
+        create_user_with_products_in_carts(&mut context, "buyer-2@mail.com", &[&store_1, &store_2])
+            .expect("create_user_with_products_in_carts failed to create buyer 2");
+    //when
+    context.set_bearer(store_1.token);
+    let _ = context
+        .request(deactivate_store::DeactivateStoreInput {
+            id: store_1.store.id.clone(),
+            ..deactivate_store::default_deactivate_store_input()
+        })
+        .expect("deactivate_store failed");
+    //then
+    let desired_products_in_cart: HashSet<i64> = vec![
+        //without store_1.product_1.product_1
+        //without store_1.product_1.product_2
+        //without store_1.product_2.product_1
+        //without store_1.product_2.product_2
+        store_2.product_1.product_1.raw_id,
+        store_2.product_1.product_2.raw_id,
+        store_2.product_2.product_1.raw_id,
+        store_2.product_2.product_2.raw_id,
+    ]
+    .into_iter()
+    .collect();
+    //first buyer
+    assert_eq!(
+        user_has_products_in_cart(&mut context, buyer_1.token),
+        desired_products_in_cart,
+        "products mismatch for buyer_1"
+    );
+    //second buyer
+    assert_eq!(
+        user_has_products_in_cart(&mut context, buyer_2.token),
+        desired_products_in_cart,
+        "products mismatch for buyer_2"
+    );
+}
+
+#[test]
+pub fn delete_products_from_carts_when_base_product_is_deactivated() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let store_1 = create_store_with_several_products(&mut context, "store-1")
+        .expect("create_store_with_several_products failed to create store 1");
+    let store_2 = create_store_with_several_products(&mut context, "store-2")
+        .expect("create_store_with_several_products failed to create store 2");
+    let buyer_1 =
+        create_user_with_products_in_carts(&mut context, "buyer-1@mail.com", &[&store_1, &store_2])
+            .expect("create_user_with_products_in_carts failed to create buyer 1");
+    let buyer_2 =
+        create_user_with_products_in_carts(&mut context, "buyer-2@mail.com", &[&store_1, &store_2])
+            .expect("create_user_with_products_in_carts failed to create buyer 2");
+    //when
+    context.set_bearer(store_1.token);
+    let _ = context
+        .request(deactivate_base_product::DeactivateBaseProductInput {
+            id: store_1.product_1.base_product.id.clone(),
+            ..deactivate_base_product::default_deactivate_base_product_input()
+        })
+        .expect("deactivate_base_product failed");
+    //then
+    let desired_products_in_cart: HashSet<i64> = vec![
+        //without store_1.product_1.product_1
+        //without store_1.product_1.product_2
+        store_1.product_2.product_1.raw_id,
+        store_1.product_2.product_2.raw_id,
+        store_2.product_1.product_1.raw_id,
+        store_2.product_1.product_2.raw_id,
+        store_2.product_2.product_1.raw_id,
+        store_2.product_2.product_2.raw_id,
+    ]
+    .into_iter()
+    .collect();
+    //first buyer
+    assert_eq!(
+        user_has_products_in_cart(&mut context, buyer_1.token),
+        desired_products_in_cart,
+        "products mismatch for buyer_1"
+    );
+    //second buyer
+    assert_eq!(
+        user_has_products_in_cart(&mut context, buyer_2.token),
+        desired_products_in_cart,
+        "products mismatch for buyer_2"
+    );
+}
+
+#[test]
+pub fn delete_product_from_carts_when_product_is_deactivated() {
     //setup
     let mut context = TestContext::new();
     //given
@@ -46,39 +270,32 @@ pub fn delete_product_from_cart_when_product_is_deactivated() {
     .into_iter()
     .collect();
     //first buyer
-    context.set_bearer(buyer_1.token);
-    let buyer_1_cart = context
-        .request(get_cart_v2::default_get_cart_v2_input())
-        .expect("get_cart_v2 failed for buyer_1");
-    let buyer_1_products: HashSet<i64> = buyer_1_cart
-        .expect("get_cart_v2 returned None for buyer_1")
-        .stores
-        .edges
-        .into_iter()
-        .flat_map(|e| e.node.products)
-        .map(|product| product.raw_id)
-        .collect();
     assert_eq!(
-        buyer_1_products, desired_products_in_cart,
+        user_has_products_in_cart(&mut context, buyer_1.token),
+        desired_products_in_cart,
         "products mismatch for buyer_1"
     );
     //second buyer
-    context.set_bearer(buyer_2.token);
-    let buyer_2_cart = context
+    assert_eq!(
+        user_has_products_in_cart(&mut context, buyer_2.token),
+        desired_products_in_cart,
+        "products mismatch for buyer_2"
+    );
+}
+
+fn user_has_products_in_cart(context: &mut TestContext, user_token: String) -> HashSet<i64> {
+    context.set_bearer(user_token);
+    let user_cart = context
         .request(get_cart_v2::default_get_cart_v2_input())
-        .expect("get_cart_v2 failed for buyer_2");
-    let buyer_2_products: HashSet<i64> = buyer_2_cart
-        .expect("get_cart_v2 returned None for buyer_2")
+        .expect("get_cart_v2 failed for user_cart");
+    user_cart
+        .expect("get_cart_v2 returned None for user")
         .stores
         .edges
         .into_iter()
         .flat_map(|e| e.node.products)
         .map(|product| product.raw_id)
-        .collect();
-    assert_eq!(
-        buyer_2_products, desired_products_in_cart,
-        "products mismatch for buyer_2"
-    );
+        .collect()
 }
 
 fn create_user_with_products_in_carts(
@@ -1925,11 +2142,13 @@ fn set_up_published_store(
 > {
     let (user, token) = set_up_user(context)?;
     context.set_bearer(token.clone());
+    //create
     let store = context.request(create_store::CreateStoreInput {
         user_id: user.raw_id,
         ..create_store::default_create_store_input()
     })?;
 
+    //publish
     context.set_bearer(token.clone());
     let _ = context.request(send_store_to_moderation::SendStoreToModerationInput {
         raw_id: store.raw_id,
@@ -1939,7 +2158,7 @@ fn set_up_published_store(
         id: store.id.clone(),
         status: set_moderation_status_store::Status::PUBLISHED,
     })?;
-
+    //create categories
     context.as_superadmin();
     let category_level_1 = context.request(create_category::default_create_category_input())?;
     let category_level_2 = context.request(create_category::CreateCategoryInput {
