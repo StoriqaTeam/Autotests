@@ -3,23 +3,6 @@ mutation createStore($input: CreateStoreInput!) {
     id
     rawId
     userId
-    storeManager {
-      id
-      rawId
-      email
-      isActive
-      phone
-      firstName
-      lastName
-      middleName
-      gender
-      birthdate
-      avatar
-      isBlocked
-      emarsysId
-      createdAt
-      updatedAt
-    }
     name {
       lang
       text

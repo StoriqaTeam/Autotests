@@ -57,6 +57,7 @@ pub fn delete_products_from_carts_when_store_status_is_changed() {
         desired_products_in_cart,
         "products mismatch for buyer_2"
     );
+    panic!("test");
 }
 
 #[test]
@@ -341,7 +342,7 @@ fn create_user_with_products_in_carts(
         })?;
     }
 
-    Ok(User { user, token })
+    Ok(User { token })
 }
 
 fn create_store_with_several_products(
@@ -444,7 +445,6 @@ fn create_store_with_several_products(
         .expect("set_moderation_status_base_product failed");
 
     Ok(Store {
-        owner,
         store,
         product_1,
         product_2,
@@ -493,7 +493,6 @@ fn create_base_broduct_with_two_products(
 }
 
 struct Store {
-    owner: create_user::RustCreateUserCreateUser,
     store: create_store::RustCreateStoreCreateStore,
     product_1: Products,
     product_2: Products,
@@ -507,7 +506,6 @@ struct Products {
 }
 
 struct User {
-    user: create_user::RustCreateUserCreateUser,
     token: String,
 }
 
@@ -674,13 +672,16 @@ pub fn add_in_cart() {
         .token;
     context.set_bearer(buyer_token);
     //when
-    let cart = context
+    let _ = context
         .request(add_in_cart_v2::AddInCartInputV2 {
             product_id: product.raw_id,
             ..add_in_cart_v2::default_add_in_cart_v2_input()
         })
         .expect("add_in_cart_v2 failed");
     //then
+    let cart = context
+        .request(get_cart_v2::default_get_cart_v2_input())
+        .expect("get_cart_v2 failed for user_cart");
     assert!(cart.is_some(), "add_in_cart_v2 returned None");
     let mut cart = cart.expect("add_in_cart_v2 returned None");
     let product = cart.stores.edges.pop();
