@@ -1,0 +1,6 @@
+mutation setModerationStatusStore($input: StoreModerateInput!) {
+  setModerationStatusStore(input: $input) {
+    id
+    rawId
+  }
+}

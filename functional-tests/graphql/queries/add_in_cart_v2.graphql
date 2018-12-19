@@ -1,0 +1,12 @@
+mutation addInCartV2($input: AddInCartInputV2!) {
+  addInCartV2(input: $input) {
+    id
+    productsCost
+    productsCostWithoutDiscounts
+    couponsDiscounts
+    deliveryCost
+    totalCost
+    totalCostWithoutDiscounts
+    totalCount
+ }
+}

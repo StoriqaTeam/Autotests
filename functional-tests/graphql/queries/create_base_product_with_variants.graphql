@@ -35,36 +35,7 @@ mutation createBaseProductWithVariants($input: NewBaseProductWithVariantsInput!)
     heightCm
     volumeCubicCm
     weightG
-    moderatorComment{
-        id
-        rawId
-        moderatorId
-        baseProductId
-        comments
-    }
-    category {
-        rawId
-    }
     views
     slug
-    customAttributes {
-        id
-        rawId
-        attributeId
-        baseProductId
-    }
-    shipping{
-        local {
-            companyPackageId
-        }
-        international {
-            companyPackageId
-        }
-        pickup {
-            price
-            pickup
-        }
-    }
-    isShippingAvailable
  }
 }

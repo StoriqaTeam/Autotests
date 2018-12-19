@@ -1,11 +1,695 @@
 extern crate failure;
 extern crate functional_tests;
 
+use std::collections::HashSet;
+
 use failure::Error as FailureError;
 
 use functional_tests::query::*;
 
 use functional_tests::context::TestContext;
+
+#[test]
+pub fn delete_products_from_all_carts_during_various_scenarios() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let store_1 = create_store_with_several_products(&mut context, "store-1")
+        .expect("create_store_with_several_products failed to create store 1");
+    let store_2 = create_store_with_several_products(&mut context, "store-2")
+        .expect("create_store_with_several_products failed to create store 2");
+    let buyer_1 =
+        create_user_with_products_in_carts(&mut context, "buyer-1@mail.com", &[&store_1, &store_2])
+            .expect("create_user_with_products_in_carts failed to create buyer 1");
+    let buyer_2 =
+        create_user_with_products_in_carts(&mut context, "buyer-2@mail.com", &[&store_1, &store_2])
+            .expect("create_user_with_products_in_carts failed to create buyer 2");
+    //then
+    check_delete_product_from_carts_when_product_is_deactivated(
+        &mut context,
+        &store_1,
+        &store_2,
+        &buyer_1,
+        &buyer_2,
+    );
+    check_delete_products_from_carts_when_base_product_is_deactivated(
+        &mut context,
+        &store_1,
+        &store_2,
+        &buyer_1,
+        &buyer_2,
+    );
+    check_delete_products_from_carts_when_store_is_deactivated(
+        &mut context,
+        &store_1,
+        &store_2,
+        &buyer_1,
+        &buyer_2,
+    );
+    check_delete_products_from_carts_when_base_product_status_is_changed(
+        &mut context,
+        &store_1,
+        &store_2,
+        &buyer_1,
+        &buyer_2,
+    );
+    check_delete_products_from_carts_when_store_status_is_changed(
+        &mut context,
+        &store_1,
+        &store_2,
+        &buyer_1,
+        &buyer_2,
+    );
+}
+
+fn check_delete_products_from_carts_when_store_status_is_changed(
+    context: &mut TestContext,
+    _store_1: &Store,
+    store_2: &Store,
+    buyer_1: &User,
+    buyer_2: &User,
+) {
+    //when
+    context.as_superadmin();
+    let _ = context
+        .request(set_moderation_status_store::StoreModerateInput {
+            id: store_2.store.id.clone(),
+            status: set_moderation_status_store::Status::DRAFT,
+        })
+        .expect("set_moderation_status_store failed");
+    //then
+    let desired_products_in_cart: HashSet<i64> = HashSet::new(); //totaly empty
+                                                                 //first buyer
+    assert_eq!(
+        user_has_products_in_cart(context, buyer_1.token.clone()),
+        desired_products_in_cart,
+        "products mismatch for buyer_1"
+    );
+    //second buyer
+    assert_eq!(
+        user_has_products_in_cart(context, buyer_2.token.clone()),
+        desired_products_in_cart,
+        "products mismatch for buyer_2"
+    );
+}
+
+fn check_delete_products_from_carts_when_base_product_status_is_changed(
+    context: &mut TestContext,
+    _store_1: &Store,
+    store_2: &Store,
+    buyer_1: &User,
+    buyer_2: &User,
+) {
+    //when
+    context.as_superadmin();
+    let _ = context
+        .request(
+            set_moderation_status_base_product::BaseProductModerateInput {
+                id: store_2.product_1.base_product.id.clone(),
+                status: set_moderation_status_base_product::Status::DRAFT,
+            },
+        )
+        .expect("set_moderation_status_base_product failed");
+    //then
+    let desired_products_in_cart: HashSet<i64> = vec![
+        //without store_1.product_1.product_1
+        //without store_1.product_1.product_2
+        //without store_1.product_2.product_1
+        //without store_1.product_2.product_2
+        //without store_2.product_1.product_1
+        //without store_2.product_1.product_2.
+        store_2.product_2.product_1.raw_id,
+        store_2.product_2.product_2.raw_id,
+    ]
+    .into_iter()
+    .collect();
+    //first buyer
+    assert_eq!(
+        user_has_products_in_cart(context, buyer_1.token.clone()),
+        desired_products_in_cart,
+        "products mismatch for buyer_1"
+    );
+    //second buyer
+    assert_eq!(
+        user_has_products_in_cart(context, buyer_2.token.clone()),
+        desired_products_in_cart,
+        "products mismatch for buyer_2"
+    );
+}
+
+fn check_delete_products_from_carts_when_store_is_deactivated(
+    context: &mut TestContext,
+    store_1: &Store,
+    store_2: &Store,
+    buyer_1: &User,
+    buyer_2: &User,
+) {
+    //when
+    context.set_bearer(store_1.token.clone());
+    let _ = context
+        .request(deactivate_store::DeactivateStoreInput {
+            id: store_1.store.id.clone(),
+            ..deactivate_store::default_deactivate_store_input()
+        })
+        .expect("deactivate_store failed");
+    //then
+    let desired_products_in_cart: HashSet<i64> = vec![
+        //without store_1.product_1.product_1
+        //without store_1.product_1.product_2
+        //without store_1.product_2.product_1
+        //without store_1.product_2.product_2
+        store_2.product_1.product_1.raw_id,
+        store_2.product_1.product_2.raw_id,
+        store_2.product_2.product_1.raw_id,
+        store_2.product_2.product_2.raw_id,
+    ]
+    .into_iter()
+    .collect();
+    //first buyer
+    assert_eq!(
+        user_has_products_in_cart(context, buyer_1.token.clone()),
+        desired_products_in_cart,
+        "products mismatch for buyer_1"
+    );
+    //second buyer
+    assert_eq!(
+        user_has_products_in_cart(context, buyer_2.token.clone()),
+        desired_products_in_cart,
+        "products mismatch for buyer_2"
+    );
+}
+
+fn check_delete_products_from_carts_when_base_product_is_deactivated(
+    context: &mut TestContext,
+    store_1: &Store,
+    store_2: &Store,
+    buyer_1: &User,
+    buyer_2: &User,
+) {
+    //when
+    context.set_bearer(store_1.token.clone());
+    let _ = context
+        .request(deactivate_base_product::DeactivateBaseProductInput {
+            id: store_1.product_1.base_product.id.clone(),
+            ..deactivate_base_product::default_deactivate_base_product_input()
+        })
+        .expect("deactivate_base_product failed");
+    //then
+    let desired_products_in_cart: HashSet<i64> = vec![
+        //without store_1.product_1.product_1
+        //without store_1.product_1.product_2
+        store_1.product_2.product_1.raw_id,
+        store_1.product_2.product_2.raw_id,
+        store_2.product_1.product_1.raw_id,
+        store_2.product_1.product_2.raw_id,
+        store_2.product_2.product_1.raw_id,
+        store_2.product_2.product_2.raw_id,
+    ]
+    .into_iter()
+    .collect();
+    //first buyer
+    assert_eq!(
+        user_has_products_in_cart(context, buyer_1.token.clone()),
+        desired_products_in_cart,
+        "products mismatch for buyer_1"
+    );
+    //second buyer
+    assert_eq!(
+        user_has_products_in_cart(context, buyer_2.token.clone()),
+        desired_products_in_cart,
+        "products mismatch for buyer_2"
+    );
+}
+
+fn check_delete_product_from_carts_when_product_is_deactivated(
+    context: &mut TestContext,
+    store_1: &Store,
+    store_2: &Store,
+    buyer_1: &User,
+    buyer_2: &User,
+) {
+    //when
+    context.set_bearer(store_1.token.clone());
+    let _ = context
+        .request(deactivate_product::DeactivateProductInput {
+            id: store_1.product_1.product_1.id.clone(),
+            ..deactivate_product::default_deactivate_product_input()
+        })
+        .expect("deactivate_product failed");
+    //then
+    let desired_products_in_cart: HashSet<i64> = vec![
+        //without store_1.product_1.product_1
+        store_1.product_1.product_2.raw_id,
+        store_1.product_2.product_1.raw_id,
+        store_1.product_2.product_2.raw_id,
+        store_2.product_1.product_1.raw_id,
+        store_2.product_1.product_2.raw_id,
+        store_2.product_2.product_1.raw_id,
+        store_2.product_2.product_2.raw_id,
+    ]
+    .into_iter()
+    .collect();
+    //first buyer
+    assert_eq!(
+        user_has_products_in_cart(context, buyer_1.token.clone()),
+        desired_products_in_cart,
+        "products mismatch for buyer_1"
+    );
+    //second buyer
+    assert_eq!(
+        user_has_products_in_cart(context, buyer_2.token.clone()),
+        desired_products_in_cart,
+        "products mismatch for buyer_2"
+    );
+}
+
+fn user_has_products_in_cart(context: &mut TestContext, user_token: String) -> HashSet<i64> {
+    context.set_bearer(user_token);
+    let user_cart = context
+        .request(get_cart_v2::default_get_cart_v2_input())
+        .expect("get_cart_v2 failed for user_cart");
+    user_cart
+        .expect("get_cart_v2 returned None for user")
+        .stores
+        .edges
+        .into_iter()
+        .flat_map(|e| e.node.products)
+        .map(|product| product.raw_id)
+        .collect()
+}
+
+fn create_user_with_products_in_carts(
+    context: &mut TestContext,
+    email: &str,
+    stores: &[&Store],
+) -> Result<User, FailureError> {
+    //create user
+    let user = context
+        .request(create_user::CreateUserInput {
+            email: email.to_string(),
+            ..create_user::default_create_user_input()
+        })
+        .expect("create_user failed for user");
+    context
+        .verify_user_email(&user.email)
+        .expect("verify_user_email failed for user");;
+    let token: String = context
+        .request(get_jwt_by_email::CreateJWTEmailInput {
+            email: user.email.clone(),
+            ..get_jwt_by_email::default_create_jwt_email_input()
+        })
+        .expect("get_jwt_by_email failed for user")
+        .token;
+    context.set_bearer(token.clone());
+    // add products to cart
+    for store in stores {
+        let _ = context.request(add_in_cart_v2::AddInCartInputV2 {
+            product_id: store.product_1.product_1.raw_id,
+            ..add_in_cart_v2::default_add_in_cart_v2_input()
+        })?;
+        let _ = context.request(add_in_cart_v2::AddInCartInputV2 {
+            product_id: store.product_1.product_2.raw_id,
+            ..add_in_cart_v2::default_add_in_cart_v2_input()
+        })?;
+        let _ = context.request(add_in_cart_v2::AddInCartInputV2 {
+            product_id: store.product_2.product_1.raw_id,
+            ..add_in_cart_v2::default_add_in_cart_v2_input()
+        })?;
+        let _ = context.request(add_in_cart_v2::AddInCartInputV2 {
+            product_id: store.product_2.product_2.raw_id,
+            ..add_in_cart_v2::default_add_in_cart_v2_input()
+        })?;
+    }
+
+    Ok(User { token })
+}
+
+fn create_store_with_several_products(
+    context: &mut TestContext,
+    store_name: &str,
+) -> Result<Store, FailureError> {
+    //create user
+    let owner = context.request(create_user::CreateUserInput {
+        email: format!("{}-manger@mail.com", store_name),
+        ..create_user::default_create_user_input()
+    })?;
+    context.verify_user_email(&owner.email)?;
+    let token: String = context
+        .request(get_jwt_by_email::CreateJWTEmailInput {
+            email: owner.email.clone(),
+            ..get_jwt_by_email::default_create_jwt_email_input()
+        })?
+        .token;
+    //create store
+    context.set_bearer(token.clone());
+    let store = context.request(create_store::CreateStoreInput {
+        user_id: owner.raw_id,
+        slug: store_name.to_string(),
+        ..create_store::default_create_store_input()
+    })?;
+    //publish store
+    let _ = context.request(send_store_to_moderation::SendStoreToModerationInput {
+        raw_id: store.raw_id,
+    })?;
+    context.as_superadmin();
+    let _ = context.request(set_moderation_status_store::StoreModerateInput {
+        id: store.id.clone(),
+        status: set_moderation_status_store::Status::PUBLISHED,
+    })?;
+    //create categories
+    context.as_superadmin();
+    let category_level_1 = context.request(create_category::CreateCategoryInput {
+        slug: Some(format!("{}-categor-slug-1", store_name)),
+        ..create_category::default_create_category_input()
+    })?;
+    let category_level_2 = context.request(create_category::CreateCategoryInput {
+        parent_id: category_level_1.raw_id,
+        slug: Some(format!("{}-categor-slug-2", store_name)),
+        ..create_category::default_create_category_input()
+    })?;
+    let category_level_3 = context.request(create_category::CreateCategoryInput {
+        parent_id: category_level_2.raw_id,
+        slug: Some(format!("{}-categor-slug-3", store_name)),
+        ..create_category::default_create_category_input()
+    })?;
+    //create products
+    context.set_bearer(token.clone());
+    let product_1 = create_base_broduct_with_two_products(
+        context,
+        store_name,
+        "product-1",
+        store.raw_id,
+        category_level_3.raw_id,
+    )?;
+    let product_2 = create_base_broduct_with_two_products(
+        context,
+        store_name,
+        "product-2",
+        store.raw_id,
+        category_level_3.raw_id,
+    )?;
+    //publish products
+    let _ = context
+        .request(
+            send_base_product_to_moderation::SendBaseProductToModerationInput {
+                raw_id: product_1.base_product.raw_id,
+            },
+        )
+        .expect("send_base_product_to_moderation failed to send to moderation");
+    let _ = context
+        .request(
+            send_base_product_to_moderation::SendBaseProductToModerationInput {
+                raw_id: product_2.base_product.raw_id,
+            },
+        )
+        .expect("send_base_product_to_moderation failed to send to moderation");
+
+    context.as_superadmin();
+    let _ = context
+        .request(
+            set_moderation_status_base_product::BaseProductModerateInput {
+                id: product_1.base_product.id.clone(),
+                status: set_moderation_status_base_product::Status::PUBLISHED,
+            },
+        )
+        .expect("set_moderation_status_base_product failed");
+    context.as_superadmin();
+    let _ = context
+        .request(
+            set_moderation_status_base_product::BaseProductModerateInput {
+                id: product_2.base_product.id.clone(),
+                status: set_moderation_status_base_product::Status::PUBLISHED,
+            },
+        )
+        .expect("set_moderation_status_base_product failed");
+
+    Ok(Store {
+        store,
+        product_1,
+        product_2,
+        token,
+    })
+}
+
+fn create_base_broduct_with_two_products(
+    context: &mut TestContext,
+    store_name: &str,
+    product_name: &str,
+    store_raw_id: i64,
+    category_raw_id: i64,
+) -> Result<Products, FailureError> {
+    let new_base_product = create_base_product::CreateBaseProductInput {
+        store_id: store_raw_id,
+        category_id: category_raw_id,
+        slug: Some(format!("{}-{}-base-product", store_name, product_name)),
+        ..create_base_product::default_create_base_product_input()
+    };
+    let base_product = context.request(new_base_product)?;
+
+    let product_1 = context.request(create_product::CreateProductWithAttributesInput {
+        product: create_product::NewProduct {
+            base_product_id: Some(base_product.raw_id),
+            vendor_code: format!("{}-{}-1", store_name, product_name),
+            ..create_product::default_new_product()
+        },
+        ..create_product::default_create_product_input()
+    })?;
+
+    let product_2 = context.request(create_product::CreateProductWithAttributesInput {
+        product: create_product::NewProduct {
+            base_product_id: Some(base_product.raw_id),
+            vendor_code: format!("{}-{}-2", store_name, product_name),
+            ..create_product::default_new_product()
+        },
+        ..create_product::default_create_product_input()
+    })?;
+
+    Ok(Products {
+        base_product,
+        product_1,
+        product_2,
+    })
+}
+
+struct Store {
+    store: create_store::RustCreateStoreCreateStore,
+    product_1: Products,
+    product_2: Products,
+    token: String,
+}
+
+struct Products {
+    base_product: create_base_product::RustCreateBaseProductCreateBaseProduct,
+    product_1: create_product::RustCreateProductCreateProduct,
+    product_2: create_product::RustCreateProductCreateProduct,
+}
+
+struct User {
+    token: String,
+}
+
+#[test]
+pub fn deactivate_store() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, store, _category) = set_up_store(&mut context).expect("set_up_store failed");
+    context.set_bearer(token.clone());
+    //when
+    let _ = context
+        .request(deactivate_store::DeactivateStoreInput {
+            id: store.id.clone(),
+            ..deactivate_store::default_deactivate_store_input()
+        })
+        .expect("deactivate_store failed");
+    //then
+    let store = context
+        .get_store(store.raw_id)
+        .expect("get_store failed")
+        .store;
+    assert!(store.is_none(), "store should be deactivated")
+}
+
+#[test]
+pub fn publish_base_product() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, _store, _category, base_product) =
+        set_up_base_product(&mut context).expect("set_up_base_product failed");
+    assert_eq!(
+        base_product.status,
+        create_base_product::Status::DRAFT,
+        "Initial status should be draft"
+    );
+    context.set_bearer(token);
+    let _ = context
+        .request(
+            send_base_product_to_moderation::SendBaseProductToModerationInput {
+                raw_id: base_product.raw_id,
+            },
+        )
+        .expect("send_base_product_to_moderation failed to send to moderation");
+    //when
+    context.as_superadmin();
+    let _ = context
+        .request(
+            set_moderation_status_base_product::BaseProductModerateInput {
+                id: base_product.id,
+                status: set_moderation_status_base_product::Status::PUBLISHED,
+            },
+        )
+        .expect("set_moderation_status_base_product failed");
+    //then
+    let updated_base_product = context
+        .get_base_product(base_product.raw_id)
+        .unwrap()
+        .base_product
+        .unwrap();
+    assert_eq!(
+        updated_base_product.status,
+        get_base_product::Status::PUBLISHED,
+        "final status should be published"
+    );
+}
+
+#[test]
+pub fn send_base_product_to_moderation() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, _store, _category, base_product) =
+        set_up_base_product(&mut context).expect("set_up_base_product failed");
+    assert_eq!(
+        base_product.status,
+        create_base_product::Status::DRAFT,
+        "Initial status should be draft"
+    );
+    context.set_bearer(token);
+    //when
+    let _ = context
+        .request(
+            send_base_product_to_moderation::SendBaseProductToModerationInput {
+                raw_id: base_product.raw_id,
+            },
+        )
+        .expect("send_base_product_to_moderation failed to send to moderation");
+    //then
+    let updated_base_product = context
+        .get_base_product(base_product.raw_id)
+        .unwrap()
+        .base_product
+        .unwrap();
+    assert_eq!(
+        updated_base_product.status,
+        get_base_product::Status::MODERATION,
+        "final status should be moderation"
+    );
+}
+
+#[test]
+pub fn publish_store() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, store, _category) = set_up_store(&mut context).unwrap();
+    assert_eq!(
+        store.status,
+        create_store::Status::DRAFT,
+        "Initial status should be draft"
+    );
+    context.set_bearer(token);
+    let _ = context
+        .request(send_store_to_moderation::SendStoreToModerationInput {
+            raw_id: store.raw_id,
+        })
+        .expect("send_store_to_moderation failed to send to moderation");
+    //when
+    context.as_superadmin();
+    let _ = context
+        .request(set_moderation_status_store::StoreModerateInput {
+            id: store.id,
+            status: set_moderation_status_store::Status::PUBLISHED,
+        })
+        .expect("set_moderation_status_store failed");
+    //then
+    let updated_store = context.get_store(store.raw_id).unwrap().store.unwrap();
+    assert_eq!(
+        updated_store.status,
+        get_store::Status::PUBLISHED,
+        "final status should be published"
+    );
+}
+
+#[test]
+pub fn send_store_to_moderation() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, store, _category) = set_up_store(&mut context).unwrap();
+    assert_eq!(
+        store.status,
+        create_store::Status::DRAFT,
+        "Initial status should be draft"
+    );
+    context.set_bearer(token);
+    //when
+    let _ = context
+        .request(send_store_to_moderation::SendStoreToModerationInput {
+            raw_id: store.raw_id,
+        })
+        .expect("send_store_to_moderation failed to send to moderation");
+    //then
+    let updated_store = context.get_store(store.raw_id).unwrap().store.unwrap();
+    assert_eq!(
+        updated_store.status,
+        get_store::Status::MODERATION,
+        "final status should be moderation"
+    );
+}
+
+#[test]
+pub fn add_in_cart() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, _token, _store, _category, _base_product, product) =
+        set_up_published_product(&mut context).expect("set_up_published_product failed");
+    let buyer = context
+        .request(create_user::CreateUserInput {
+            email: "buyer@email.com".to_string(),
+            ..create_user::default_create_user_input()
+        })
+        .expect("create_user failed for buyer");
+    context
+        .verify_user_email(&buyer.email)
+        .expect("verify_user_email failed for buyer");;
+    let buyer_token: String = context
+        .request(get_jwt_by_email::CreateJWTEmailInput {
+            email: buyer.email,
+            ..get_jwt_by_email::default_create_jwt_email_input()
+        })
+        .expect("get_jwt_by_email failed for buyer")
+        .token;
+    context.set_bearer(buyer_token);
+    //when
+    let _ = context
+        .request(add_in_cart_v2::AddInCartInputV2 {
+            product_id: product.raw_id,
+            ..add_in_cart_v2::default_add_in_cart_v2_input()
+        })
+        .expect("add_in_cart_v2 failed");
+    //then
+    let cart = context
+        .request(get_cart_v2::default_get_cart_v2_input())
+        .expect("get_cart_v2 failed for user_cart");
+    assert!(cart.is_some(), "add_in_cart_v2 returned None");
+    let mut cart = cart.expect("add_in_cart_v2 returned None");
+    let product = cart.stores.edges.pop();
+    assert!(product.is_some(), "cart returned no products");
+    let product = product.expect("cart returned no products").node;
+    assert_eq!(product.raw_id, product.raw_id);
+}
 
 #[test]
 pub fn verify_email() {
@@ -15,9 +699,15 @@ pub fn verify_email() {
     let user = context
         .request(create_user::default_create_user_input())
         .expect("createUser failed");
+    context.as_superadmin();
     let verification_token = context
-        .get_email_verification_token(&user.email)
-        .expect("context.get_email_verification_token");
+        .request(get_existing_reset_token::ExistingResetTokenInput {
+            user_id: user.raw_id,
+            token_type: get_existing_reset_token::TokenTypeInput::EMAIL_VERIFY,
+        })
+        .expect("get_existing_reset_token failed")
+        .token;
+    context.clear_bearer();
     //when
     let verification = context
         .request(verify_email::VerifyEmailApply {
@@ -396,7 +1086,7 @@ pub fn delete_attribute_from_category() {
         .request(add_attribute_to_category::AddAttributeToCategoryInput {
             cat_id: category.raw_id,
             attr_id: attribute.raw_id,
-            ..add_attribute_to_category::default_add_attribute_to_categoryinput()
+            ..add_attribute_to_category::default_add_attribute_to_category_input()
         })
         .expect("add_attribute_to_category failed");
     //when
@@ -422,15 +1112,6 @@ pub fn delete_attribute_from_category() {
         .unwrap()
         .get_attributes;
     assert!(changed_category_attributes.is_empty());
-}
-
-#[test]
-#[ignore]
-pub fn a_microservice_healthcheck() {
-    //given
-    let context = TestContext::new();
-    //then
-    let _ = context.microservice_healthcheck().unwrap();
 }
 
 #[test]
@@ -522,7 +1203,7 @@ pub fn add_attribute_to_category() {
         .request(add_attribute_to_category::AddAttributeToCategoryInput {
             cat_id: category.raw_id,
             attr_id: attribute.raw_id,
-            ..add_attribute_to_category::default_add_attribute_to_categoryinput()
+            ..add_attribute_to_category::default_add_attribute_to_category_input()
         })
         .expect("add_attribute_to_category failed");
     //then
@@ -1261,43 +1942,6 @@ pub fn delete_delivery_company() {
     assert_eq!(create_company.raw_id, delete_company.raw_id);
 }
 
-fn set_up_store(
-    context: &mut TestContext,
-) -> Result<
-    (
-        create_user::RustCreateUserCreateUser,
-        String,
-        create_store::RustCreateStoreCreateStore,
-        create_category::RustCreateCategoryCreateCategory,
-    ),
-    FailureError,
-> {
-    let user = context.request(create_user::default_create_user_input())?;
-    context.verify_user_email(&user.email).unwrap();
-    let token: String = context
-        .request(get_jwt_by_email::default_create_jwt_email_input())?
-        .token;
-    context.set_bearer(token.clone());
-    let store = context.request(create_store::CreateStoreInput {
-        user_id: user.raw_id,
-        ..create_store::default_create_store_input()
-    })?;
-    context.as_superadmin();
-    let category_level_1 = context.request(create_category::default_create_category_input())?;
-    let category_level_2 = context.request(create_category::CreateCategoryInput {
-        parent_id: category_level_1.raw_id,
-        slug: Some("category-slug-1".to_string()),
-        ..create_category::default_create_category_input()
-    })?;
-    let category_level_3 = context.request(create_category::CreateCategoryInput {
-        parent_id: category_level_2.raw_id,
-        slug: Some("category-slug-2".to_string()),
-        ..create_category::default_create_category_input()
-    })?;
-    context.clear_bearer();
-    Ok((user, token, store, category_level_3))
-}
-
 fn verify_update_store_values(
     updated_store: get_store::RustGetStoreStore,
     expected_values: update_store::UpdateStoreInput,
@@ -1443,6 +2087,96 @@ fn verify_update_store_values(
     );
 }
 
+fn set_up_user(
+    context: &mut TestContext,
+) -> Result<(create_user::RustCreateUserCreateUser, String), FailureError> {
+    let user = context.request(create_user::default_create_user_input())?;
+    context.verify_user_email(&user.email)?;
+    let token: String = context
+        .request(get_jwt_by_email::default_create_jwt_email_input())?
+        .token;
+    Ok((user, token))
+}
+
+fn set_up_store(
+    context: &mut TestContext,
+) -> Result<
+    (
+        create_user::RustCreateUserCreateUser,
+        String,
+        create_store::RustCreateStoreCreateStore,
+        create_category::RustCreateCategoryCreateCategory,
+    ),
+    FailureError,
+> {
+    let (user, token) = set_up_user(context)?;
+    context.set_bearer(token.clone());
+    let store = context.request(create_store::CreateStoreInput {
+        user_id: user.raw_id,
+        ..create_store::default_create_store_input()
+    })?;
+    context.as_superadmin();
+    let category_level_1 = context.request(create_category::default_create_category_input())?;
+    let category_level_2 = context.request(create_category::CreateCategoryInput {
+        parent_id: category_level_1.raw_id,
+        slug: Some("category-slug-1".to_string()),
+        ..create_category::default_create_category_input()
+    })?;
+    let category_level_3 = context.request(create_category::CreateCategoryInput {
+        parent_id: category_level_2.raw_id,
+        slug: Some("category-slug-2".to_string()),
+        ..create_category::default_create_category_input()
+    })?;
+    context.clear_bearer();
+    Ok((user, token, store, category_level_3))
+}
+
+fn set_up_published_store(
+    context: &mut TestContext,
+) -> Result<
+    (
+        create_user::RustCreateUserCreateUser,
+        String,
+        create_store::RustCreateStoreCreateStore,
+        create_category::RustCreateCategoryCreateCategory,
+    ),
+    FailureError,
+> {
+    let (user, token) = set_up_user(context)?;
+    context.set_bearer(token.clone());
+    //create
+    let store = context.request(create_store::CreateStoreInput {
+        user_id: user.raw_id,
+        ..create_store::default_create_store_input()
+    })?;
+
+    //publish
+    context.set_bearer(token.clone());
+    let _ = context.request(send_store_to_moderation::SendStoreToModerationInput {
+        raw_id: store.raw_id,
+    })?;
+    context.as_superadmin();
+    let _ = context.request(set_moderation_status_store::StoreModerateInput {
+        id: store.id.clone(),
+        status: set_moderation_status_store::Status::PUBLISHED,
+    })?;
+    //create categories
+    context.as_superadmin();
+    let category_level_1 = context.request(create_category::default_create_category_input())?;
+    let category_level_2 = context.request(create_category::CreateCategoryInput {
+        parent_id: category_level_1.raw_id,
+        slug: Some("category-slug-1".to_string()),
+        ..create_category::default_create_category_input()
+    })?;
+    let category_level_3 = context.request(create_category::CreateCategoryInput {
+        parent_id: category_level_2.raw_id,
+        slug: Some("category-slug-2".to_string()),
+        ..create_category::default_create_category_input()
+    })?;
+    context.clear_bearer();
+    Ok((user, token, store, category_level_3))
+}
+
 fn set_up_base_product(
     context: &mut TestContext,
 ) -> Result<
@@ -1468,4 +2202,82 @@ fn set_up_base_product(
     context.clear_bearer();
 
     Ok((user, token, store, category, base_product))
+}
+
+fn set_up_published_base_product(
+    context: &mut TestContext,
+) -> Result<
+    (
+        create_user::RustCreateUserCreateUser,
+        String,
+        create_store::RustCreateStoreCreateStore,
+        create_category::RustCreateCategoryCreateCategory,
+        create_base_product::RustCreateBaseProductCreateBaseProduct,
+    ),
+    FailureError,
+> {
+    let (user, token, store, category) =
+        set_up_published_store(context).expect("Cannot get data from set_up_published_store");
+    context.set_bearer(token.clone());
+
+    let new_base_product = create_base_product::CreateBaseProductInput {
+        store_id: store.raw_id,
+        category_id: category.raw_id,
+        ..create_base_product::default_create_base_product_input()
+    };
+    let base_product = context.request(new_base_product)?;
+
+    context.set_bearer(token.clone());
+    let _ = context
+        .request(
+            send_base_product_to_moderation::SendBaseProductToModerationInput {
+                raw_id: base_product.raw_id,
+            },
+        )
+        .expect("send_base_product_to_moderation failed to send to moderation");
+    context.as_superadmin();
+    let _ = context
+        .request(
+            set_moderation_status_base_product::BaseProductModerateInput {
+                id: base_product.id.clone(),
+                status: set_moderation_status_base_product::Status::PUBLISHED,
+            },
+        )
+        .expect("set_moderation_status_base_product failed");
+    context.clear_bearer();
+
+    Ok((user, token, store, category, base_product))
+}
+
+fn set_up_published_product(
+    context: &mut TestContext,
+) -> Result<
+    (
+        create_user::RustCreateUserCreateUser,
+        String,
+        create_store::RustCreateStoreCreateStore,
+        create_category::RustCreateCategoryCreateCategory,
+        create_base_product::RustCreateBaseProductCreateBaseProduct,
+        create_product::RustCreateProductCreateProduct,
+    ),
+    FailureError,
+> {
+    let (user, token, store, category, base_product) =
+        set_up_published_base_product(context).expect("set_up_published_base_product failed");
+
+    context.set_bearer(token.clone());
+    let product_payload = create_product::CreateProductWithAttributesInput {
+        product: create_product::NewProduct {
+            base_product_id: Some(base_product.raw_id),
+            ..create_product::default_new_product()
+        },
+        ..create_product::default_create_product_input()
+    };
+
+    let new_product = context
+        .request(product_payload)
+        .expect("Cannot get data from create_product");
+
+    context.clear_bearer();
+    Ok((user, token, store, category, base_product, new_product))
 }

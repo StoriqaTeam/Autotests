@@ -1,11 +1,12 @@
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "graphql/schema.json",
-    query_path = "graphql/queries/get_store.graphql"
+    query_path = "graphql/queries/get_store.graphql",
+    response_derives = "Debug, PartialEq"
 )]
 pub struct GetStoreQuery;
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug, PartialEq)]
 pub enum Visibility {
     Published,
     Active,

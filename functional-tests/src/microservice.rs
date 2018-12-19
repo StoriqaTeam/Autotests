@@ -67,6 +67,20 @@ impl GatewayMicroservice {
 }
 
 impl OrdersMicroservice {
+    pub fn clear_all_data(&self) -> Result<(), FailureError> {
+        let conn = PgConnection::establish(self.database_url.as_ref())?;
+        let _ = diesel::sql_query(
+            "TRUNCATE TABLE cart_items_session, cart_items_user, order_diffs, orders, roles;",
+        )
+        .execute(&conn)?;
+        let _ = diesel::sql_query(
+            "INSERT INTO roles (user_id, name, data) VALUES (1, 'superadmin', 'null')",
+        )
+        .execute(&conn)?;
+
+        Ok(())
+    }
+
     pub fn healthcheck(&self) -> Result<(), FailureError> {
         healthcheck(&self.client, &self.url).map_err(|e| {
             e.context("Healthcheck in orders microservice failed")
@@ -160,14 +174,6 @@ impl UsersMicroservice {
         .execute(&conn)?;
 
         Ok(())
-    }
-
-    pub fn get_email_verification_token(&self, email: &str) -> Result<String, FailureError> {
-        let url = format!("{}/users/email_verify_token", self.url);
-        let payload = serde_json::json!({ "email": email });
-        let mut response = self.client.post(&url).json(&payload).send()?;
-        let token = response.json()?;
-        Ok(token)
     }
 
     pub fn healthcheck(&self) -> Result<(), FailureError> {

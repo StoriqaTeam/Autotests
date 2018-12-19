@@ -1,0 +1,6 @@
+mutation sendStoreToModeration($id: Int!) {
+  sendStoreToModeration(id: $id) {
+    id
+    rawId
+  }
+}

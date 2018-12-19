@@ -1,0 +1,5 @@
+query GetExistingResetToken($input: ExistingResetTokenInput!) { existingResetToken(input: $input) {
+    token
+    email
+}
+}
