@@ -719,6 +719,13 @@ pub fn verify_email() {
     assert_eq!(verification.success, true);
     assert_eq!(verification.email, user.email);
     context.set_bearer(verification.token);
+
+    let me = context
+        .request(get_me::GetMeInput {})
+        .expect("get_me failed")
+        .expect("get_me returned nothing");
+    assert_eq!(me.emarsys_id.is_some(), true);
+
     //only verified user can create store
     let store = context
         .request(create_store::CreateStoreInput {

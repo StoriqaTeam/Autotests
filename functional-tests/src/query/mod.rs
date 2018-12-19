@@ -27,6 +27,7 @@ pub mod get_categories;
 pub mod get_existing_reset_token;
 pub mod get_jwt_by_email;
 pub mod get_jwt_by_provider;
+pub mod get_me;
 pub mod get_store;
 pub mod send_base_product_to_moderation;
 pub mod send_store_to_moderation;
