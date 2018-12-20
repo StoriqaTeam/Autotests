@@ -10,6 +10,73 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn change_password() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (user, token) = set_up_user(&mut context).expect("set_up_user failed");
+    //when
+    context.set_bearer(token);
+    let response = context
+        .request(change_password::default_change_password_input())
+        .expect("change_password failed");
+    //then
+    assert!(response.success, "change password failed");
+    context.set_bearer(response.token);
+    let me = context
+        .request(get_me::GetMeInput {})
+        .expect("get_me failed")
+        .expect("get_me returned nothing");
+    assert_eq!(
+        me.email, user.email,
+        "change password returned wrong auth token"
+    );
+}
+
+#[test]
+pub fn reset_password() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (user, token) = set_up_user(&mut context).expect("set_up_user failed");
+    context.set_bearer(token);
+    let password_reset = context
+        .request(request_password_reset::ResetRequest {
+            email: user.email.clone(),
+            ..request_password_reset::default_change_password_input()
+        })
+        .expect("request_password_reset failed");
+    assert!(password_reset.success, "reset password failed");
+    context.as_superadmin();
+    let reset_token = context
+        .request(get_existing_reset_token::ExistingResetTokenInput {
+            user_id: user.raw_id,
+            token_type: get_existing_reset_token::TokenTypeInput::PASSWORD_RESET,
+        })
+        .expect("get_existing_reset_token failed")
+        .token;
+    //when
+    context.clear_bearer();
+    let response = context
+        .request(apply_password_reset::ResetApply {
+            token: reset_token,
+            ..apply_password_reset::default_apply_password_reset_input()
+        })
+        .expect("apply_password_reset failed");
+    //then
+    assert!(response.success, "reset password failed");
+    context.set_bearer(response.token);
+    let me = context
+        .request(get_me::GetMeInput {})
+        .expect("get_me failed")
+        .expect("get_me returned nothing");
+    assert_eq!(
+        me.email, user.email,
+        "reset password returned wrong auth token"
+    );
+}
+
+#[test]
 pub fn delete_products_from_all_carts_during_various_scenarios() {
     //setup
     let mut context = TestContext::new();
@@ -653,7 +720,7 @@ pub fn add_in_cart() {
     //setup
     let mut context = TestContext::new();
     //given
-    let (_user, _token, _store, _category, _base_product, product) =
+    let (_user, _token, created_store, _category, _base_product, created_product) =
         set_up_published_product(&mut context).expect("set_up_published_product failed");
     let buyer = context
         .request(create_user::CreateUserInput {
@@ -675,7 +742,8 @@ pub fn add_in_cart() {
     //when
     let _ = context
         .request(add_in_cart_v2::AddInCartInputV2 {
-            product_id: product.raw_id,
+            product_id: created_product.raw_id,
+            value: Some(10),
             ..add_in_cart_v2::default_add_in_cart_v2_input()
         })
         .expect("add_in_cart_v2 failed");
@@ -685,10 +753,15 @@ pub fn add_in_cart() {
         .expect("get_cart_v2 failed for user_cart");
     assert!(cart.is_some(), "add_in_cart_v2 returned None");
     let mut cart = cart.expect("add_in_cart_v2 returned None");
-    let product = cart.stores.edges.pop();
-    assert!(product.is_some(), "cart returned no products");
-    let product = product.expect("cart returned no products").node;
-    assert_eq!(product.raw_id, product.raw_id);
+    let store = cart.stores.edges.pop();
+    assert!(store.is_some(), "cart returned no stores");
+    let mut store = store.expect("cart returned no stores").node;
+    assert_eq!(store.raw_id, created_store.raw_id);
+    let product = store.products.pop();
+    assert!(product.is_some(), "store returned no products");
+    let product = product.expect("store returned no products");
+    assert_eq!(product.raw_id, created_product.raw_id);
+    assert_eq!(product.quantity, 10);
 }
 
 #[test]

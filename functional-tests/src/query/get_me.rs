@@ -6,9 +6,9 @@ use request::GraphqlRequest;
 
 #[derive(GraphQLQuery)]
 #[graphql(
-schema_path = "graphql/schema.json",
-query_path = "graphql/queries/get_me.graphql",
-response_derives = "Debug, PartialEq"
+    schema_path = "graphql/schema.json",
+    query_path = "graphql/queries/get_me.graphql",
+    response_derives = "Debug, PartialEq"
 )]
 pub struct GetMeQuery;
 
