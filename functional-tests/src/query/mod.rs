@@ -20,6 +20,7 @@ pub mod delete_attribute_from_category;
 pub mod delete_attribute_value;
 pub mod delete_category;
 pub mod delete_delivery_company;
+pub mod delete_package;
 pub mod delete_store;
 pub mod delete_user;
 pub mod delete_warehouse;

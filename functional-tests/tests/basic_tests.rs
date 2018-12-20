@@ -2198,6 +2198,11 @@ fn create_update_delete_package() {
     assert_eq!(updated_package.min_size, 101);
     assert_eq!(updated_package.max_weight, 3001);
     assert_eq!(updated_package.min_weight, 301);
+
+    delete_package(&mut context, new_package.raw_id).expect("Cannot get deleted package");
+    if delete_package(&mut context, new_package.raw_id).is_ok() {
+        panic!("Should not be able to delete the same package twice");
+    }
 }
 
 fn create_package(
@@ -2218,7 +2223,14 @@ fn update_package(
     context.request(payload)
 }
 
-//fn delete_package(context: &mut TestContext) -> Result<(), FailureError> {}
+fn delete_package(
+    context: &mut TestContext,
+    id: i64
+) -> Result<delete_package::RustDeletePackageDeletePackage, FailureError> {
+    context.as_superadmin();
+
+    context.request(delete_package::DeletePackagesInput { id })
+}
 
 fn set_up_warehouse(
     context: &mut TestContext
