@@ -42,6 +42,7 @@ query GetCartV2($userCountryCode: String!) {
                 products {
                     id
                     rawId
+                    quantity
                 }
             }
         }

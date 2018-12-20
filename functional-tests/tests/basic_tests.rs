@@ -653,7 +653,7 @@ pub fn add_in_cart() {
     //setup
     let mut context = TestContext::new();
     //given
-    let (_user, _token, _store, _category, _base_product, product) =
+    let (_user, _token, created_store, _category, _base_product, created_product) =
         set_up_published_product(&mut context).expect("set_up_published_product failed");
     let buyer = context
         .request(create_user::CreateUserInput {
@@ -675,7 +675,8 @@ pub fn add_in_cart() {
     //when
     let _ = context
         .request(add_in_cart_v2::AddInCartInputV2 {
-            product_id: product.raw_id,
+            product_id: created_product.raw_id,
+            value: Some(10),
             ..add_in_cart_v2::default_add_in_cart_v2_input()
         })
         .expect("add_in_cart_v2 failed");
@@ -685,10 +686,15 @@ pub fn add_in_cart() {
         .expect("get_cart_v2 failed for user_cart");
     assert!(cart.is_some(), "add_in_cart_v2 returned None");
     let mut cart = cart.expect("add_in_cart_v2 returned None");
-    let product = cart.stores.edges.pop();
-    assert!(product.is_some(), "cart returned no products");
-    let product = product.expect("cart returned no products").node;
-    assert_eq!(product.raw_id, product.raw_id);
+    let store = cart.stores.edges.pop();
+    assert!(store.is_some(), "cart returned no stores");
+    let mut store = store.expect("cart returned no stores").node;
+    assert_eq!(store.raw_id, created_store.raw_id);
+    let product = store.products.pop();
+    assert!(product.is_some(), "store returned no products");
+    let product = product.expect("store returned no products");
+    assert_eq!(product.raw_id, created_product.raw_id);
+    assert_eq!(product.quantity, 10);
 }
 
 #[test]
