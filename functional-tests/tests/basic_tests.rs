@@ -2136,6 +2136,90 @@ fn create_update_delete_warehouse() {
     assert_eq!(deleted_warehouse_id, id);
 }
 
+#[test]
+fn create_update_delete_package() {
+    let mut context = TestContext::new();
+    let new_package = create_package(&mut context, create_package::NewPackagesInput {
+        name: "Initial name".to_string(),
+        deliveries_to: vec![
+            "RUS".to_string(),
+            "USA".to_string()
+        ],
+        ..create_package::default_new_packages_input()
+    }).expect("Cannot get data from create_package");
+
+    assert_eq!(new_package.name, "Initial name".to_string());
+    assert_eq!(new_package.max_size, 1000);
+    assert_eq!(new_package.min_size, 100);
+    assert_eq!(new_package.max_weight, 3000);
+    assert_eq!(new_package.min_weight, 300);
+
+    // deliveries
+    assert_eq!(new_package.deliveries_to.len(), 1);
+
+    let xal = new_package.deliveries_to.first().expect("Cannot get delivery info");
+    assert_eq!(xal.level, 0);
+    assert_eq!(xal.label, "All".to_string());
+    assert_eq!(xal.alpha3, "XAL".to_string());
+    assert_eq!(xal.children.len(), 2);
+
+    let xeu = xal.children.iter().find(|d| d.label == "Europe".to_string()).expect("Cannot get Europe delivery info");
+    assert_eq!(xeu.level, 1);
+    assert_eq!(xeu.alpha3, "XEU".to_string());
+    assert_eq!(xeu.children.len(), 1);
+
+    let xna = xal.children.iter().find(|d| d.label == "North America".to_string()).expect("Cannot get North America delivery info");
+    assert_eq!(xna.level, 1);
+    assert_eq!(xna.alpha3, "XNA".to_string());
+    assert_eq!(xna.children.len(), 1);
+
+    let rus = xeu.children.iter().find(|d| d.label == "Russian Federation".to_string()).expect("Cannot get Russian Federation delivery info");
+    assert_eq!(rus.level, 2);
+    assert_eq!(rus.alpha2, "RU".to_string());
+    assert_eq!(rus.alpha3, "RUS".to_string());
+
+    let usa = xna.children.iter().find(|d| d.label == "United States of America".to_string()).expect("Cannot get United States of America delivery info");
+    assert_eq!(usa.level, 2);
+    assert_eq!(usa.alpha2, "US".to_string());
+    assert_eq!(usa.alpha3, "USA".to_string());
+
+    let updated_package = update_package(&mut context, update_package::UpdatePackagesInput {
+        id: new_package.id,
+        name: Some("New name".to_string()),
+        max_size: Some(1001),
+        min_size: Some(101),
+        max_weight: Some(3001),
+        min_weight: Some(301),
+        ..update_package::default_update_packages_input()
+    }).expect("Cannot get data from update_package");
+
+    assert_eq!(updated_package.name, "New name".to_string());
+    assert_eq!(updated_package.max_size, 1001);
+    assert_eq!(updated_package.min_size, 101);
+    assert_eq!(updated_package.max_weight, 3001);
+    assert_eq!(updated_package.min_weight, 301);
+}
+
+fn create_package(
+    context: &mut TestContext,
+    payload: create_package::NewPackagesInput
+) -> Result<create_package::RustCreatePackageCreatePackage, FailureError> {
+    context.as_superadmin();
+
+    context.request(payload)
+}
+
+fn update_package(
+    context: &mut TestContext,
+    payload: update_package::UpdatePackagesInput
+) -> Result<update_package::RustUpdatePackageUpdatePackage, FailureError> {
+    context.as_superadmin();
+
+    context.request(payload)
+}
+
+//fn delete_package(context: &mut TestContext) -> Result<(), FailureError> {}
+
 fn set_up_warehouse(
     context: &mut TestContext
 ) -> Result<(
