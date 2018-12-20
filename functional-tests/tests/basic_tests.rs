@@ -839,7 +839,7 @@ pub fn deactivate_base_product() {
 }
 
 #[test]
-pub fn update_base_product_test() {
+pub fn update_base_product() {
     //setup
     let mut context = TestContext::new();
     //given
@@ -2092,6 +2092,45 @@ fn verify_update_store_values(
             .expect("update_store.address_full.place_id is none"),
         expected_values.address_full.place_id.unwrap()
     );
+}
+
+#[test]
+fn create_update_delete_warehouse() {
+    let mut context = TestContext::new();
+    let (user, token, store, category) =
+        set_up_store(&mut context).expect("Cannot get data from set_up_store");
+    context.as_superadmin();
+
+    let warehouse_payload = create_warehouse::CreateWarehouseInput {
+        name: Some("Initial name".to_string()),
+        store_id: store.raw_id,
+        ..create_warehouse::default_create_warehouse_input()
+    };
+    let new_warehouse = context
+        .request(warehouse_payload)
+        .expect("Cannot get data from create_warehouse");
+    let id = new_warehouse.id;
+
+    assert_eq!(new_warehouse.name, Some("Initial name".to_string()));
+    assert_eq!(new_warehouse.store_id, store.raw_id);
+
+    let updated_warehouse = context.request(update_warehouse::UpdateWarehouseInput {
+        id: id.clone(),
+        name: Some("New name".to_string()),
+        ..update_warehouse::default_update_warehouse_input()
+    }).expect(
+        "Cannot get data from update_warehouse"
+    ).expect(
+        "Cannot get data from update_warehouse"
+    );
+
+    assert_eq!(updated_warehouse.name, Some("New name".to_string()));
+
+    let deleted_warehouse = context.request(delete_warehouse::DeleteWarehouseInput { id: id.clone() })
+        .expect("Cannot get data from update_warehouse")
+        .expect("Cannot get data from update_warehouse");
+
+    assert_eq!(deleted_warehouse.id, id);
 }
 
 fn set_up_user(

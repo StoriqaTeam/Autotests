@@ -1,0 +1,15 @@
+mutation CreateWarehouse($input: CreateWarehouseInput!) {
+  createWarehouse(input: $input) {
+    id
+    name
+    location {
+      x
+      y
+    }
+    slug
+    addressFull {
+      value
+    }
+    storeId
+  }
+}
