@@ -33,8 +33,6 @@ pub fn change_password() {
     );
 }
 
-// notifications can fail with "You have exceeded your messaging limits"
-#[ignore]
 #[test]
 pub fn reset_password() {
     //setup
