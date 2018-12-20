@@ -9,6 +9,9 @@ mutation UpdateWarehouse($input: UpdateWarehouseInput!) {
     slug
     addressFull {
       value
+      administrativeAreaLevel1
+      administrativeAreaLevel2
+      country
     }
     storeId
   }
