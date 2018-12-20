@@ -24,6 +24,7 @@ pub mod get_attributes;
 pub mod get_base_product;
 pub mod get_cart_v2;
 pub mod get_categories;
+pub mod get_categories_with_products;
 pub mod get_existing_reset_token;
 pub mod get_jwt_by_email;
 pub mod get_jwt_by_provider;
