@@ -31,12 +31,12 @@ pub fn default_create_attribute_value_input() -> CreateAttributeValueInput {
     }
 }
 
-impl GraphqlRequest for CreateAttributeValueInput {
-    type Output = RustCreateAttributeValueCreateAttributeValue;
+type GraphqlRequestOutput = RustCreateAttributeValueCreateAttributeValue;
 
-    fn response(
-        body: serde_json::Value,
-    ) -> Result<RustCreateAttributeValueCreateAttributeValue, FailureError> {
+impl GraphqlRequest for CreateAttributeValueInput {
+    type Output = GraphqlRequestOutput;
+
+    fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {
         let response_body: Response<ResponseData> = serde_json::from_value(body)?;
         match (response_body.data, response_body.errors) {
             (Some(data), None) => Ok(data.create_attribute_value),

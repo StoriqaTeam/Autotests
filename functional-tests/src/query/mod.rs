@@ -1,5 +1,7 @@
 pub mod add_attribute_to_category;
 pub mod add_in_cart_v2;
+pub mod apply_password_reset;
+pub mod change_password;
 pub mod create_attribute;
 pub mod create_attribute_value;
 pub mod create_base_product;
@@ -29,6 +31,7 @@ pub mod get_jwt_by_email;
 pub mod get_jwt_by_provider;
 pub mod get_me;
 pub mod get_store;
+pub mod request_password_reset;
 pub mod send_base_product_to_moderation;
 pub mod send_store_to_moderation;
 pub mod set_moderation_status_base_product;

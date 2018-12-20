@@ -10,6 +10,73 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn change_password() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (user, token) = set_up_user(&mut context).expect("set_up_user failed");
+    //when
+    context.set_bearer(token);
+    let response = context
+        .request(change_password::default_change_password_input())
+        .expect("change_password failed");
+    //then
+    assert!(response.success, "change password failed");
+    context.set_bearer(response.token);
+    let me = context
+        .request(get_me::GetMeInput {})
+        .expect("get_me failed")
+        .expect("get_me returned nothing");
+    assert_eq!(
+        me.email, user.email,
+        "change password returned wrong auth token"
+    );
+}
+
+#[test]
+pub fn reset_password() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (user, token) = set_up_user(&mut context).expect("set_up_user failed");
+    context.set_bearer(token);
+    let password_reset = context
+        .request(request_password_reset::ResetRequest {
+            email: user.email.clone(),
+            ..request_password_reset::default_change_password_input()
+        })
+        .expect("request_password_reset failed");
+    assert!(password_reset.success, "reset password failed");
+    context.as_superadmin();
+    let reset_token = context
+        .request(get_existing_reset_token::ExistingResetTokenInput {
+            user_id: user.raw_id,
+            token_type: get_existing_reset_token::TokenTypeInput::PASSWORD_RESET,
+        })
+        .expect("get_existing_reset_token failed")
+        .token;
+    //when
+    context.clear_bearer();
+    let response = context
+        .request(apply_password_reset::ResetApply {
+            token: reset_token,
+            ..apply_password_reset::default_apply_password_reset_input()
+        })
+        .expect("apply_password_reset failed");
+    //then
+    assert!(response.success, "reset password failed");
+    context.set_bearer(response.token);
+    let me = context
+        .request(get_me::GetMeInput {})
+        .expect("get_me failed")
+        .expect("get_me returned nothing");
+    assert_eq!(
+        me.email, user.email,
+        "reset password returned wrong auth token"
+    );
+}
+
+#[test]
 pub fn delete_products_from_all_carts_during_various_scenarios() {
     //setup
     let mut context = TestContext::new();
