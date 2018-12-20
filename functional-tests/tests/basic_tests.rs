@@ -2130,8 +2130,14 @@ fn create_update_delete_warehouse() {
     assert_eq!(location.x, 42.0);
     assert_eq!(location.y, 666.0);
 
-    let deleted_warehouse_id = delete_warehouse(&mut context, token, id.clone())
+    let deleted_warehouse_id = delete_warehouse(&mut context, token.clone(), id.clone())
+        .expect("Cannot get data from delete_warehouse")
         .expect("Cannot get data from delete_warehouse");
+
+    let deleted_twice = delete_warehouse(&mut context, token.clone(), id.clone());
+    if deleted_twice.is_ok() && deleted_twice.unwrap() != None {
+        panic!("Should not be able to delete the same warehouse twice");
+    }
 
     assert_eq!(deleted_warehouse_id, id);
 }
@@ -2267,11 +2273,11 @@ fn update_warehouse(
     Ok(store.warehouses.into_iter().find(|x| x.id == updated_warehouse.id).expect("Cannot get warehouse data from update_warehouse"))
 }
 
-fn delete_warehouse(context: &mut TestContext, token: String, id: String) -> Result<String, FailureError> {
+fn delete_warehouse(context: &mut TestContext, token: String, id: String) -> Result<Option<String>, FailureError> {
     context.set_bearer(token);
     let deleted_warehouse = context.request(delete_warehouse::DeleteWarehouseInput { id: id.clone() })?;
     context.clear_bearer();
-    Ok(deleted_warehouse.expect("Cannot get data from delete_warehouse").id)
+    Ok(deleted_warehouse.map(|w| w.id))
 }
 
 fn set_up_user(
