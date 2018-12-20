@@ -2098,7 +2098,7 @@ fn verify_update_store_values(
 fn create_update_delete_warehouse() {
     let mut context = TestContext::new();
 
-    let (user, token, store, new_warehouse) = set_up_warehouse(&mut context)
+    let (_user, _token, store, new_warehouse) = set_up_warehouse(&mut context)
         .expect("Cannot get data from create_warehouse");
     let id = new_warehouse.id;
 
@@ -2128,7 +2128,7 @@ fn create_update_delete_warehouse() {
     assert_eq!(updated_warehouse.address_full.country, Some("Russian Federation".to_string()));
     assert_eq!(updated_warehouse.address_full.administrative_area_level1, Some("Moscow Region".to_string()));
     assert_eq!(updated_warehouse.address_full.administrative_area_level2, Some("Moscow".to_string()));
-    let location = updated_warehouse.location.unwrap();
+    let location = updated_warehouse.location.expect("Cannot get location data from update_warehouse");
     assert_eq!(location.x, 42.0);
     assert_eq!(location.y, 666.0);
 
@@ -2148,7 +2148,7 @@ fn set_up_warehouse(
 ), FailureError> {
     let (user, token, store, _) = set_up_store(context)?;
     context.set_bearer(token.clone());
-    let store = context.get_store(store.raw_id)?.store.unwrap();    // TODO: Rewrite without unwrap.
+    let store = context.get_store(store.raw_id)?.store.expect("Cannot get data from get_store");
     context.as_superadmin();
     let warehouse_payload = create_warehouse::CreateWarehouseInput {
         name: Some("Initial name".to_string()),
@@ -2167,16 +2167,16 @@ fn update_warehouse(
     get_store::RustGetStoreStoreWarehouses
 ), FailureError> {
     context.as_superadmin();
-    let updated_warehouse = context.request(input)?.unwrap();
-    let store = context.get_store(updated_warehouse.store_id)?.store.unwrap();
+    let updated_warehouse = context.request(input)?.expect("Cannot get data from update_warehouse");
+    let store = context.get_store(updated_warehouse.store_id)?.store.expect("Cannot get data from get_store");
     context.clear_bearer();
-    Ok(store.warehouses.into_iter().find(|x| x.id == updated_warehouse.id).unwrap())
+    Ok(store.warehouses.into_iter().find(|x| x.id == updated_warehouse.id).expect("Cannot get warehouse data from update_warehouse"))
 }
 
 fn delete_warehouse(context: &mut TestContext, id: String) -> Result<String, FailureError> {
     context.as_superadmin();
     let deleted_warehouse = context.request(delete_warehouse::DeleteWarehouseInput { id: id.clone() })?;
-    Ok(deleted_warehouse.unwrap().id)
+    Ok(deleted_warehouse.expect("Cannot get data from delete_warehouse").id)
 }
 
 fn set_up_user(
