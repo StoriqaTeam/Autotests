@@ -1,0 +1,46 @@
+mutation UpdatePackage($input: UpdatePackagesInput!) {
+  updatePackage(input: $input) {
+    id
+    rawId
+    name
+    maxSize
+    minSize
+    maxWeight
+    minWeight
+    deliveriesTo {
+      label
+      parent
+      level
+      alpha2
+      alpha3
+      numeric
+      children {
+        label
+        parent
+        level
+        alpha2
+        alpha3
+        numeric
+        children {
+          label
+          parent
+          level
+          alpha2
+          alpha3
+          numeric
+        }
+      }
+    }
+    companies {
+      id
+      rawId
+      label
+      description
+      currency
+      logo
+      packages {
+        id
+      }
+    }
+  }
+}

@@ -30,8 +30,8 @@ impl GraphqlRequest for GetMeInput {
 }
 
 impl From<GetMeInput> for serde_json::Value {
-    fn from(val: GetMeInput) -> serde_json::Value {
-        let request_body = GetMeQuery::build_query(Variables {});
+    fn from(_val: GetMeInput) -> serde_json::Value {
+        let request_body = GetMeQuery::build_query(Variables { });
         serde_json::to_value(request_body).expect("failed to serialize GetMeInput")
     }
 }

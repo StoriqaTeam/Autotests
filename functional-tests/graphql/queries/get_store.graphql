@@ -60,5 +60,21 @@ query getStore($id: Int!, $visibility: Visibility) {
       streetNumber
       placeId
     }
+    warehouses {
+      id
+      name
+      location {
+        x
+        y
+      }
+      slug
+      addressFull {
+        value
+        administrativeAreaLevel1
+        administrativeAreaLevel2
+        country
+      }
+      storeId
+    }
   }
 }

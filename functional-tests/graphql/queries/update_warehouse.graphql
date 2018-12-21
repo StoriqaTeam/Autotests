@@ -1,0 +1,18 @@
+mutation UpdateWarehouse($input: UpdateWarehouseInput!) {
+  updateWarehouse(input: $input) {
+    id
+    name
+    location {
+      x
+      y
+    }
+    slug
+    addressFull {
+      value
+      administrativeAreaLevel1
+      administrativeAreaLevel2
+      country
+    }
+    storeId
+  }
+}
