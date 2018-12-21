@@ -14,10 +14,10 @@ pub struct GetCompanyPackageQuery;
 
 pub use self::get_company_package_query::*;
 
-pub struct GraphqlRequestInput { pub id: i64 }
+pub struct GetCompanyPackageInput { pub id: i64 }
 pub type GraphqlRequestOutput = Option<RustGetCompanyPackageCompanyPackage>;
 
-impl GraphqlRequest for GraphqlRequestInput {
+impl GraphqlRequest for GetCompanyPackageInput {
     type Output = GraphqlRequestOutput;
 
     fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {
@@ -30,8 +30,8 @@ impl GraphqlRequest for GraphqlRequestInput {
     }
 }
 
-impl From<GraphqlRequestInput> for serde_json::Value {
-    fn from(val: GraphqlRequestInput) -> serde_json::Value {
+impl From<GetCompanyPackageInput> for serde_json::Value {
+    fn from(val: GetCompanyPackageInput) -> serde_json::Value {
         let request_body = GetCompanyPackageQuery::build_query(Variables { id: val.id });
         serde_json::to_value(request_body).expect("failed to serialize GetCompanyPackageInput")
     }

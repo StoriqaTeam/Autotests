@@ -13,11 +13,10 @@ pub struct AddPackageToCompanyMutation;
 
 pub use self::add_package_to_company_mutation::*;
 
-pub type GraphqlRequestInput = NewCompaniesPackagesInput;
 pub type GraphqlRequestOutput = RustAddPackageToCompanyAddPackageToCompany;
 
-pub fn default_graphql_request_input() -> GraphqlRequestInput {
-    GraphqlRequestInput {
+pub fn default_graphql_request_input() -> NewCompaniesPackagesInput {
+    NewCompaniesPackagesInput {
         client_mutation_id: "".to_string(),
         company_id: 0,
         package_id: 0,
@@ -26,7 +25,7 @@ pub fn default_graphql_request_input() -> GraphqlRequestInput {
     }
 }
 
-impl GraphqlRequest for GraphqlRequestInput {
+impl GraphqlRequest for NewCompaniesPackagesInput {
     type Output = GraphqlRequestOutput;
 
     fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {

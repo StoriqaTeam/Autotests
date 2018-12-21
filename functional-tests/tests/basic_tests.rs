@@ -2302,7 +2302,7 @@ fn create_update_delete_package() {
         ..create_package::default_graphql_request_input()
     }).expect("Cannot get data from create_package");
 
-    let get_package = context.request(get_package::GraphqlRequestInput { id: new_package.raw_id })
+    let get_package = context.request(get_package::GetPackageInput { id: new_package.raw_id })
         .expect("Cannot get data from get_package")
         .expect("Cannot get data from get_package");
 
@@ -2351,7 +2351,7 @@ fn create_update_delete_package() {
         ..update_package::default_graphql_request_input()
     }).expect("Cannot get data from update_package");
 
-    let get_package = context.request(get_package::GraphqlRequestInput { id: new_package.raw_id })
+    let get_package = context.request(get_package::GetPackageInput { id: new_package.raw_id })
         .expect("Cannot get data from get_package")
         .expect("Cannot get data from get_package");
 
@@ -2363,7 +2363,7 @@ fn create_update_delete_package() {
 
     delete_package(&mut context, new_package.raw_id).expect("Cannot get deleted package");
 
-    let get_package = context.request(get_package::GraphqlRequestInput { id: new_package.raw_id });
+    let get_package = context.request(get_package::GetPackageInput { id: new_package.raw_id });
     if get_package.is_ok() && get_package.unwrap().is_some() {
         panic!("Should not be able to get deleted package");
     }
@@ -2398,7 +2398,7 @@ fn create_delete_company_package() {
         })
         .expect("Cannot get data from create_delivery_company");
 
-    let company_package = add_package_to_company(&mut context, add_package_to_company::GraphqlRequestInput {
+    let company_package = add_package_to_company(&mut context, add_package_to_company::NewCompaniesPackagesInput {
         company_id: new_company.raw_id,
         package_id: new_package.raw_id,
         ..add_package_to_company::default_graphql_request_input()
@@ -2411,7 +2411,7 @@ fn create_delete_company_package() {
     assert_eq!(company.name, new_company.name);
     assert_eq!(package.name, new_package.name);
 
-    let company_package = context.request(get_company_package::GraphqlRequestInput { id: company_package.raw_id })
+    let company_package = context.request(get_company_package::GetCompanyPackageInput { id: company_package.raw_id })
         .expect("Cannot get data from get_company_package")
         .expect("Cannot get data from get_company_package");
     assert_eq!(company_package.company_id, new_company.raw_id);
@@ -2420,7 +2420,7 @@ fn create_delete_company_package() {
     delete_company_package(&mut context, new_company.raw_id, new_package.raw_id)
         .expect("Cannot get data from delete_company_package");
 
-    let deleted_company_package = context.request(get_company_package::GraphqlRequestInput { id: company_package.raw_id });
+    let deleted_company_package = context.request(get_company_package::GetCompanyPackageInput { id: company_package.raw_id });
     if deleted_company_package.is_ok() && deleted_company_package.unwrap().is_some() {
         panic!("Should not be able to get deleted company package");
     }
@@ -2441,7 +2441,7 @@ fn upsert_shipping() {
     let (user, token, store, category, base_product) = set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
 
     context.set_bearer(token);
-    let warehouse_payload = create_warehouse::GraphqlRequestInput {
+    let warehouse_payload = create_warehouse::CreateWarehouseInput {
         name: Some("Warehouse".to_string()),
         store_id: store.raw_id,
         address_full: create_warehouse::AddressInput {
@@ -2454,7 +2454,7 @@ fn upsert_shipping() {
     let warehouse = context.request(warehouse_payload).expect("Cannot get data from create_warehouse");
 
     context.as_superadmin();
-    let upsert_shipping_payload = upsert_shipping::GraphqlRequestInput {
+    let upsert_shipping_payload = upsert_shipping::NewShippingInput {
         store_id: store.raw_id,
         base_product_id: base_product.raw_id,
         ..upsert_shipping::default_graphql_request_input()
@@ -2464,7 +2464,7 @@ fn upsert_shipping() {
 
 fn add_package_to_company(
     context: &mut TestContext,
-    payload: add_package_to_company::GraphqlRequestInput
+    payload: add_package_to_company::NewCompaniesPackagesInput
 ) -> Result<add_package_to_company::GraphqlRequestOutput, FailureError> {
     context.as_superadmin();
     let company_package = context.request(payload)?;
@@ -2478,7 +2478,7 @@ fn delete_company_package(
     package_id: i64
 ) -> Result<delete_company_package::GraphqlRequestOutput, FailureError> {
     context.as_superadmin();
-    let company_package = context.request(delete_company_package::GraphqlRequestInput {
+    let company_package = context.request(delete_company_package::DeleteCompanyPackageInput {
         company_id,
         package_id
     })?;

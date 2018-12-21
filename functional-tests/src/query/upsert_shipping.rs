@@ -13,11 +13,10 @@ pub struct UpsertShippingMutation;
 
 pub use self::upsert_shipping_mutation::*;
 
-pub type GraphqlRequestInput = NewShippingInput;
 pub type GraphqlRequestOutput = RustUpsertShippingUpsertShipping;
 
-pub fn default_graphql_request_input() -> GraphqlRequestInput {
-    GraphqlRequestInput {
+pub fn default_graphql_request_input() -> NewShippingInput {
+    NewShippingInput {
         client_mutation_id: "".to_string(),
         base_product_id: 0,
         store_id: 0,
@@ -31,7 +30,7 @@ pub fn default_new_pickups_input() -> NewPickupsInput {
     NewPickupsInput { pickup: false, price: None }
 }
 
-impl GraphqlRequest for GraphqlRequestInput {
+impl GraphqlRequest for NewShippingInput {
     type Output = GraphqlRequestOutput;
 
     fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {

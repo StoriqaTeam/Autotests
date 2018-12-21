@@ -14,10 +14,10 @@ pub struct GetPackageQuery;
 
 pub use self::get_package_query::*;
 
-pub struct GraphqlRequestInput { pub id: i64 }
+pub struct GetPackageInput { pub id: i64 }
 pub type GraphqlRequestOutput = Option<RustGetPackagePackage>;
 
-impl GraphqlRequest for GraphqlRequestInput {
+impl GraphqlRequest for GetPackageInput {
     type Output = GraphqlRequestOutput;
 
     fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {
@@ -30,8 +30,8 @@ impl GraphqlRequest for GraphqlRequestInput {
     }
 }
 
-impl From<GraphqlRequestInput> for serde_json::Value {
-    fn from(val: GraphqlRequestInput) -> serde_json::Value {
+impl From<GetPackageInput> for serde_json::Value {
+    fn from(val: GetPackageInput) -> serde_json::Value {
         let request_body = GetPackageQuery::build_query(Variables { id: val.id });
         serde_json::to_value(request_body).expect("failed to serialize GetPackageInput")
     }

@@ -15,9 +15,9 @@ pub use self::delete_company_package_mutation::*;
 
 pub type GraphqlRequestOutput = RustDeleteCompanyPackageDeleteCompanyPackage;
 
-pub struct GraphqlRequestInput { pub company_id: i64, pub package_id: i64 }
+pub struct DeleteCompanyPackageInput { pub company_id: i64, pub package_id: i64 }
 
-impl GraphqlRequest for GraphqlRequestInput {
+impl GraphqlRequest for DeleteCompanyPackageInput {
     type Output = GraphqlRequestOutput;
 
     fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {
@@ -30,8 +30,8 @@ impl GraphqlRequest for GraphqlRequestInput {
     }
 }
 
-impl From<GraphqlRequestInput> for serde_json::Value {
-    fn from(val: GraphqlRequestInput) -> serde_json::Value {
+impl From<DeleteCompanyPackageInput> for serde_json::Value {
+    fn from(val: DeleteCompanyPackageInput) -> serde_json::Value {
         let request_body = DeleteCompanyPackageMutation::build_query(Variables { company_id: val.company_id, package_id: val.package_id });
         serde_json::to_value(request_body).expect("failed to serialize DeleteCompanyPackageInput")
     }
