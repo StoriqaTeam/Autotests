@@ -2248,7 +2248,7 @@ fn create_update_delete_warehouse() {
         }),
         name: Some("New name".to_string()),
         ..update_warehouse::default_update_warehouse_input()
-    }).expect("Cannot get data from update_warehouse");
+    }).expect("Cannot get data from update_warehouse").expect("Cannot get data from update_warehouse");
 
     assert_eq!(updated_warehouse.name, Some("New name".to_string()));
     assert_eq!(updated_warehouse.address_full.country, Some("Russian Federation".to_string()));
@@ -2261,6 +2261,26 @@ fn create_update_delete_warehouse() {
     let deleted_warehouse_id = delete_warehouse(&mut context, token.clone(), id.clone())
         .expect("Cannot get data from delete_warehouse")
         .expect("Cannot get data from delete_warehouse");
+
+    let update_deleted_warehouse = update_warehouse(&mut context, token.clone(), update_warehouse::UpdateWarehouseInput {
+        id: id.clone(),
+        address_full: update_warehouse::AddressInput {
+            country: Some("Russian Federation".to_string()),
+            administrative_area_level1: Some("Moscow Region".to_string()),
+            administrative_area_level2: Some("Moscow".to_string()),
+            ..update_warehouse::default_address_input()
+        },
+        location: Some(update_warehouse::GeoPointInput {
+            x: 42.0,
+            y: 666.0,
+            ..update_warehouse::default_geo_point_input()
+        }),
+        name: Some("New name".to_string()),
+        ..update_warehouse::default_update_warehouse_input()
+    });
+    if update_deleted_warehouse.is_ok() && update_deleted_warehouse.unwrap().is_some() {
+        panic!("Should not be able to update deleted warehouse");
+    }
 
     let deleted_twice = delete_warehouse(&mut context, token.clone(), id.clone());
     if deleted_twice.is_ok() && deleted_twice.unwrap() != None {
@@ -2519,13 +2539,17 @@ fn update_warehouse(
     token: String,
     input: update_warehouse::UpdateWarehouseInput
 ) -> Result<(
-    get_store::RustGetStoreStoreWarehouses
+    Option<get_store::RustGetStoreStoreWarehouses>
 ), FailureError> {
     context.set_bearer(token);
-    let updated_warehouse = context.request(input)?.expect("Cannot get data from update_warehouse");
+    let updated_warehouse = context.request(input)?;
+    if updated_warehouse.is_none() {
+        return Ok(None);
+    }
+    let updated_warehouse = updated_warehouse.unwrap();
     let store = context.get_store(updated_warehouse.store_id)?.store.expect("Cannot get data from get_store");
     context.clear_bearer();
-    Ok(store.warehouses.into_iter().find(|x| x.id == updated_warehouse.id).expect("Cannot get warehouse data from update_warehouse"))
+    Ok(store.warehouses.into_iter().find(|x| x.id == updated_warehouse.id))
 }
 
 fn delete_warehouse(context: &mut TestContext, token: String, id: String) -> Result<Option<String>, FailureError> {
