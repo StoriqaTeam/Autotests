@@ -1,0 +1,8 @@
+query GetCompanyPackage($id: Int!) {
+  companyPackage(id: $id) {
+    id
+    rawId
+    companyId
+    packageId
+  }
+}

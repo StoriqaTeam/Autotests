@@ -2282,16 +2282,20 @@ fn create_update_delete_package() {
         ..create_package::default_graphql_request_input()
     }).expect("Cannot get data from create_package");
 
-    assert_eq!(new_package.name, "Initial name".to_string());
-    assert_eq!(new_package.max_size, 1000);
-    assert_eq!(new_package.min_size, 100);
-    assert_eq!(new_package.max_weight, 3000);
-    assert_eq!(new_package.min_weight, 300);
+    let get_package = context.request(get_package::GraphqlRequestInput { id: new_package.raw_id })
+        .expect("Cannot get data from get_package")
+        .expect("Cannot get data from get_package");
+
+    assert_eq!(get_package.name, "Initial name".to_string());
+    assert_eq!(get_package.max_size, 1000);
+    assert_eq!(get_package.min_size, 100);
+    assert_eq!(get_package.max_weight, 3000);
+    assert_eq!(get_package.min_weight, 300);
 
     // deliveries
-    assert_eq!(new_package.deliveries_to.len(), 1);
+    assert_eq!(get_package.deliveries_to.len(), 1);
 
-    let xal = new_package.deliveries_to.first().expect("Cannot get delivery info");
+    let xal = get_package.deliveries_to.first().expect("Cannot get delivery info");
     assert_eq!(xal.level, 0);
     assert_eq!(xal.label, "All".to_string());
     assert_eq!(xal.alpha3, "XAL".to_string());
@@ -2327,13 +2331,23 @@ fn create_update_delete_package() {
         ..update_package::default_graphql_request_input()
     }).expect("Cannot get data from update_package");
 
-    assert_eq!(updated_package.name, "New name".to_string());
-    assert_eq!(updated_package.max_size, 1001);
-    assert_eq!(updated_package.min_size, 101);
-    assert_eq!(updated_package.max_weight, 3001);
-    assert_eq!(updated_package.min_weight, 301);
+    let get_package = context.request(get_package::GraphqlRequestInput { id: new_package.raw_id })
+        .expect("Cannot get data from get_package")
+        .expect("Cannot get data from get_package");
+
+    assert_eq!(get_package.name, "New name".to_string());
+    assert_eq!(get_package.max_size, 1001);
+    assert_eq!(get_package.min_size, 101);
+    assert_eq!(get_package.max_weight, 3001);
+    assert_eq!(get_package.min_weight, 301);
 
     delete_package(&mut context, new_package.raw_id).expect("Cannot get deleted package");
+
+    let get_package = context.request(get_package::GraphqlRequestInput { id: new_package.raw_id });
+    if get_package.is_ok() && get_package.unwrap().is_some() {
+        panic!("Should not be able to get deleted package");
+    }
+
     if delete_package(&mut context, new_package.raw_id).is_ok() {
         panic!("Should not be able to delete the same package twice");
     }
@@ -2373,14 +2387,23 @@ fn create_delete_company_package() {
     let company = company_package.company.expect("Cannot get company data from add_package_to_company");
     let package = company_package.package.expect("Cannot get package data from add_package_to_company");
 
-    assert_eq!(company_package.company_id, new_company.raw_id);
-    assert_eq!(company_package.package_id, new_package.raw_id);
     assert_eq!(company.label, new_company.label);
     assert_eq!(company.name, new_company.name);
     assert_eq!(package.name, new_package.name);
 
+    let company_package = context.request(get_company_package::GraphqlRequestInput { id: company_package.raw_id })
+        .expect("Cannot get data from get_company_package")
+        .expect("Cannot get data from get_company_package");
+    assert_eq!(company_package.company_id, new_company.raw_id);
+    assert_eq!(company_package.package_id, new_package.raw_id);
+
     delete_company_package(&mut context, new_company.raw_id, new_package.raw_id)
         .expect("Cannot get data from delete_company_package");
+
+    let deleted_company_package = context.request(get_company_package::GraphqlRequestInput { id: company_package.raw_id });
+    if deleted_company_package.is_ok() && deleted_company_package.unwrap().is_some() {
+        panic!("Should not be able to get deleted company package");
+    }
 
     if delete_company_package(
         &mut context,
