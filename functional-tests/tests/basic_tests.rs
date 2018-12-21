@@ -2262,6 +2262,9 @@ fn create_update_delete_warehouse() {
         .expect("Cannot get data from delete_warehouse")
         .expect("Empty data from delete_warehouse");
 
+    assert_eq!(deleted_warehouse_id, id);
+
+    // negative cases
     let update_deleted_warehouse = update_warehouse(&mut context, token.clone(), update_warehouse::UpdateWarehouseInput {
         id: id.clone(),
         address_full: update_warehouse::AddressInput {
@@ -2286,8 +2289,6 @@ fn create_update_delete_warehouse() {
     if deleted_twice.is_ok() && deleted_twice.unwrap() != None {
         panic!("Should not be able to delete the same warehouse twice");
     }
-
-    assert_eq!(deleted_warehouse_id, id);
 }
 
 #[test]
@@ -2363,6 +2364,7 @@ fn create_update_delete_package() {
 
     delete_package(&mut context, new_package.raw_id).expect("Cannot get deleted package");
 
+    // negative cases
     let get_package = context.request(get_package::GetPackageInput { id: new_package.raw_id });
     if get_package.is_ok() && get_package.unwrap().is_some() {
         panic!("Should not be able to get deleted package");
@@ -2420,6 +2422,7 @@ fn create_delete_company_package() {
     delete_company_package(&mut context, new_company.raw_id, new_package.raw_id)
         .expect("Cannot get data from delete_company_package");
 
+    // negative cases
     let deleted_company_package = context.request(get_company_package::GetCompanyPackageInput { id: company_package.raw_id });
     if deleted_company_package.is_ok() && deleted_company_package.unwrap().is_some() {
         panic!("Should not be able to get deleted company package");
