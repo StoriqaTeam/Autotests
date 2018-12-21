@@ -2243,12 +2243,12 @@ fn create_update_delete_warehouse() {
         },
         location: Some(update_warehouse::GeoPointInput {
             x: 42.0,
-            y: 666.0,
+            y: 90.0,
             ..update_warehouse::default_geo_point_input()
         }),
         name: Some("New name".to_string()),
         ..update_warehouse::default_update_warehouse_input()
-    }).expect("Cannot get data from update_warehouse").expect("Cannot get data from update_warehouse");
+    }).expect("Cannot get data from update_warehouse").expect("Empty data from update_warehouse");
 
     assert_eq!(updated_warehouse.name, Some("New name".to_string()));
     assert_eq!(updated_warehouse.address_full.country, Some("Russian Federation".to_string()));
@@ -2256,11 +2256,11 @@ fn create_update_delete_warehouse() {
     assert_eq!(updated_warehouse.address_full.administrative_area_level2, Some("Moscow".to_string()));
     let location = updated_warehouse.location.expect("Cannot get location data from update_warehouse");
     assert_eq!(location.x, 42.0);
-    assert_eq!(location.y, 666.0);
+    assert_eq!(location.y, 90.0);
 
     let deleted_warehouse_id = delete_warehouse(&mut context, token.clone(), id.clone())
         .expect("Cannot get data from delete_warehouse")
-        .expect("Cannot get data from delete_warehouse");
+        .expect("Empty data from delete_warehouse");
 
     let update_deleted_warehouse = update_warehouse(&mut context, token.clone(), update_warehouse::UpdateWarehouseInput {
         id: id.clone(),
@@ -2272,7 +2272,7 @@ fn create_update_delete_warehouse() {
         },
         location: Some(update_warehouse::GeoPointInput {
             x: 42.0,
-            y: 666.0,
+            y: 90.0,
             ..update_warehouse::default_geo_point_input()
         }),
         name: Some("New name".to_string()),
@@ -2304,7 +2304,7 @@ fn create_update_delete_package() {
 
     let get_package = context.request(get_package::GetPackageInput { id: new_package.raw_id })
         .expect("Cannot get data from get_package")
-        .expect("Cannot get data from get_package");
+        .expect("Empty data from get_package");
 
     assert_eq!(get_package.name, "Initial name".to_string());
     assert_eq!(get_package.max_size, 1000);
@@ -2353,7 +2353,7 @@ fn create_update_delete_package() {
 
     let get_package = context.request(get_package::GetPackageInput { id: new_package.raw_id })
         .expect("Cannot get data from get_package")
-        .expect("Cannot get data from get_package");
+        .expect("Empty data from get_package");
 
     assert_eq!(get_package.name, "New name".to_string());
     assert_eq!(get_package.max_size, 1001);
@@ -2405,7 +2405,7 @@ fn create_delete_company_package() {
     }).expect("Cannot get data from add_package_to_company");
 
     let company = company_package.company.expect("Cannot get company data from add_package_to_company");
-    let package = company_package.package.expect("Cannot get package data from add_package_to_company");
+    let package = company_package.package.expect("Empty data from add_package_to_company");
 
     assert_eq!(company.label, new_company.label);
     assert_eq!(company.name, new_company.name);
@@ -2413,7 +2413,7 @@ fn create_delete_company_package() {
 
     let company_package = context.request(get_company_package::GetCompanyPackageInput { id: company_package.raw_id })
         .expect("Cannot get data from get_company_package")
-        .expect("Cannot get data from get_company_package");
+        .expect("Empty data from get_company_package");
     assert_eq!(company_package.company_id, new_company.raw_id);
     assert_eq!(company_package.package_id, new_package.raw_id);
 
