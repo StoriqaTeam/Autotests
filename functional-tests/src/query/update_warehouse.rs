@@ -13,6 +13,8 @@ pub struct UpdateWarehouseMutation;
 
 pub use self::update_warehouse_mutation::*;
 
+pub type GraphqlRequestOutput = Option<RustUpdateWarehouseUpdateWarehouse>;
+
 pub fn default_update_warehouse_input() -> UpdateWarehouseInput {
     UpdateWarehouseInput {
         id: "".to_string(),
@@ -48,9 +50,9 @@ pub fn default_geo_point_input() -> GeoPointInput {
 }
 
 impl GraphqlRequest for UpdateWarehouseInput {
-    type Output = Option<RustUpdateWarehouseUpdateWarehouse>;
+    type Output = GraphqlRequestOutput;
 
-    fn response(body: serde_json::Value) -> Result<Option<RustUpdateWarehouseUpdateWarehouse>, FailureError> {
+    fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {
         let response_body: Response<ResponseData> = serde_json::from_value(body)?;
         match (response_body.data, response_body.errors) {
             (Some(data), None) => Ok(data.update_warehouse),

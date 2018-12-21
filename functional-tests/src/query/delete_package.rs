@@ -15,10 +15,12 @@ pub use self::delete_package_mutation::*;
 
 pub struct DeletePackagesInput { pub id: i64 }
 
-impl GraphqlRequest for DeletePackagesInput {
-    type Output = RustDeletePackageDeletePackage;
+pub type GraphqlRequestOutput = RustDeletePackageDeletePackage;
 
-    fn response(body: serde_json::Value) -> Result<RustDeletePackageDeletePackage, FailureError> {
+impl GraphqlRequest for DeletePackagesInput {
+    type Output = GraphqlRequestOutput;
+
+    fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {
         let response_body: Response<ResponseData> = serde_json::from_value(body)?;
         match (response_body.data, response_body.errors) {
             (Some(data), None) => Ok(data.delete_package),

@@ -13,8 +13,11 @@ pub struct CreatePackageMutation;
 
 pub use self::create_package_mutation::*;
 
-pub fn default_new_packages_input() -> NewPackagesInput {
-    NewPackagesInput {
+pub type GraphqlRequestInput = NewPackagesInput;
+pub type GraphqlRequestOutput = RustCreatePackageCreatePackage;
+
+pub fn default_graphql_request_input() -> GraphqlRequestInput {
+    GraphqlRequestInput {
         client_mutation_id: "".to_string(),
         name: "".to_string(),
         max_size: 1000,
@@ -28,10 +31,10 @@ pub fn default_new_packages_input() -> NewPackagesInput {
     }
 }
 
-impl GraphqlRequest for NewPackagesInput {
-    type Output = RustCreatePackageCreatePackage;
+impl GraphqlRequest for GraphqlRequestInput {
+    type Output = GraphqlRequestOutput;
 
-    fn response(body: serde_json::Value) -> Result<RustCreatePackageCreatePackage, FailureError> {
+    fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {
         let response_body: Response<ResponseData> = serde_json::from_value(body)?;
         match (response_body.data, response_body.errors) {
             (Some(data), None) => Ok(data.create_package),

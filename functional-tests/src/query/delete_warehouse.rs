@@ -15,10 +15,12 @@ pub use self::delete_warehouse_mutation::*;
 
 pub struct DeleteWarehouseInput { pub id: String }
 
-impl GraphqlRequest for DeleteWarehouseInput {
-    type Output = Option<RustDeleteWarehouseDeleteWarehouse>;
+pub type GraphqlRequestOutput = Option<RustDeleteWarehouseDeleteWarehouse>;
 
-    fn response(body: serde_json::Value) -> Result<Option<RustDeleteWarehouseDeleteWarehouse>, FailureError> {
+impl GraphqlRequest for DeleteWarehouseInput {
+    type Output = GraphqlRequestOutput;
+
+    fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {
         let response_body: Response<ResponseData> = serde_json::from_value(body)?;
         match (response_body.data, response_body.errors) {
             (Some(data), None) => Ok(data.delete_warehouse),

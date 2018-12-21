@@ -2279,7 +2279,7 @@ fn create_update_delete_package() {
             "RUS".to_string(),
             "USA".to_string()
         ],
-        ..create_package::default_new_packages_input()
+        ..create_package::default_graphql_request_input()
     }).expect("Cannot get data from create_package");
 
     assert_eq!(new_package.name, "Initial name".to_string());
@@ -2324,7 +2324,7 @@ fn create_update_delete_package() {
         min_size: Some(101),
         max_weight: Some(3001),
         min_weight: Some(301),
-        ..update_package::default_update_packages_input()
+        ..update_package::default_graphql_request_input()
     }).expect("Cannot get data from update_package");
 
     assert_eq!(updated_package.name, "New name".to_string());
@@ -2337,6 +2337,110 @@ fn create_update_delete_package() {
     if delete_package(&mut context, new_package.raw_id).is_ok() {
         panic!("Should not be able to delete the same package twice");
     }
+}
+
+#[test]
+fn create_delete_company_package() {
+    let mut context = TestContext::new();
+    context.as_superadmin();
+
+    let new_package = create_package(&mut context, create_package::NewPackagesInput {
+        name: "Initial name".to_string(),
+        deliveries_to: vec![
+            "RUS".to_string(),
+            "USA".to_string()
+        ],
+        ..create_package::default_graphql_request_input()
+    }).expect("Cannot get data from create_package");
+
+    let new_company = context
+        .request(create_delivery_company::NewCompanyInput {
+            name: "Test company".to_string(),
+            label: "TEST".to_string(),
+            description: Some("Test description".to_string()),
+            deliveries_from: vec!["RUS".to_string()],
+            logo: "test loge URL".to_string(),
+            ..create_delivery_company::default_create_company_input()
+        })
+        .expect("Cannot get data from create_delivery_company");
+
+    let company_package = add_package_to_company(&mut context, add_package_to_company::GraphqlRequestInput {
+        company_id: new_company.raw_id,
+        package_id: new_package.raw_id,
+        ..add_package_to_company::default_graphql_request_input()
+    }).expect("Cannot get data from add_package_to_company");
+
+    let company = company_package.company.expect("Cannot get company data from add_package_to_company");
+    let package = company_package.package.expect("Cannot get package data from add_package_to_company");
+
+    assert_eq!(company_package.company_id, new_company.raw_id);
+    assert_eq!(company_package.package_id, new_package.raw_id);
+    assert_eq!(company.label, new_company.label);
+    assert_eq!(company.name, new_company.name);
+    assert_eq!(package.name, new_package.name);
+
+    delete_company_package(&mut context, new_company.raw_id, new_package.raw_id)
+        .expect("Cannot get data from delete_company_package");
+
+    if delete_company_package(
+        &mut context,
+        new_company.raw_id,
+        new_package.raw_id
+    ).is_ok() {
+        panic!("Should not be able to delete the same company package twice");
+    }
+}
+
+#[test]
+fn upsert_shipping() {
+    let mut context = TestContext::new();
+
+    let (user, token, store, category, base_product) = set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
+
+    context.set_bearer(token);
+    let warehouse_payload = create_warehouse::GraphqlRequestInput {
+        name: Some("Warehouse".to_string()),
+        store_id: store.raw_id,
+        address_full: create_warehouse::AddressInput {
+            country: Some("Russian Federation".to_string()),
+            country_code: Some("RUS".to_string()),
+            ..create_warehouse::default_address_input()
+        },
+        ..create_warehouse::default_graphql_request_input()
+    };
+    let warehouse = context.request(warehouse_payload).expect("Cannot get data from create_warehouse");
+
+    context.as_superadmin();
+    let upsert_shipping_payload = upsert_shipping::GraphqlRequestInput {
+        store_id: store.raw_id,
+        base_product_id: base_product.raw_id,
+        ..upsert_shipping::default_graphql_request_input()
+    };
+    let upsert_shipping = context.request(upsert_shipping_payload).expect("Cannot get data from upsert_shipping");
+}
+
+fn add_package_to_company(
+    context: &mut TestContext,
+    payload: add_package_to_company::GraphqlRequestInput
+) -> Result<add_package_to_company::GraphqlRequestOutput, FailureError> {
+    context.as_superadmin();
+    let company_package = context.request(payload)?;
+    context.clear_bearer();
+    Ok(company_package)
+}
+
+fn delete_company_package(
+    context: &mut TestContext,
+    company_id: i64,
+    package_id: i64
+) -> Result<delete_company_package::GraphqlRequestOutput, FailureError> {
+    context.as_superadmin();
+    let company_package = context.request(delete_company_package::GraphqlRequestInput {
+        company_id,
+        package_id
+    })?;
+    context.clear_bearer();
+    Ok(company_package)
 }
 
 fn create_package(
@@ -2380,7 +2484,7 @@ fn set_up_warehouse(
     let warehouse_payload = create_warehouse::CreateWarehouseInput {
         name: Some("Initial name".to_string()),
         store_id: store.raw_id,
-        ..create_warehouse::default_create_warehouse_input()
+        ..create_warehouse::default_graphql_request_input()
     };
     let warehouse = context.request(warehouse_payload)?;
     context.clear_bearer();

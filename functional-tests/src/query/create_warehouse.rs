@@ -13,7 +13,10 @@ pub struct CreateWarehouseMutation;
 
 pub use self::create_warehouse_mutation::*;
 
-pub fn default_create_warehouse_input() -> CreateWarehouseInput {
+pub type GraphqlRequestInput = CreateWarehouseInput;
+pub type GraphqlRequestOutput = RustCreateWarehouseCreateWarehouse;
+
+pub fn default_graphql_request_input() -> GraphqlRequestInput {
     CreateWarehouseInput {
         client_mutation_id: "".to_string(),
         address_full: default_address_input(),
@@ -47,10 +50,10 @@ pub fn default_geo_point_input() -> GeoPointInput {
     }
 }
 
-impl GraphqlRequest for CreateWarehouseInput {
-    type Output = RustCreateWarehouseCreateWarehouse;
+impl GraphqlRequest for GraphqlRequestInput {
+    type Output = GraphqlRequestOutput;
 
-    fn response(body: serde_json::Value) -> Result<RustCreateWarehouseCreateWarehouse, FailureError> {
+    fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {
         let response_body: Response<ResponseData> = serde_json::from_value(body)?;
         match (response_body.data, response_body.errors) {
             (Some(data), None) => Ok(data.create_warehouse),
@@ -61,7 +64,7 @@ impl GraphqlRequest for CreateWarehouseInput {
 }
 
 impl From<CreateWarehouseInput> for serde_json::Value {
-    fn from(val: CreateWarehouseInput) -> serde_json::Value {
+    fn from(val: GraphqlRequestInput) -> serde_json::Value {
         let request_body = CreateWarehouseMutation::build_query(Variables { input: val });
         serde_json::to_value(request_body).expect("failed to serialize CreateWarehouseInput")
     }
