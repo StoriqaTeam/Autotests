@@ -140,6 +140,22 @@ impl TestContext {
         }
     }
 
+    pub fn get_categories_with_products(
+        &self,
+    ) -> Result<get_categories_with_products::ResponseData, FailureError> {
+        let request_body =
+            get_categories_with_products::GetCategoriesWithProductsQuery::build_query(
+                get_categories_with_products::Variables {},
+            );
+        let response_body: Response<get_categories_with_products::ResponseData> =
+            self.graphql_request(request_body)?;
+        match (response_body.data, response_body.errors) {
+            (Some(data), None) => Ok(data),
+            (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
+            _ => unreachable!(),
+        }
+    }
+
     pub fn get_store(&self, store_id: i64) -> Result<get_store::ResponseData, FailureError> {
         let request_body = get_store::GetStoreQuery::build_query(get_store::Variables {
             id: store_id,

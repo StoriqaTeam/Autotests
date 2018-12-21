@@ -2022,6 +2022,61 @@ pub fn delete_delivery_company() {
     assert_eq!(create_company.raw_id, delete_company.raw_id);
 }
 
+#[test]
+pub fn get_categories_with_products() {
+    //setup
+    let mut context = TestContext::new();
+
+    //given
+    let (_user, _token, _store, category, _base_product) =
+        set_up_base_product(&mut context).expect("set_up_base_product failed");
+    context.as_superadmin();
+    let category_level_1 = context
+        .request(create_category::CreateCategoryInput {
+            parent_id: 0,
+            slug: Some("category-level-1".to_string()),
+            ..create_category::default_create_category_input()
+        })
+        .expect("Cannot create category category_level_1");
+    let category_level_2 = context
+        .request(create_category::CreateCategoryInput {
+            parent_id: category_level_1.raw_id,
+            slug: Some("category-level-2".to_string()),
+            ..create_category::default_create_category_input()
+        })
+        .expect("Cannot create category category_level_2");
+    let category_level_3 = context
+        .request(create_category::CreateCategoryInput {
+            parent_id: category_level_2.raw_id,
+            slug: Some("category-level-3".to_string()),
+            ..create_category::default_create_category_input()
+        })
+        .expect("Cannot create category category_level_3");
+
+    //when
+    let mut categories = context
+        .get_categories_with_products()
+        .unwrap()
+        .categories_with_products
+        .into_iter()
+        .flat_map(|root| {
+            root.children.into_iter().flat_map(|category1| {
+                category1
+                    .children
+                    .into_iter()
+                    .flat_map(|category2| category2.children.into_iter())
+            })
+        });
+    //then
+    let exists_category = categories.find(|value| value.id == category.id);
+    println!("exists_category: {:#?}", exists_category);
+
+    assert_eq!(exists_category.map(|c| c.id), Some(category.id));
+    assert!(categories
+        .find(|value| value.id == category_level_3.id)
+        .is_none());
+}
+
 fn verify_update_store_values(
     updated_store: get_store::RustGetStoreStore,
     expected_values: update_store::UpdateStoreInput,
