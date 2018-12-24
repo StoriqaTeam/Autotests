@@ -6,15 +6,17 @@ use request::GraphqlRequest;
 
 #[derive(GraphQLQuery)]
 #[graphql(
-schema_path = "graphql/schema.json",
-query_path = "graphql/queries/get_company_package.graphql",
-response_derives = "Debug, PartialEq"
+    schema_path = "graphql/schema.json",
+    query_path = "graphql/queries/get_company_package.graphql",
+    response_derives = "Debug, PartialEq"
 )]
 pub struct GetCompanyPackageQuery;
 
 pub use self::get_company_package_query::*;
 
-pub struct GetCompanyPackageInput { pub id: i64 }
+pub struct GetCompanyPackageInput {
+    pub id: i64,
+}
 pub type GraphqlRequestOutput = Option<RustGetCompanyPackageCompanyPackage>;
 
 impl GraphqlRequest for GetCompanyPackageInput {
