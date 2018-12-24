@@ -37,7 +37,7 @@ pub fn revoke_jwt() {
     let (user, token) = set_up_user(&mut context).expect("set_up_user failed");
     //when
     context.set_bearer(token);
-    ::std::thread::sleep(::std::time::Duration::from_millis(500));
+    ::std::thread::sleep(::std::time::Duration::from_millis(1000));
     let new_token = context
         .request(revoke_jwt::RevokeJwt)
         .expect("revoke_jwt failed");
