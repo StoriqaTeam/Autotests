@@ -6,8 +6,8 @@ use request::GraphqlRequest;
 
 #[derive(GraphQLQuery)]
 #[graphql(
-schema_path = "graphql/schema.json",
-query_path = "graphql/queries/update_warehouse.graphql"
+    schema_path = "graphql/schema.json",
+    query_path = "graphql/queries/update_warehouse.graphql"
 )]
 pub struct UpdateWarehouseMutation;
 
@@ -22,7 +22,7 @@ pub fn default_update_warehouse_input() -> UpdateWarehouseInput {
         address_full: default_address_input(),
         location: None,
         name: None,
-        slug: None
+        slug: None,
     }
 }
 
@@ -38,15 +38,12 @@ pub fn default_address_input() -> AddressInput {
         postal_code: None,
         route: None,
         street_number: None,
-        place_id: None
+        place_id: None,
     }
 }
 
 pub fn default_geo_point_input() -> GeoPointInput {
-    GeoPointInput {
-        x: 0.0,
-        y: 0.0
-    }
+    GeoPointInput { x: 0.0, y: 0.0 }
 }
 
 impl GraphqlRequest for UpdateWarehouseInput {

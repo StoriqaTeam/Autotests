@@ -6,8 +6,8 @@ use request::GraphqlRequest;
 
 #[derive(GraphQLQuery)]
 #[graphql(
-schema_path = "graphql/schema.json",
-query_path = "graphql/queries/add_package_to_company.graphql"
+    schema_path = "graphql/schema.json",
+    query_path = "graphql/queries/add_package_to_company.graphql"
 )]
 pub struct AddPackageToCompanyMutation;
 
@@ -21,7 +21,7 @@ pub fn default_graphql_request_input() -> NewCompaniesPackagesInput {
         company_id: 0,
         package_id: 0,
         dimensional_factor: None,
-        uses_static_rates: None
+        uses_static_rates: None,
     }
 }
 

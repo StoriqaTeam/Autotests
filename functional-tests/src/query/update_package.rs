@@ -6,8 +6,8 @@ use request::GraphqlRequest;
 
 #[derive(GraphQLQuery)]
 #[graphql(
-schema_path = "graphql/schema.json",
-query_path = "graphql/queries/update_package.graphql"
+    schema_path = "graphql/schema.json",
+    query_path = "graphql/queries/update_package.graphql"
 )]
 pub struct UpdatePackageMutation;
 
@@ -24,7 +24,7 @@ pub fn default_graphql_request_input() -> UpdatePackagesInput {
         min_size: None,
         max_weight: None,
         min_weight: None,
-        deliveries_to: None
+        deliveries_to: None,
     }
 }
 
