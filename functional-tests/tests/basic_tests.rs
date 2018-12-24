@@ -2028,7 +2028,7 @@ pub fn get_categories_with_products() {
     let mut context = TestContext::new();
 
     //given
-    let (_, _, _, category_published, base_product_published) =
+    let (_, _, _, category_published, _base_product_published) =
         set_up_published_base_product(&mut context).expect("set_up_published_base_product failed");
 
     context.as_superadmin();
@@ -2069,12 +2069,15 @@ pub fn get_categories_with_products() {
             })
         });
     //then
-    let exists_category = categories.find(|value| value.id == category_published.id);
+    let exists_category = categories.find(|value| value.raw_id == category_published.raw_id);
     println!("exists_category: {:#?}", exists_category);
 
-    assert_eq!(exists_category.map(|c| c.id), Some(category_published.id));
+    assert_eq!(
+        exists_category.map(|c| c.raw_id),
+        Some(category_published.raw_id)
+    );
     assert!(categories
-        .find(|value| value.id == category_level_3.id)
+        .find(|value| value.raw_id == category_level_3.raw_id)
         .is_none());
 }
 
