@@ -15,7 +15,7 @@ pub use self::add_package_to_company_mutation::*;
 
 pub type GraphqlRequestOutput = RustAddPackageToCompanyAddPackageToCompany;
 
-pub fn default_graphql_request_input() -> NewCompaniesPackagesInput {
+pub fn default_add_package_to_company_input() -> NewCompaniesPackagesInput {
     NewCompaniesPackagesInput {
         client_mutation_id: "".to_string(),
         company_id: 0,

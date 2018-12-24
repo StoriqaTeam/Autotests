@@ -15,7 +15,7 @@ pub use self::update_package_mutation::*;
 
 pub type GraphqlRequestOutput = RustUpdatePackageUpdatePackage;
 
-pub fn default_graphql_request_input() -> UpdatePackagesInput {
+pub fn default_update_package_input() -> UpdatePackagesInput {
     UpdatePackagesInput {
         id: "".to_string(),
         client_mutation_id: "".to_string(),

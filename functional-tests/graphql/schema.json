@@ -662,6 +662,35 @@
           "possibleTypes": null
         },
         {
+          "description": "Coupon application scope",
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "STORE"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "CATEGORIES"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "BASE_PRODUCTS"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "CouponScope",
+          "possibleTypes": null
+        },
+        {
           "description": "Available Packages info.",
           "enumValues": null,
           "fields": [
@@ -774,35 +803,6 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "AvailablePackages",
-          "possibleTypes": null
-        },
-        {
-          "description": "Coupon application scope",
-          "enumValues": [
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "STORE"
-            },
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "CATEGORIES"
-            },
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "BASE_PRODUCTS"
-            }
-          ],
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "kind": "ENUM",
-          "name": "CouponScope",
           "possibleTypes": null
         },
         {
@@ -14272,6 +14272,195 @@
           "possibleTypes": null
         },
         {
+          "description": "Category info.",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Base64 Unique id",
+              "isDeprecated": false,
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Unique int id",
+              "isDeprecated": false,
+              "name": "rawId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Full Name",
+              "isDeprecated": false,
+              "name": "name",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "Translation",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Meta field",
+              "isDeprecated": false,
+              "name": "metaField",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Parent id",
+              "isDeprecated": false,
+              "name": "parentId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Parent category",
+              "isDeprecated": false,
+              "name": "parent",
+              "type": {
+                "kind": "OBJECT",
+                "name": "CategoryWithProducts",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Level",
+              "isDeprecated": false,
+              "name": "level",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Children categories",
+              "isDeprecated": false,
+              "name": "children",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "CategoryWithProducts",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Fetches category attributes.",
+              "isDeprecated": false,
+              "name": "getAttributes",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "Attribute",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "slug",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "kind": "OBJECT",
+          "name": "CategoryWithProducts",
+          "possibleTypes": null
+        },
+        {
           "description": "Available Packages info.",
           "enumValues": null,
           "fields": [
@@ -20814,6 +21003,35 @@
           "possibleTypes": null
         },
         {
+          "description": "Order committer role",
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": "System role",
+              "isDeprecated": false,
+              "name": "SYSTEM"
+            },
+            {
+              "deprecationReason": null,
+              "description": "Customer",
+              "isDeprecated": false,
+              "name": "CUSTOMER"
+            },
+            {
+              "deprecationReason": null,
+              "description": "Seller",
+              "isDeprecated": false,
+              "name": "SELLER"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "CommitterRole",
+          "possibleTypes": null
+        },
+        {
           "description": "Create product comments input object",
           "enumValues": null,
           "fields": null,
@@ -20878,35 +21096,6 @@
           "interfaces": null,
           "kind": "INPUT_OBJECT",
           "name": "CreateModeratorProductCommentsInput",
-          "possibleTypes": null
-        },
-        {
-          "description": "Order committer role",
-          "enumValues": [
-            {
-              "deprecationReason": null,
-              "description": "System role",
-              "isDeprecated": false,
-              "name": "SYSTEM"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Customer",
-              "isDeprecated": false,
-              "name": "CUSTOMER"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Seller",
-              "isDeprecated": false,
-              "name": "SELLER"
-            }
-          ],
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "kind": "ENUM",
-          "name": "CommitterRole",
           "possibleTypes": null
         },
         {
@@ -21119,6 +21308,11 @@
             {
               "kind": "OBJECT",
               "name": "ModeratorProductComments",
+              "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "CategoryWithProducts",
               "ofType": null
             },
             {
@@ -22521,7 +22715,7 @@
               "name": "categoriesWithProducts",
               "type": {
                 "kind": "OBJECT",
-                "name": "Category",
+                "name": "CategoryWithProducts",
                 "ofType": null
               }
             },
@@ -23628,9 +23822,9 @@
             },
             {
               "args": [],
-              "deprecationReason": null,
+              "deprecationReason": "Use store_raw_id",
               "description": "Base64 Store id",
-              "isDeprecated": false,
+              "isDeprecated": true,
               "name": "storeId",
               "type": {
                 "kind": "NON_NULL",
@@ -23638,6 +23832,22 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Store raw id",
+              "isDeprecated": false,
+              "name": "storeRawId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
                   "ofType": null
                 }
               }
