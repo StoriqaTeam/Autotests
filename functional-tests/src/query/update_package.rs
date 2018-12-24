@@ -13,7 +13,9 @@ pub struct UpdatePackageMutation;
 
 pub use self::update_package_mutation::*;
 
-pub fn default_update_packages_input() -> UpdatePackagesInput {
+pub type GraphqlRequestOutput = RustUpdatePackageUpdatePackage;
+
+pub fn default_graphql_request_input() -> UpdatePackagesInput {
     UpdatePackagesInput {
         id: "".to_string(),
         client_mutation_id: "".to_string(),
@@ -27,9 +29,9 @@ pub fn default_update_packages_input() -> UpdatePackagesInput {
 }
 
 impl GraphqlRequest for UpdatePackagesInput {
-    type Output = RustUpdatePackageUpdatePackage;
+    type Output = GraphqlRequestOutput;
 
-    fn response(body: serde_json::Value) -> Result<RustUpdatePackageUpdatePackage, FailureError> {
+    fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {
         let response_body: Response<ResponseData> = serde_json::from_value(body)?;
         match (response_body.data, response_body.errors) {
             (Some(data), None) => Ok(data.update_package),

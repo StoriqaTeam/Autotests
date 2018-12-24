@@ -1,0 +1,17 @@
+mutation AddPackageToCompany($input: NewCompaniesPackagesInput!) {
+  addPackageToCompany(input: $input) {
+    id
+    rawId
+    companyId
+    packageId
+
+    company {
+      name
+      label
+    }
+
+    package {
+      name
+    }
+  }
+}
