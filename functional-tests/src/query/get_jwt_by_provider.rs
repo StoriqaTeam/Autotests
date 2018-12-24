@@ -31,6 +31,18 @@ pub fn google_create_jwt_provider_input() -> CreateJWTProviderInput {
     }
 }
 
+pub fn new_user_additional_data_input() -> NewUserAdditionalDataInput {
+    NewUserAdditionalDataInput {
+        country: Some("MM".to_string()),
+        referal: Some(1),
+        referer: Some("localhost".to_string()),
+        utm_marks: Some(vec![UtmMarkInput {
+            key: "source".to_string(),
+            value: "word_of_mouth".to_string(),
+        }]),
+    }
+}
+
 type GraphqlRequestOutput = RustGetJwtByProviderGetJwtByProvider;
 
 impl GraphqlRequest for CreateJWTProviderInput {

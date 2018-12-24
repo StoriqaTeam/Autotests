@@ -1658,36 +1658,49 @@ pub fn create_user_with_additional_data() {
 }
 
 #[test]
-#[ignore]
 pub fn create_user_via_facebook() {
     //setup
-    let context = TestContext::new();
+    let mut context = TestContext::new();
     //given
     let facebook_jwt = get_jwt_by_provider::facebook_create_jwt_provider_input();
     //when
-    let user = context.request(facebook_jwt);
+    let token = context
+        .request(facebook_jwt)
+        .expect("get_jwt_by_provider facebook failed")
+        .token;
     //then
-    assert!(user.is_ok());
+    context.set_bearer(token);
+    let me = context
+        .request(get_me::GetMeInput {})
+        .expect("get_me failed")
+        .expect("get_me returned nothing");
+    assert_eq!(me.email, create_user::default_create_user_input().email);
 }
 
 #[test]
-#[ignore]
 pub fn create_user_via_google() {
     //setup
-    let context = TestContext::new();
+    let mut context = TestContext::new();
     //given
     let google_jwt = get_jwt_by_provider::google_create_jwt_provider_input();
     //when
-    let user = context.request(google_jwt);
+    let token = context
+        .request(google_jwt)
+        .expect("get_jwt_by_provider google failed")
+        .token;
     //then
-    assert!(user.is_ok());
+    context.set_bearer(token);
+    let me = context
+        .request(get_me::GetMeInput {})
+        .expect("get_me failed")
+        .expect("get_me returned nothing");
+    assert_eq!(me.email, create_user::default_create_user_input().email);
 }
 
 #[test]
-#[ignore]
 pub fn create_user_via_facebook_with_additional_data() {
     //setup
-    let context = TestContext::new();
+    let mut context = TestContext::new();
     //given
     let referal = context
         .request(create_user::CreateUserInput {
@@ -1698,28 +1711,29 @@ pub fn create_user_via_facebook_with_additional_data() {
 
     let facebook_jwt = get_jwt_by_provider::CreateJWTProviderInput {
         additional_data: Some(get_jwt_by_provider::NewUserAdditionalDataInput {
-            country: Some("MM".to_string()),
             referal: Some(referal.raw_id),
-            referer: Some("localhost".to_string()),
-            utm_marks: Some(vec![get_jwt_by_provider::UtmMarkInput {
-                key: "source".to_string(),
-                value: "word_of_mouth".to_string(),
-            }]),
+            ..get_jwt_by_provider::new_user_additional_data_input()
         }),
         ..get_jwt_by_provider::facebook_create_jwt_provider_input()
     };
     //when
-    let user = context.request(facebook_jwt);
+    let token = context
+        .request(facebook_jwt)
+        .expect("get_jwt_by_provider facebook failed")
+        .token;
     //then
-    assert!(user.is_ok());
-    panic!("Finish test");
+    context.set_bearer(token);
+    let user = context
+        .request(get_me::GetMeInput {})
+        .expect("get_me failed")
+        .expect("get_me returned nothing");
+    verify_additional_data(user, referal.raw_id);
 }
 
 #[test]
-#[ignore]
 pub fn create_user_via_google_with_additional_data() {
     //setup
-    let context = TestContext::new();
+    let mut context = TestContext::new();
     //given
     let referal = context
         .request(create_user::CreateUserInput {
@@ -1730,21 +1744,44 @@ pub fn create_user_via_google_with_additional_data() {
 
     let google_jwt = get_jwt_by_provider::CreateJWTProviderInput {
         additional_data: Some(get_jwt_by_provider::NewUserAdditionalDataInput {
-            country: Some("MM".to_string()),
             referal: Some(referal.raw_id),
-            referer: Some("localhost".to_string()),
-            utm_marks: Some(vec![get_jwt_by_provider::UtmMarkInput {
-                key: "source".to_string(),
-                value: "word_of_mouth".to_string(),
-            }]),
+            ..get_jwt_by_provider::new_user_additional_data_input()
         }),
         ..get_jwt_by_provider::google_create_jwt_provider_input()
     };
     //when
-    let user = context.request(google_jwt);
+    let token = context
+        .request(google_jwt)
+        .expect("get_jwt_by_provider google failed")
+        .token;
     //then
-    assert!(user.is_ok());
-    panic!("Finish test");
+    context.set_bearer(token);
+    let user = context
+        .request(get_me::GetMeInput {})
+        .expect("get_me failed")
+        .expect("get_me returned nothing");
+    verify_additional_data(user, referal.raw_id);
+}
+
+fn verify_additional_data(user: get_me::RustGetMeMe, referal_id: i64) {
+    assert_eq!(user.email, create_user::default_create_user_input().email);
+    assert_eq!(user.referal.expect("user.referal is none"), referal_id);
+    assert_eq!(
+        user.country.expect("user.country is none").alpha3,
+        "MMR".to_string()
+    );
+    assert_eq!(
+        user.referer.expect("user.referer is none"),
+        "localhost".to_string()
+    );
+    assert_eq!(
+        &user.utm_marks.as_ref().expect("user.utm_marks is none")[0].key,
+        "source"
+    );
+    assert_eq!(
+        &user.utm_marks.as_ref().expect("user.utm_marks is none")[0].value,
+        "word_of_mouth"
+    );
 }
 
 #[test]
