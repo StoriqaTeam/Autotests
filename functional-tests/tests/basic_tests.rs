@@ -2283,7 +2283,7 @@ fn create_update_delete_warehouse() {
             },
             location: Some(update_warehouse::GeoPointInput {
                 x: 42.0,
-                y: 666.0,
+                y: 90.0,
                 ..update_warehouse::default_geo_point_input()
             }),
             name: Some("New name".to_string()),
@@ -2310,7 +2310,7 @@ fn create_update_delete_warehouse() {
         .location
         .expect("Cannot get location data from update_warehouse");
     assert_eq!(location.x, 42.0);
-    assert_eq!(location.y, 666.0);
+    assert_eq!(location.y, 90.0);
 
     let deleted_warehouse_id = delete_warehouse(&mut context, token.clone(), id.clone())
         .expect("Cannot get data from delete_warehouse")
