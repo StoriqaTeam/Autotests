@@ -6,8 +6,8 @@ use request::GraphqlRequest;
 
 #[derive(GraphQLQuery)]
 #[graphql(
-schema_path = "graphql/schema.json",
-query_path = "graphql/queries/upsert_shipping.graphql"
+    schema_path = "graphql/schema.json",
+    query_path = "graphql/queries/upsert_shipping.graphql"
 )]
 pub struct UpsertShippingMutation;
 
@@ -22,12 +22,15 @@ pub fn default_graphql_request_input() -> NewShippingInput {
         store_id: 0,
         pickup: Some(default_new_pickups_input()),
         local: vec![],
-        international: vec![]
+        international: vec![],
     }
 }
 
 pub fn default_new_pickups_input() -> NewPickupsInput {
-    NewPickupsInput { pickup: false, price: None }
+    NewPickupsInput {
+        pickup: false,
+        price: None,
+    }
 }
 
 impl GraphqlRequest for NewShippingInput {

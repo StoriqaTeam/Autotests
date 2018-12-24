@@ -6,14 +6,16 @@ use request::GraphqlRequest;
 
 #[derive(GraphQLQuery)]
 #[graphql(
-schema_path = "graphql/schema.json",
-query_path = "graphql/queries/delete_package.graphql"
+    schema_path = "graphql/schema.json",
+    query_path = "graphql/queries/delete_package.graphql"
 )]
 pub struct DeletePackageMutation;
 
 pub use self::delete_package_mutation::*;
 
-pub struct DeletePackagesInput { pub id: i64 }
+pub struct DeletePackagesInput {
+    pub id: i64,
+}
 
 pub type GraphqlRequestOutput = RustDeletePackageDeletePackage;
 

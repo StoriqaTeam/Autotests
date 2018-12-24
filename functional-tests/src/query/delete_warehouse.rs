@@ -6,14 +6,16 @@ use request::GraphqlRequest;
 
 #[derive(GraphQLQuery)]
 #[graphql(
-schema_path = "graphql/schema.json",
-query_path = "graphql/queries/delete_warehouse.graphql"
+    schema_path = "graphql/schema.json",
+    query_path = "graphql/queries/delete_warehouse.graphql"
 )]
 pub struct DeleteWarehouseMutation;
 
 pub use self::delete_warehouse_mutation::*;
 
-pub struct DeleteWarehouseInput { pub id: String }
+pub struct DeleteWarehouseInput {
+    pub id: String,
+}
 
 pub type GraphqlRequestOutput = Option<RustDeleteWarehouseDeleteWarehouse>;
 

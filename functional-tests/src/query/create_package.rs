@@ -6,8 +6,8 @@ use request::GraphqlRequest;
 
 #[derive(GraphQLQuery)]
 #[graphql(
-schema_path = "graphql/schema.json",
-query_path = "graphql/queries/create_package.graphql"
+    schema_path = "graphql/schema.json",
+    query_path = "graphql/queries/create_package.graphql"
 )]
 pub struct CreatePackageMutation;
 
@@ -23,10 +23,7 @@ pub fn default_graphql_request_input() -> NewPackagesInput {
         min_size: 100,
         max_weight: 3000,
         min_weight: 300,
-        deliveries_to: vec![
-            "RUS".to_string(),
-            "USA".to_string()
-        ]
+        deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
     }
 }
 

@@ -6,8 +6,8 @@ use request::GraphqlRequest;
 
 #[derive(GraphQLQuery)]
 #[graphql(
-schema_path = "graphql/schema.json",
-query_path = "graphql/queries/create_warehouse.graphql"
+    schema_path = "graphql/schema.json",
+    query_path = "graphql/queries/create_warehouse.graphql"
 )]
 pub struct CreateWarehouseMutation;
 
@@ -22,7 +22,7 @@ pub fn default_graphql_request_input() -> CreateWarehouseInput {
         location: Some(default_geo_point_input()),
         store_id: 0,
         name: None,
-        slug: None
+        slug: None,
     }
 }
 
@@ -38,15 +38,12 @@ pub fn default_address_input() -> AddressInput {
         postal_code: None,
         route: None,
         street_number: None,
-        place_id: None
+        place_id: None,
     }
 }
 
 pub fn default_geo_point_input() -> GeoPointInput {
-    GeoPointInput {
-        x: 0.0,
-        y: 0.0
-    }
+    GeoPointInput { x: 0.0, y: 0.0 }
 }
 
 impl GraphqlRequest for CreateWarehouseInput {

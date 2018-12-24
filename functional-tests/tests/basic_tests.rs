@@ -2387,7 +2387,7 @@ fn create_update_delete_package() {
     assert_eq!(usa.alpha2, "US".to_string());
     assert_eq!(usa.alpha3, "USA".to_string());
 
-    let updated_package = update_package(
+    let _updated_package = update_package(
         &mut context,
         update_package::UpdatePackagesInput {
             id: new_package.id,
@@ -2505,7 +2505,7 @@ fn create_delete_company_package() {
 fn upsert_shipping() {
     let mut context = TestContext::new();
 
-    let (user, token, store, category, base_product) =
+    let (_user, token, store, _category, base_product) =
         set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
 
     context.set_bearer(token);
@@ -2519,7 +2519,7 @@ fn upsert_shipping() {
         },
         ..create_warehouse::default_graphql_request_input()
     };
-    let warehouse = context
+    let _warehouse = context
         .request(warehouse_payload)
         .expect("Cannot get data from create_warehouse");
 
@@ -2529,7 +2529,7 @@ fn upsert_shipping() {
         base_product_id: base_product.raw_id,
         ..upsert_shipping::default_graphql_request_input()
     };
-    let upsert_shipping = context
+    let _upsert_shipping = context
         .request(upsert_shipping_payload)
         .expect("Cannot get data from upsert_shipping");
 }
