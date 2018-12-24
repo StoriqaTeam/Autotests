@@ -57,3 +57,4 @@ pub mod update_user;
 pub mod update_warehouse;
 pub mod upsert_shipping;
 pub mod verify_email;
+pub mod revoke_jwt;

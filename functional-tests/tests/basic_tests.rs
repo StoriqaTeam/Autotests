@@ -10,6 +10,26 @@ use functional_tests::query::*;
 use functional_tests::context::TestContext;
 
 #[test]
+pub fn revoke_jwt() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (user, token) = set_up_user(&mut context).expect("set_up_user failed");
+    //when
+    context.set_bearer(token);
+    ::std::thread::sleep(::std::time::Duration::from_millis(500));
+    let new_token = context.request(revoke_jwt::RevokeJwt).expect("revoke_jwt failed");
+    //then
+    let current_user_with_revoken_token = context.request(get_me::GetMeInput);
+    assert!(current_user_with_revoken_token.is_err(), "get_me should fail with revoked token bearer");
+    context.set_bearer(new_token);
+    let current_user = context.request(get_me::GetMeInput)
+        .expect("get_me failed")
+        .expect("get_me returnen None");;
+    assert_eq!(current_user.email, user.email);
+}
+
+#[test]
 pub fn change_password() {
     //setup
     let mut context = TestContext::new();
