@@ -91,13 +91,17 @@ impl OrdersMicroservice {
 
 impl NotificationsMicroservice {
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
-        let ref json: serde_json::Value = serde_json::from_str(r#"
+        let ref json: serde_json::Value = serde_json::from_str(
+            r#"
             {
                 "user_id": 1,
                 "email": "user@mail.com"
-            }"#).unwrap();
+            }"#,
+        )
+        .unwrap();
 
-        self.client.delete(&format!("{}/emarsys/contact", self.url))
+        self.client
+            .delete(&format!("{}/emarsys/contact", self.url))
             .json(json)
             .send()?;
 
