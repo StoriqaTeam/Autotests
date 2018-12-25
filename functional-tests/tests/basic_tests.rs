@@ -2624,7 +2624,7 @@ fn upsert_shipping() {
 fn create_update_delete_coupon() {
     let mut context = TestContext::new();
 
-    let (user, token, store, coupon) =
+    let (_user, _token, _store, coupon) =
         create_coupon(&mut context).expect("Cannot get data from create_coupon");
 
     assert_eq!(coupon.is_active, true);
@@ -2667,7 +2667,7 @@ fn create_coupon(
     ),
     FailureError,
 > {
-    let (user, token, store, category) = set_up_store(context)?;
+    let (user, token, store, _category) = set_up_store(context)?;
     let code = context.request(generate_coupon_code::GenerateCouponCodeInput)?;
     context.set_bearer(token.clone());
     let coupon = context.request(create_coupon::NewCouponInput {
