@@ -816,7 +816,10 @@ pub fn verify_email() {
     let mut context = TestContext::new();
     //given
     let user = context
-        .request(create_user::default_create_user_input())
+        .request(create_user::CreateUserInput {
+            email: "foo@bar.baz".to_string(),
+            ..create_user::default_create_user_input()
+        })
         .expect("createUser failed");
     context.as_superadmin();
     let verification_token = context
