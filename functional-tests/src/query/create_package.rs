@@ -15,7 +15,7 @@ pub use self::create_package_mutation::*;
 
 pub type GraphqlRequestOutput = RustCreatePackageCreatePackage;
 
-pub fn default_graphql_request_input() -> NewPackagesInput {
+pub fn default_create_package_input() -> NewPackagesInput {
     NewPackagesInput {
         client_mutation_id: "".to_string(),
         name: "".to_string(),

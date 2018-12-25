@@ -15,7 +15,7 @@ pub use self::create_warehouse_mutation::*;
 
 pub type GraphqlRequestOutput = RustCreateWarehouseCreateWarehouse;
 
-pub fn default_graphql_request_input() -> CreateWarehouseInput {
+pub fn default_create_warehouse_input() -> CreateWarehouseInput {
     CreateWarehouseInput {
         client_mutation_id: "".to_string(),
         address_full: default_address_input(),

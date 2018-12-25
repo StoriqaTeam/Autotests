@@ -2462,7 +2462,7 @@ fn create_update_delete_package() {
         create_package::NewPackagesInput {
             name: "Initial name".to_string(),
             deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
-            ..create_package::default_graphql_request_input()
+            ..create_package::default_create_package_input()
         },
     )
     .expect("Cannot get data from create_package");
@@ -2537,7 +2537,7 @@ fn create_update_delete_package() {
             min_size: Some(101),
             max_weight: Some(3001),
             min_weight: Some(301),
-            ..update_package::default_graphql_request_input()
+            ..update_package::default_update_package_input()
         },
     )
     .expect("Cannot get data from update_package");
@@ -2580,7 +2580,7 @@ fn create_delete_company_package() {
         create_package::NewPackagesInput {
             name: "Initial name".to_string(),
             deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
-            ..create_package::default_graphql_request_input()
+            ..create_package::default_create_package_input()
         },
     )
     .expect("Cannot get data from create_package");
@@ -2601,7 +2601,7 @@ fn create_delete_company_package() {
         add_package_to_company::NewCompaniesPackagesInput {
             company_id: new_company.raw_id,
             package_id: new_package.raw_id,
-            ..add_package_to_company::default_graphql_request_input()
+            ..add_package_to_company::default_add_package_to_company_input()
         },
     )
     .expect("Cannot get data from add_package_to_company");
@@ -2658,7 +2658,7 @@ fn upsert_shipping() {
             country_code: Some("RUS".to_string()),
             ..create_warehouse::default_address_input()
         },
-        ..create_warehouse::default_graphql_request_input()
+        ..create_warehouse::default_create_warehouse_input()
     };
     let _warehouse = context
         .request(warehouse_payload)
@@ -2668,11 +2668,93 @@ fn upsert_shipping() {
     let upsert_shipping_payload = upsert_shipping::NewShippingInput {
         store_id: store.raw_id,
         base_product_id: base_product.raw_id,
-        ..upsert_shipping::default_graphql_request_input()
+        ..upsert_shipping::default_upsert_shipping_input()
     };
     let _upsert_shipping = context
         .request(upsert_shipping_payload)
         .expect("Cannot get data from upsert_shipping");
+}
+
+#[test]
+fn create_update_delete_coupon() {
+    let mut context = TestContext::new();
+
+    let (_user, _token, _store, coupon) =
+        create_coupon(&mut context).expect("Cannot get data from create_coupon");
+
+    assert_eq!(coupon.is_active, true);
+
+    let update_coupon = update_coupon(
+        &mut context,
+        update_coupon::UpdateCouponInput {
+            id: coupon.id.clone(),
+            percent: Some(42),
+            quantity: Some(73),
+            is_active: Some(false),
+            ..update_coupon::default_update_coupon_input()
+        },
+    )
+    .expect("Cannot get data from update_coupon")
+    .expect("Empty data from update_coupon");
+
+    assert_eq!(update_coupon.raw_id, coupon.raw_id);
+    assert_eq!(update_coupon.id, coupon.id);
+    assert_eq!(update_coupon.percent, 42);
+    assert_eq!(update_coupon.quantity, 73);
+    assert_eq!(update_coupon.is_active, false);
+
+    delete_coupon(&mut context, coupon.raw_id).expect("Cannot get data from delete_coupon");
+
+    // negative cases
+    if delete_coupon(&mut context, coupon.raw_id).is_ok() {
+        panic!("Should not be able to delete the same coupon twice");
+    }
+}
+
+fn create_coupon(
+    context: &mut TestContext,
+) -> Result<
+    (
+        create_user::RustCreateUserCreateUser,
+        String,
+        create_store::RustCreateStoreCreateStore,
+        create_coupon::RustCreateCouponCreateCoupon,
+    ),
+    FailureError,
+> {
+    let (user, token, store, _category) = set_up_store(context)?;
+    let code = context.request(generate_coupon_code::GenerateCouponCodeInput)?;
+    context.set_bearer(token.clone());
+    let coupon = context.request(create_coupon::NewCouponInput {
+        code,
+        title: "New Coupon".to_string(),
+        store_id: store.raw_id,
+        ..create_coupon::default_create_coupon_input()
+    })?;
+    Ok((user, token, store, coupon))
+}
+
+fn update_coupon(
+    context: &mut TestContext,
+    payload: update_coupon::UpdateCouponInput,
+) -> Result<Option<get_store::RustGetStoreStoreCoupons>, FailureError> {
+    let update_coupon = context.request(payload)?;
+    let store = context
+        .get_store(update_coupon.store_raw_id)?
+        .store
+        .expect("Cannot get store data from get_store");
+    let coupon = store
+        .coupons
+        .into_iter()
+        .find(|coupon| coupon.id == update_coupon.id);
+    Ok(coupon)
+}
+
+fn delete_coupon(
+    context: &mut TestContext,
+    id: i64,
+) -> Result<delete_coupon::GraphqlRequestOutput, FailureError> {
+    context.request(delete_coupon::DeleteCouponInput { id })
 }
 
 fn add_package_to_company(
@@ -2746,7 +2828,7 @@ fn set_up_warehouse(
     let warehouse_payload = create_warehouse::CreateWarehouseInput {
         name: Some("Initial name".to_string()),
         store_id: store.raw_id,
-        ..create_warehouse::default_graphql_request_input()
+        ..create_warehouse::default_create_warehouse_input()
     };
     let warehouse = context.request(warehouse_payload)?;
     context.clear_bearer();

@@ -1,3 +1,4 @@
+extern crate chrono;
 extern crate failure;
 #[macro_use]
 extern crate graphql_client;
@@ -8,6 +9,7 @@ extern crate config as config_crate;
 extern crate diesel;
 extern crate serde;
 extern crate serde_json;
+extern crate time;
 
 pub mod config;
 pub mod context;
