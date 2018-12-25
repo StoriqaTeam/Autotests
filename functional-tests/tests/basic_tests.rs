@@ -1930,7 +1930,7 @@ pub fn create_product_with_attributes() {
     // setup
     let mut context = TestContext::new();
     // given
-    let (_user, token, _store, _category, base_product, attribute) =
+    let (_user, token, _store, _category, base_product, attribute, custom_attribute) =
         set_up_base_product_with_attributes(&mut context).expect("Cannot get data from set_up_base_product_with_attributes");
     context.set_bearer(token);
     // when
@@ -1951,9 +1951,33 @@ pub fn create_product_with_attributes() {
         .request(product_payload)
         .expect("Cannot get data from create_product");
 
-    // then
+    let product_attributes = new_product.attributes.expect("Empty attributes data from create_product");
+    assert_eq!(product_attributes.len(), 1);
+    let red_attribute = product_attributes.clone().first().unwrap().clone();
+    let red_attribute_value = red_attribute.attribute_value.unwrap();
+
+    assert_eq!(red_attribute.attr_id, attribute.raw_id);
+    assert_eq!(red_attribute_value.code, "RED".to_string());
+
     assert_eq!(base_product.status, create_base_product::Status::DRAFT);
     assert_eq!(new_product.base_product_id, base_product.raw_id);
+
+    let delete_custom_attribute_payload = delete_custom_attribute::DeleteCustomAttributeInput {
+        custom_attribute_id: custom_attribute.raw_id,
+        ..delete_custom_attribute::default_delete_custom_attribute_input()
+    };
+    let deleted_custom_attribute = context
+        .request(delete_custom_attribute_payload)
+        .expect("Cannot get data from delete_custom_attribute");
+    let base_product = context.get_base_product(base_product.raw_id)
+        .expect("Cannot get data from get_base_product")
+        .base_product
+        .expect("Empty data from get_base_product");
+
+    assert_eq!(base_product.custom_attributes.len(), 0);
+
+    let product = base_product.products.unwrap().edges.first().unwrap().node.clone();
+    assert_eq!(product.attributes.unwrap().len(), 0);
 }
 
 #[test]
@@ -2889,7 +2913,8 @@ fn set_up_base_product_with_attributes(
         create_store::RustCreateStoreCreateStore,
         create_category::RustCreateCategoryCreateCategory,
         create_base_product::RustCreateBaseProductCreateBaseProduct,
-        create_attribute::RustCreateAttributeCreateAttribute
+        create_attribute::RustCreateAttributeCreateAttribute,
+        create_custom_attribute::RustCreateCustomAttributeCreateCustomAttribute
     ),
     FailureError,
 > {
@@ -2927,7 +2952,7 @@ fn set_up_base_product_with_attributes(
     let custom_attribute = context.request(new_custom_attribute).expect("Cannot get data from create_custom_attribute");
     context.clear_bearer();
 
-    Ok((user, token, store, category, base_product, attribute))
+    Ok((user, token, store, category, base_product, attribute, custom_attribute))
 }
 
 fn set_up_published_base_product(
