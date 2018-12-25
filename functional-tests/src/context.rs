@@ -93,6 +93,7 @@ impl TestContext {
         self.users_microservice.clear_all_data()?;
         self.stores_microservice.clear_all_data()?;
         self.orders_microservice.clear_all_data()?;
+        self.notifications_microservice.clear_all_data()?;
         Ok(())
     }
 
