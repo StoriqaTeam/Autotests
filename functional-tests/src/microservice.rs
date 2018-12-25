@@ -90,6 +90,20 @@ impl OrdersMicroservice {
 }
 
 impl NotificationsMicroservice {
+    pub fn clear_all_data(&self) -> Result<(), FailureError> {
+        let ref json: serde_json::Value = serde_json::from_str(r#"
+            {
+                "user_id": 1,
+                "email": "user@mail.com"
+            }"#).unwrap();
+
+        self.client.delete(&format!("{}/emarsys/contact", self.url))
+            .json(json)
+            .send()?;
+
+        Ok(())
+    }
+
     pub fn healthcheck(&self) -> Result<(), FailureError> {
         healthcheck(&self.client, &self.url).map_err(|e| {
             e.context("Healthcheck in notifications microservice failed")
