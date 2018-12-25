@@ -23822,9 +23822,9 @@
             },
             {
               "args": [],
-              "deprecationReason": null,
+              "deprecationReason": "Use store_raw_id",
               "description": "Base64 Store id",
-              "isDeprecated": false,
+              "isDeprecated": true,
               "name": "storeId",
               "type": {
                 "kind": "NON_NULL",
@@ -23832,6 +23832,22 @@
                 "ofType": {
                   "kind": "SCALAR",
                   "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Store raw id",
+              "isDeprecated": false,
+              "name": "storeRawId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
                   "ofType": null
                 }
               }

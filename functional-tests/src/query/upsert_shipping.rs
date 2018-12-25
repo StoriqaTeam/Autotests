@@ -15,7 +15,7 @@ pub use self::upsert_shipping_mutation::*;
 
 pub type GraphqlRequestOutput = RustUpsertShippingUpsertShipping;
 
-pub fn default_graphql_request_input() -> NewShippingInput {
+pub fn default_upsert_shipping_input() -> NewShippingInput {
     NewShippingInput {
         client_mutation_id: "".to_string(),
         base_product_id: 0,

@@ -76,5 +76,24 @@ query getStore($id: Int!, $visibility: Visibility) {
       }
       storeId
     }
+    coupons {
+      id
+      rawId
+      code
+      title
+      storeRawId
+      scope
+      percent
+      quantity
+      usedQuantity
+      expiredAt
+      isActive
+      createdAt
+      updatedAt
+      baseProducts {
+        id
+        rawId
+      }
+    }
   }
 }
