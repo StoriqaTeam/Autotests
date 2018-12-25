@@ -26,6 +26,22 @@ pub fn default_create_attribute_input() -> CreateAttributeInput {
     }
 }
 
+pub fn create_attribute_value(code: impl Into<String>, text_en: impl Into<String>, text_ru: impl Into<String>) -> CreateAttributeValueWithAttributeInput {
+    CreateAttributeValueWithAttributeInput {
+        code: code.into(),
+        translations: Some(vec![
+            TranslationInput {
+                lang: Language::EN,
+                text: text_en.into(),
+            },
+            TranslationInput {
+                lang: Language::RU,
+                text: text_ru.into(),
+            }
+        ]),
+    }
+}
+
 impl GraphqlRequest for CreateAttributeInput {
     type Output = RustCreateAttributeCreateAttribute;
 

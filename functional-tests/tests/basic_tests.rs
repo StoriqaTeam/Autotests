@@ -1926,6 +1926,37 @@ pub fn create_product_without_attributes() {
 }
 
 #[test]
+pub fn create_product_with_attributes() {
+    // setup
+    let mut context = TestContext::new();
+    // given
+    let (_user, token, _store, _category, base_product, attribute) =
+        set_up_base_product_with_attributes(&mut context).expect("Cannot get data from set_up_base_product_with_attributes");
+    context.set_bearer(token);
+    // when
+    let product_payload = create_product::CreateProductWithAttributesInput {
+        product: create_product::NewProduct {
+            base_product_id: Some(base_product.raw_id),
+            ..create_product::default_new_product()
+        },
+        attributes: vec![ create_product::ProdAttrValueInput {
+            attr_id: attribute.raw_id,
+            value: "RED".to_string(),
+            meta_field: None
+        } ],
+        ..create_product::default_create_product_input()
+    };
+
+    let new_product = context
+        .request(product_payload)
+        .expect("Cannot get data from create_product");
+
+    // then
+    assert_eq!(base_product.status, create_base_product::Status::DRAFT);
+    assert_eq!(new_product.base_product_id, base_product.raw_id);
+}
+
+#[test]
 pub fn deactivate_product() {
     //setup
     let mut context = TestContext::new();
@@ -2847,6 +2878,56 @@ fn set_up_base_product(
     context.clear_bearer();
 
     Ok((user, token, store, category, base_product))
+}
+
+fn set_up_base_product_with_attributes(
+    context: &mut TestContext,
+) -> Result<
+    (
+        create_user::RustCreateUserCreateUser,
+        String,
+        create_store::RustCreateStoreCreateStore,
+        create_category::RustCreateCategoryCreateCategory,
+        create_base_product::RustCreateBaseProductCreateBaseProduct,
+        create_attribute::RustCreateAttributeCreateAttribute
+    ),
+    FailureError,
+> {
+    let (user, token, store, category) =
+        set_up_store(context).expect("Cannot get data from set_up_store");
+
+    context.set_bearer(token.clone());
+    let new_base_product = create_base_product::CreateBaseProductInput {
+        store_id: store.raw_id,
+        category_id: category.raw_id,
+        ..create_base_product::default_create_base_product_input()
+    };
+    let base_product = context.request(new_base_product)?;
+
+    context.as_superadmin();
+    let new_attribute = create_attribute::CreateAttributeInput {
+        name: vec![create_attribute::TranslationInput {
+            lang: create_attribute::Language::EN,
+            text: "Color".to_string(),
+        }],
+        values: Some(vec![
+            create_attribute::create_attribute_value("RED", "Red", "Красный"),
+            create_attribute::create_attribute_value("BLUE", "Blue", "Синий"),
+            create_attribute::create_attribute_value("GREEN", "Green", "Зелёный"),
+        ]),
+        ..create_attribute::default_create_attribute_input()
+    };
+    let attribute = context.request(new_attribute).expect("Cannot get data from create_attribute");
+
+    let new_custom_attribute = create_custom_attribute::NewCustomAttributeInput {
+        attribute_id: attribute.raw_id,
+        base_product_id: base_product.raw_id,
+        ..create_custom_attribute::default_create_custom_attribute_input()
+    };
+    let custom_attribute = context.request(new_custom_attribute).expect("Cannot get data from create_custom_attribute");
+    context.clear_bearer();
+
+    Ok((user, token, store, category, base_product, attribute))
 }
 
 fn set_up_published_base_product(

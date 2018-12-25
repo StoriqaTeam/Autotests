@@ -8,6 +8,7 @@ pub mod create_attribute_value;
 pub mod create_base_product;
 pub mod create_base_product_with_variants;
 pub mod create_category;
+pub mod create_custom_attribute;
 pub mod create_delivery_company;
 pub mod create_package;
 pub mod create_product;
