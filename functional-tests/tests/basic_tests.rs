@@ -2003,6 +2003,64 @@ pub fn create_product_with_attributes() {
 }
 
 #[test]
+pub fn create_product_update_attributes() {
+    // setup
+    let mut context = TestContext::new();
+    // given
+    let (_user, token, _store, _category, base_product, attribute, custom_attribute) =
+        set_up_base_product_with_attributes(&mut context)
+            .expect("Cannot get data from set_up_base_product_with_attributes");
+    context.set_bearer(token.clone());
+    // when
+    let product_payload = create_product::CreateProductWithAttributesInput {
+        product: create_product::NewProduct {
+            base_product_id: Some(base_product.raw_id),
+            ..create_product::default_new_product()
+        },
+        ..create_product::default_create_product_input()
+    };
+
+    let new_product = context
+        .request(product_payload)
+        .expect("Cannot get data from create_product");
+
+    let update_product_payload = update_product::UpdateProductWithAttributesInput {
+        id: new_product.id,
+        attributes: Some(vec![update_product::ProdAttrValueInput {
+            attr_id: attribute.raw_id,
+            value: "RED".to_string(),
+            meta_field: None,
+        }]),
+        product: Some(update_product::UpdateProduct {
+            price: Some(42.0),
+            ..update_product::default_update_product_input()
+        }),
+        ..update_product::default_update_product_with_attributes_input()
+    };
+    let _updated_product = context
+        .request(update_product_payload)
+        .expect("Cannot get data from update_product");
+
+    let base_product = context
+        .get_base_product(base_product.raw_id)
+        .expect("Cannot get data from get_base_product")
+        .base_product
+        .expect("Empty data from get_base_product");
+
+    assert_eq!(base_product.custom_attributes.len(), 1);
+
+    let product = base_product
+        .products
+        .unwrap()
+        .edges
+        .first()
+        .unwrap()
+        .node
+        .clone();
+    assert_eq!(product.attributes.unwrap().len(), 1);
+}
+
+#[test]
 pub fn deactivate_product() {
     //setup
     let mut context = TestContext::new();

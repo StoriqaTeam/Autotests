@@ -8,7 +8,7 @@ use request::GraphqlRequest;
 #[graphql(
     schema_path = "graphql/schema.json",
     query_path = "graphql/queries/update_product.graphql",
-    response_derives = "Debug, PartialEq"
+    response_derives = "Debug, PartialEq, Clone"
 )]
 pub struct UpdateProductMutation;
 
