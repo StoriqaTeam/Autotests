@@ -6,8 +6,8 @@ use request::GraphqlRequest;
 
 #[derive(GraphQLQuery)]
 #[graphql(
-schema_path = "graphql/schema.json",
-query_path = "graphql/queries/delete_custom_attribute.graphql"
+    schema_path = "graphql/schema.json",
+    query_path = "graphql/queries/delete_custom_attribute.graphql"
 )]
 pub struct DeleteCustomAttributeMutation;
 
@@ -18,16 +18,14 @@ pub type GraphqlRequestOutput = RustDeleteCustomAttributeDeleteCustomAttribute;
 pub fn default_delete_custom_attribute_input() -> DeleteCustomAttributeInput {
     DeleteCustomAttributeInput {
         client_mutation_id: "".to_string(),
-        custom_attribute_id: 0
+        custom_attribute_id: 0,
     }
 }
 
 impl GraphqlRequest for DeleteCustomAttributeInput {
     type Output = GraphqlRequestOutput;
 
-    fn response(
-        body: serde_json::Value,
-    ) -> Result<GraphqlRequestOutput, FailureError> {
+    fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {
         let response_body: Response<ResponseData> = serde_json::from_value(body)?;
         match (response_body.data, response_body.errors) {
             (Some(data), None) => Ok(data.delete_custom_attribute),

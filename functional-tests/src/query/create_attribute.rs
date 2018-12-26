@@ -26,7 +26,11 @@ pub fn default_create_attribute_input() -> CreateAttributeInput {
     }
 }
 
-pub fn create_attribute_value(code: impl Into<String>, text_en: impl Into<String>, text_ru: impl Into<String>) -> CreateAttributeValueWithAttributeInput {
+pub fn create_attribute_value(
+    code: impl Into<String>,
+    text_en: impl Into<String>,
+    text_ru: impl Into<String>,
+) -> CreateAttributeValueWithAttributeInput {
     CreateAttributeValueWithAttributeInput {
         code: code.into(),
         translations: Some(vec![
@@ -37,7 +41,7 @@ pub fn create_attribute_value(code: impl Into<String>, text_en: impl Into<String
             TranslationInput {
                 lang: Language::RU,
                 text: text_ru.into(),
-            }
+            },
         ]),
     }
 }
