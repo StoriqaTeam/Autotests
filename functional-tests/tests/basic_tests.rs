@@ -2025,16 +2025,13 @@ pub fn create_product_update_attributes() {
         .expect("Cannot get data from create_product");
 
     let update_product_payload = update_product::UpdateProductWithAttributesInput {
-        id: new_product.id,
+        id: new_product.id.clone(),
         attributes: Some(vec![update_product::ProdAttrValueInput {
             attr_id: attribute.raw_id,
             value: "RED".to_string(),
             meta_field: None,
         }]),
-        product: Some(update_product::UpdateProduct {
-            price: Some(42.0),
-            ..update_product::default_update_product_input()
-        }),
+        product: None,
         ..update_product::default_update_product_with_attributes_input()
     };
     let _updated_product = context
@@ -2058,6 +2055,46 @@ pub fn create_product_update_attributes() {
         .node
         .clone();
     assert_eq!(product.attributes.unwrap().len(), 1);
+
+    let update_product_payload = update_product::UpdateProductWithAttributesInput {
+        id: new_product.id,
+        attributes: Some(vec![]),
+        product: None,
+        ..update_product::default_update_product_with_attributes_input()
+    };
+    let _update_product = context
+        .request(update_product_payload)
+        .expect("Cannot get data from update_product");
+
+    context.as_superadmin();
+    for attr_value in attribute.values.unwrap() {
+        let _delete_attribute_value = context
+            .request(delete_attribute_value::DeleteAttributeValueInput {
+                client_mutation_id: "".to_string(),
+                raw_id: attr_value.raw_id,
+            })
+            .expect(
+                format!(
+                    "Cannot get data from delete_attribute value ({})",
+                    attr_value.code
+                )
+                .as_str(),
+            );
+    }
+
+    let _delete_custom_attribute = context
+        .request(delete_custom_attribute::DeleteCustomAttributeInput {
+            custom_attribute_id: custom_attribute.raw_id,
+            ..delete_custom_attribute::default_delete_custom_attribute_input()
+        })
+        .expect("Cannot get data from delete_custom_attribute");
+
+    let _delete_attribute = context
+        .request(delete_attribute::DeleteAttributeInput {
+            client_mutation_id: "".to_string(),
+            id: attribute.id,
+        })
+        .expect("Cannot get data from delete_attribute");
 }
 
 #[test]
