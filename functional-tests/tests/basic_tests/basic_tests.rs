@@ -1926,11 +1926,13 @@ pub fn create_product_without_attributes() {
 pub fn create_product_with_attributes() {
     // setup
     let mut context = TestContext::new();
+
     // given
     let (_user, token, _store, _category, base_product, attribute, custom_attribute) =
         set_up_base_product_with_attributes(&mut context)
             .expect("Cannot get data from set_up_base_product_with_attributes");
     context.set_bearer(token);
+
     // when
     let product_payload = create_product::CreateProductWithAttributesInput {
         product: create_product::NewProduct {
@@ -1952,6 +1954,8 @@ pub fn create_product_with_attributes() {
     let product_attributes = new_product
         .attributes
         .expect("Empty attributes data from create_product");
+
+    // then
     assert_eq!(product_attributes.len(), 1);
     let red_attribute = product_attributes.clone().first().unwrap().clone();
     let red_attribute_value = red_attribute.attribute_value.unwrap();
@@ -1961,14 +1965,126 @@ pub fn create_product_with_attributes() {
 
     assert_eq!(base_product.status, create_base_product::Status::DRAFT);
     assert_eq!(new_product.base_product_id, base_product.raw_id);
+}
 
-    let delete_custom_attribute_payload = delete_custom_attribute::DeleteCustomAttributeInput {
-        custom_attribute_id: custom_attribute.raw_id,
-        ..delete_custom_attribute::default_delete_custom_attribute_input()
+#[test]
+pub fn delete_custom_attribute() {
+    // setup
+    let mut context = TestContext::new();
+
+    // given
+    let (_user, token, _store, _category, base_product, attribute, custom_attribute) =
+        set_up_base_product_with_attributes(&mut context)
+            .expect("Cannot get data from set_up_base_product_with_attributes");
+    context.set_bearer(token);
+
+    let product_payload = create_product::CreateProductWithAttributesInput {
+        product: create_product::NewProduct {
+            base_product_id: Some(base_product.raw_id),
+            ..create_product::default_new_product()
+        },
+        attributes: vec![create_product::ProdAttrValueInput {
+            attr_id: attribute.raw_id,
+            value: "RED".to_string(),
+            meta_field: None,
+        }],
+        ..create_product::default_create_product_input()
     };
-    let _deleted_custom_attribute = context
-        .request(delete_custom_attribute_payload)
+
+    context
+        .request(product_payload)
+        .expect("Cannot get data from create_product");
+
+    // when
+    context
+        .request(delete_custom_attribute::DeleteCustomAttributeInput {
+            client_mutation_id: "".to_string(),
+            custom_attribute_id: custom_attribute.raw_id,
+        })
         .expect("Cannot get data from delete_custom_attribute");
+
+    // then
+    let base_product = context
+        .get_base_product(base_product.raw_id)
+        .expect("Cannot get data from get_base_product")
+        .base_product
+        .expect("Empty data from get_base_product");
+    assert_eq!(base_product.custom_attributes.len(), 0);
+
+    let product = base_product
+        .products
+        .expect("Cannot get products list of base_product")
+        .edges
+        .first()
+        .expect("Products list is empty")
+        .node
+        .clone();
+    assert_eq!(product.attributes.expect("Cannot get attributes list of product").len(), 0);
+}
+
+#[test]
+pub fn delete_attribute_with_values() {
+    // setup
+    let mut context = TestContext::new();
+
+    // given
+    let (_user, token, _store, _category, base_product, attribute, custom_attribute) =
+        set_up_base_product_with_attributes(&mut context)
+            .expect("Cannot get data from set_up_base_product_with_attributes");
+    context.set_bearer(token);
+
+    // when
+    let product_payload = create_product::CreateProductWithAttributesInput {
+        product: create_product::NewProduct {
+            base_product_id: Some(base_product.raw_id),
+            ..create_product::default_new_product()
+        },
+        attributes: vec![create_product::ProdAttrValueInput {
+            attr_id: attribute.raw_id,
+            value: "RED".to_string(),
+            meta_field: None,
+        }],
+        ..create_product::default_create_product_input()
+    };
+    context.request(product_payload).expect("Cannot get data from create_product");
+
+    context
+        .request(delete_attribute::DeleteAttributeInput {
+            client_mutation_id: "".to_string(),
+            id: attribute.id.clone(),
+        }).expect_err("Should not be able to delete an attribute with values");
+
+    context
+        .request(delete_custom_attribute::DeleteCustomAttributeInput {
+            custom_attribute_id: custom_attribute.raw_id,
+            ..delete_custom_attribute::default_delete_custom_attribute_input()
+        })
+        .expect("Cannot get data from delete_custom_attribute");
+
+    context.as_superadmin();
+    for attr_value in attribute.values.unwrap() {
+        context
+            .request(delete_attribute_value::DeleteAttributeValueInput {
+                client_mutation_id: "".to_string(),
+                raw_id: attr_value.raw_id,
+            })
+            .expect(
+                format!(
+                    "Cannot get data from delete_attribute value ({})",
+                    attr_value.code
+                )
+                .as_str(),
+            );
+    }
+
+    context
+        .request(delete_attribute::DeleteAttributeInput {
+            client_mutation_id: "".to_string(),
+            id: attribute.id,
+        })
+        .expect("Cannot get data from delete_attribute");
+
+    // then
     let base_product = context
         .get_base_product(base_product.raw_id)
         .expect("Cannot get data from get_base_product")
@@ -1986,112 +2102,6 @@ pub fn create_product_with_attributes() {
         .node
         .clone();
     assert_eq!(product.attributes.unwrap().len(), 0);
-
-    // negative cases
-    let delete_custom_attribute_payload = delete_custom_attribute::DeleteCustomAttributeInput {
-        custom_attribute_id: custom_attribute.raw_id,
-        ..delete_custom_attribute::default_delete_custom_attribute_input()
-    };
-    let deleted_custom_attribute = context.request(delete_custom_attribute_payload);
-
-    if deleted_custom_attribute.is_ok() {
-        panic!("Should not be able to delete the same custom attribute twice");
-    }
-}
-
-#[test]
-pub fn create_product_update_attributes() {
-    // setup
-    let mut context = TestContext::new();
-    // given
-    let (_user, token, _store, _category, base_product, attribute, custom_attribute) =
-        set_up_base_product_with_attributes(&mut context)
-            .expect("Cannot get data from set_up_base_product_with_attributes");
-    context.set_bearer(token.clone());
-    // when
-    let product_payload = create_product::CreateProductWithAttributesInput {
-        product: create_product::NewProduct {
-            base_product_id: Some(base_product.raw_id),
-            ..create_product::default_new_product()
-        },
-        ..create_product::default_create_product_input()
-    };
-
-    let new_product = context
-        .request(product_payload)
-        .expect("Cannot get data from create_product");
-
-    let update_product_payload = update_product::UpdateProductWithAttributesInput {
-        id: new_product.id.clone(),
-        attributes: Some(vec![update_product::ProdAttrValueInput {
-            attr_id: attribute.raw_id,
-            value: "RED".to_string(),
-            meta_field: None,
-        }]),
-        product: None,
-        ..update_product::default_update_product_with_attributes_input()
-    };
-    let _updated_product = context
-        .request(update_product_payload)
-        .expect("Cannot get data from update_product");
-
-    let base_product = context
-        .get_base_product(base_product.raw_id)
-        .expect("Cannot get data from get_base_product")
-        .base_product
-        .expect("Empty data from get_base_product");
-
-    assert_eq!(base_product.custom_attributes.len(), 1);
-
-    let product = base_product
-        .products
-        .unwrap()
-        .edges
-        .first()
-        .unwrap()
-        .node
-        .clone();
-    assert_eq!(product.attributes.unwrap().len(), 1);
-
-    let update_product_payload = update_product::UpdateProductWithAttributesInput {
-        id: new_product.id,
-        attributes: Some(vec![]),
-        product: None,
-        ..update_product::default_update_product_with_attributes_input()
-    };
-    let _update_product = context
-        .request(update_product_payload)
-        .expect("Cannot get data from update_product");
-
-    context.as_superadmin();
-    for attr_value in attribute.values.unwrap() {
-        let _delete_attribute_value = context
-            .request(delete_attribute_value::DeleteAttributeValueInput {
-                client_mutation_id: "".to_string(),
-                raw_id: attr_value.raw_id,
-            })
-            .expect(
-                format!(
-                    "Cannot get data from delete_attribute value ({})",
-                    attr_value.code
-                )
-                .as_str(),
-            );
-    }
-
-    let _delete_custom_attribute = context
-        .request(delete_custom_attribute::DeleteCustomAttributeInput {
-            custom_attribute_id: custom_attribute.raw_id,
-            ..delete_custom_attribute::default_delete_custom_attribute_input()
-        })
-        .expect("Cannot get data from delete_custom_attribute");
-
-    let _delete_attribute = context
-        .request(delete_attribute::DeleteAttributeInput {
-            client_mutation_id: "".to_string(),
-            id: attribute.id,
-        })
-        .expect("Cannot get data from delete_attribute");
 }
 
 #[test]
