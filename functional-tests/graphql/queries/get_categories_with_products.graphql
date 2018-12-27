@@ -1,5 +1,5 @@
 query getCategoriesWithProducts {
-  categoriesWithProducts {
+  categories {
     id
     rawId
     name {
