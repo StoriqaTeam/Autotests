@@ -2,11 +2,11 @@
 #[graphql(
     schema_path = "graphql/schema.json",
     query_path = "graphql/queries/get_base_product.graphql",
-    response_derives = "Debug, PartialEq"
+    response_derives = "Debug, PartialEq, Clone"
 )]
 pub struct GetBaseProductQuery;
 
-#[derive(Serialize, Debug, PartialEq)]
+#[derive(Serialize, Debug, PartialEq, Copy, Clone)]
 pub enum Visibility {
     Published,
     Active,

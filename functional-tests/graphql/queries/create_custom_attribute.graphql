@@ -1,0 +1,28 @@
+mutation CreateCustomAttribute($input: NewCustomAttributeInput!) {
+  createCustomAttribute(input: $input) {
+    id
+    rawId
+    attributeId
+    attribute {
+      id
+      rawId
+      name {
+        lang
+        text
+      }
+      valueType
+      metaField {
+        uiElement
+      }
+      values {
+        rawId
+        attrRawId
+        code
+        translations {
+          lang
+          text
+        }
+      }
+    }
+  }
+}

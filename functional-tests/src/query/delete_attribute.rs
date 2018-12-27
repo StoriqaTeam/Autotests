@@ -7,7 +7,8 @@ use request::GraphqlRequest;
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "graphql/schema.json",
-    query_path = "graphql/queries/delete_attribute.graphql"
+    query_path = "graphql/queries/delete_attribute.graphql",
+    response_derives = "Debug"
 )]
 pub struct DeleteAttributeMutation;
 
