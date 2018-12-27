@@ -4468,37 +4468,6 @@
               "args": [
                 {
                   "defaultValue": null,
-                  "description": "Create order input.",
-                  "name": "input",
-                  "type": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "INPUT_OBJECT",
-                      "name": "CreateOrderFiatInput",
-                      "ofType": null
-                    }
-                  }
-                }
-              ],
-              "deprecationReason": null,
-              "description": "Creates orders from cart with FIAT billing.",
-              "isDeprecated": false,
-              "name": "createOrdersFiat",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "CreateOrdersOutput",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [
-                {
-                  "defaultValue": null,
                   "description": "Order Status Delivery input.",
                   "name": "input",
                   "type": {
@@ -13063,140 +13032,6 @@
           "possibleTypes": null
         },
         {
-          "description": "Create order paying with FIAT input object",
-          "enumValues": null,
-          "fields": null,
-          "inputFields": [
-            {
-              "defaultValue": null,
-              "description": "Client mutation id.",
-              "name": "clientMutationId",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": "Address",
-              "name": "addressFull",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "AddressInput",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": "Receiver name",
-              "name": "receiverName",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": "Receiver phone",
-              "name": "receiverPhone",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "CreateOrderFiatInput",
-          "possibleTypes": null
-        },
-        {
-          "description": "Set coupon in cart input object",
-          "enumValues": null,
-          "fields": null,
-          "inputFields": [
-            {
-              "defaultValue": null,
-              "description": "Client mutation id.",
-              "name": "clientMutationId",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": "Coupon code.",
-              "name": "couponCode",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": "Store raw id for which add coupon.",
-              "name": "storeId",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": "User country code.",
-              "name": "userCountryCode",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "SetCouponInCartInputV2",
-          "possibleTypes": null
-        },
-        {
           "description": "Attribute Value",
           "enumValues": null,
           "fields": [
@@ -13285,6 +13120,73 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "AttributeValue",
+          "possibleTypes": null
+        },
+        {
+          "description": "Set coupon in cart input object",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Client mutation id.",
+              "name": "clientMutationId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Coupon code.",
+              "name": "couponCode",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Store raw id for which add coupon.",
+              "name": "storeId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "User country code.",
+              "name": "userCountryCode",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "SetCouponInCartInputV2",
           "possibleTypes": null
         },
         {
@@ -21003,35 +20905,6 @@
           "possibleTypes": null
         },
         {
-          "description": "Order committer role",
-          "enumValues": [
-            {
-              "deprecationReason": null,
-              "description": "System role",
-              "isDeprecated": false,
-              "name": "SYSTEM"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Customer",
-              "isDeprecated": false,
-              "name": "CUSTOMER"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Seller",
-              "isDeprecated": false,
-              "name": "SELLER"
-            }
-          ],
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "kind": "ENUM",
-          "name": "CommitterRole",
-          "possibleTypes": null
-        },
-        {
           "description": "Create product comments input object",
           "enumValues": null,
           "fields": null,
@@ -21096,6 +20969,35 @@
           "interfaces": null,
           "kind": "INPUT_OBJECT",
           "name": "CreateModeratorProductCommentsInput",
+          "possibleTypes": null
+        },
+        {
+          "description": "Order committer role",
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": "System role",
+              "isDeprecated": false,
+              "name": "SYSTEM"
+            },
+            {
+              "deprecationReason": null,
+              "description": "Customer",
+              "isDeprecated": false,
+              "name": "CUSTOMER"
+            },
+            {
+              "deprecationReason": null,
+              "description": "Seller",
+              "isDeprecated": false,
+              "name": "SELLER"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "CommitterRole",
           "possibleTypes": null
         },
         {
@@ -22698,9 +22600,9 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": "Fetches categories tree.",
+              "description": "Fetches all categories tree.",
               "isDeprecated": false,
-              "name": "categories",
+              "name": "allCategories",
               "type": {
                 "kind": "OBJECT",
                 "name": "Category",
@@ -22712,7 +22614,7 @@
               "deprecationReason": null,
               "description": "Fetches categories tree only with exists products.",
               "isDeprecated": false,
-              "name": "categoriesWithProducts",
+              "name": "categories",
               "type": {
                 "kind": "OBJECT",
                 "name": "CategoryWithProducts",
@@ -23822,7 +23724,7 @@
             },
             {
               "args": [],
-              "deprecationReason": "Use store_raw_id",
+              "deprecationReason": "Use storeRawId instead",
               "description": "Base64 Store id",
               "isDeprecated": true,
               "name": "storeId",

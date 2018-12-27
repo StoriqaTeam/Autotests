@@ -1,6 +1,3 @@
-extern crate failure;
-extern crate functional_tests;
-
 use std::collections::HashSet;
 
 use failure::Error as FailureError;
@@ -1229,7 +1226,7 @@ pub fn delete_attribute_from_category() {
     let changed_category_attributes = context
         .get_categories()
         .unwrap()
-        .categories
+        .all_categories
         .unwrap()
         .children
         .into_iter()
@@ -1336,7 +1333,7 @@ pub fn add_attribute_to_category() {
     let changed_category_attributes = context
         .get_categories()
         .unwrap()
-        .categories
+        .all_categories
         .unwrap()
         .children
         .into_iter()
@@ -1372,7 +1369,7 @@ pub fn delete_category() {
     let existing_categories = context
         .get_categories()
         .unwrap()
-        .categories
+        .all_categories
         .unwrap()
         .children;
     assert!(existing_categories.is_empty());
@@ -1599,7 +1596,7 @@ pub fn create_category() {
     let existing_categories = context
         .get_categories()
         .unwrap()
-        .categories
+        .all_categories
         .unwrap()
         .children;
     assert_eq!(existing_categories.len(), 1);
@@ -2141,7 +2138,7 @@ pub fn get_categories_with_products() {
     let mut categories = context
         .get_categories_with_products()
         .unwrap()
-        .categories_with_products
+        .categories
         .into_iter()
         .flat_map(|root| {
             root.children.into_iter().flat_map(|category1| {
