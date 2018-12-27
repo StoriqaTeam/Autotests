@@ -1,4 +1,4 @@
-query GetCategories { categories {
+query GetCategories { allCategories {
     id
     rawId
     name {
