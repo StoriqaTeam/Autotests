@@ -2501,122 +2501,138 @@ fn verify_update_store_values(
 }
 
 #[test]
-fn create_update_delete_warehouse() {
+fn create_warehouse() {
+    // setup
     let mut context = TestContext::new();
 
-    let (_user, token, store, new_warehouse) =
-        set_up_warehouse(&mut context).expect("Cannot get data from create_warehouse");
-    let id = new_warehouse.id;
+    // given
+    let (_user, token, store, warehouse) =
+        set_up_warehouse(&mut context).expect("Cannot get data from set_up_warehouse");
+    context.set_bearer(token);
 
-    assert_eq!(new_warehouse.name, Some("Initial name".to_string()));
-    assert_eq!(new_warehouse.store_id, store.raw_id);
+    // when
 
-    let updated_warehouse = update_warehouse(
-        &mut context,
-        token.clone(),
-        update_warehouse::UpdateWarehouseInput {
-            id: id.clone(),
-            address_full: update_warehouse::AddressInput {
-                country: Some("Russian Federation".to_string()),
-                administrative_area_level1: Some("Moscow Region".to_string()),
-                administrative_area_level2: Some("Moscow".to_string()),
-                ..update_warehouse::default_address_input()
-            },
-            location: Some(update_warehouse::GeoPointInput {
-                x: 42.0,
-                y: 90.0,
-                ..update_warehouse::default_geo_point_input()
-            }),
-            name: Some("New name".to_string()),
-            ..update_warehouse::default_update_warehouse_input()
+    // then
+}
+
+#[test]
+fn update_warehouse() {
+    // setup
+    let mut context = TestContext::new();
+
+    // given
+    let (_user, token, store, warehouse) =
+        set_up_warehouse(&mut context).expect("Cannot get data from set_up_warehouse");
+    context.set_bearer(token);
+
+    // when
+    let update_warehouse_payload = update_warehouse::UpdateWarehouseInput {
+        id: warehouse.id.clone(),
+        address_full: update_warehouse::AddressInput {
+            country: Some("Russian Federation".to_string()),
+            administrative_area_level1: Some("Moscow Region".to_string()),
+            administrative_area_level2: Some("Moscow".to_string()),
+            ..update_warehouse::default_address_input()
         },
-    )
-    .expect("Cannot get data from update_warehouse")
-    .expect("Empty data from update_warehouse");
+        location: Some(update_warehouse::GeoPointInput {
+            x: 42.0,
+            y: 90.0,
+            ..update_warehouse::default_geo_point_input()
+        }),
+        name: Some("New name".to_string()),
+        ..update_warehouse::default_update_warehouse_input()
+    };
+    context
+        .request(update_warehouse_payload)
+        .expect("Cannot get data from update_warehouse");
 
-    assert_eq!(updated_warehouse.name, Some("New name".to_string()));
+    let store = context
+        .get_store(warehouse.store_id)
+        .expect("Cannot get data from get_store")
+        .store
+        .expect("Empty store data from get_store");
+
+    let warehouse = store
+        .warehouses
+        .into_iter()
+        .find(|x| x.id == warehouse.id)
+        .expect("Empty warehouse data from get_store");
+
+    // then
+    assert_eq!(warehouse.name, Some("New name".to_string()));
     assert_eq!(
-        updated_warehouse.address_full.country,
+        warehouse.address_full.country,
         Some("Russian Federation".to_string())
     );
     assert_eq!(
-        updated_warehouse.address_full.administrative_area_level1,
+        warehouse.address_full.administrative_area_level1,
         Some("Moscow Region".to_string())
     );
     assert_eq!(
-        updated_warehouse.address_full.administrative_area_level2,
+        warehouse.address_full.administrative_area_level2,
         Some("Moscow".to_string())
     );
-    let location = updated_warehouse
+    let location = warehouse
         .location
         .expect("Cannot get location data from update_warehouse");
     assert_eq!(location.x, 42.0);
     assert_eq!(location.y, 90.0);
+}
 
-    let deleted_warehouse_id = delete_warehouse(&mut context, token.clone(), id.clone())
-        .expect("Cannot get data from delete_warehouse")
-        .expect("Empty data from delete_warehouse");
+#[test]
+fn delete_warehouse() {
+    // setup
+    let mut context = TestContext::new();
 
-    assert_eq!(deleted_warehouse_id, id);
+    // given
+    let (_user, token, store, warehouse) =
+        set_up_warehouse(&mut context).expect("Cannot get data from set_up_warehouse");
+    context.set_bearer(token);
 
-    // negative cases
-    let update_deleted_warehouse = update_warehouse(
-        &mut context,
-        token.clone(),
-        update_warehouse::UpdateWarehouseInput {
-            id: id.clone(),
-            address_full: update_warehouse::AddressInput {
-                country: Some("Russian Federation".to_string()),
-                administrative_area_level1: Some("Moscow Region".to_string()),
-                administrative_area_level2: Some("Moscow".to_string()),
-                ..update_warehouse::default_address_input()
-            },
-            location: Some(update_warehouse::GeoPointInput {
-                x: 42.0,
-                y: 90.0,
-                ..update_warehouse::default_geo_point_input()
-            }),
-            name: Some("New name".to_string()),
-            ..update_warehouse::default_update_warehouse_input()
-        },
-    );
-    if update_deleted_warehouse.is_ok() && update_deleted_warehouse.unwrap().is_some() {
-        panic!("Should not be able to update deleted warehouse");
-    }
+    // when
+    context
+        .request(delete_warehouse::DeleteWarehouseInput {
+            id: warehouse.id.clone(),
+        })
+        .expect("Cannot get data from delete_warehouse");
+    let store = context
+        .get_store(warehouse.store_id)
+        .expect("Cannot get data from get_store")
+        .store
+        .expect("Empty store data from get_store");
+    let deleted_warehouse = store.warehouses.into_iter().find(|x| x.id == warehouse.id);
+    let delete_warehouse_twice = context.request(delete_warehouse::DeleteWarehouseInput {
+        id: warehouse.id.clone(),
+    });
 
-    let deleted_twice = delete_warehouse(&mut context, token.clone(), id.clone());
-    if deleted_twice.is_ok() && deleted_twice.unwrap() != None {
+    // then
+    assert_eq!(deleted_warehouse, None);
+    if delete_warehouse_twice.is_ok() && delete_warehouse_twice.unwrap().is_some() {
         panic!("Should not be able to delete the same warehouse twice");
     }
 }
 
 #[test]
-fn create_update_delete_package() {
+fn create_package() {
+    // setup
     let mut context = TestContext::new();
-    let new_package = create_package(
-        &mut context,
-        create_package::NewPackagesInput {
-            name: "Initial name".to_string(),
-            deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
-            ..create_package::default_create_package_input()
-        },
-    )
-    .expect("Cannot get data from create_package");
 
+    // given
+    let package = set_up_package(&mut context).expect("Cannot get data from set_up_package");
+
+    // when
     let get_package = context
-        .request(get_package::GetPackageInput {
-            id: new_package.raw_id,
-        })
+        .request(get_package::GetPackageInput { id: package.raw_id })
         .expect("Cannot get data from get_package")
         .expect("Empty data from get_package");
 
-    assert_eq!(get_package.name, "Initial name".to_string());
+    // then
+    assert_eq!(get_package.name, "Package Name".to_string());
     assert_eq!(get_package.max_size, 1000);
     assert_eq!(get_package.min_size, 100);
     assert_eq!(get_package.max_weight, 3000);
     assert_eq!(get_package.min_weight, 300);
 
-    // deliveries
     assert_eq!(get_package.deliveries_to.len(), 1);
 
     let xal = get_package
@@ -2663,119 +2679,143 @@ fn create_update_delete_package() {
     assert_eq!(usa.level, 2);
     assert_eq!(usa.alpha2, "US".to_string());
     assert_eq!(usa.alpha3, "USA".to_string());
+}
 
-    let _updated_package = update_package(
-        &mut context,
-        update_package::UpdatePackagesInput {
-            id: new_package.id,
-            name: Some("New name".to_string()),
+#[test]
+fn update_package() {
+    // setup
+    let mut context = TestContext::new();
+
+    // given
+    let package = set_up_package(&mut context).expect("Cannot get data from set_up_package");
+    ;
+
+    // when
+    context.as_superadmin();
+    context
+        .request(update_package::UpdatePackagesInput {
+            id: package.id,
+            name: Some("New Package Name".to_string()),
             max_size: Some(1001),
             min_size: Some(101),
             max_weight: Some(3001),
             min_weight: Some(301),
             ..update_package::default_update_package_input()
-        },
-    )
-    .expect("Cannot get data from update_package");
+        })
+        .expect("Cannot get data from update_package");
+    context.clear_bearer();
 
     let get_package = context
-        .request(get_package::GetPackageInput {
-            id: new_package.raw_id,
-        })
+        .request(get_package::GetPackageInput { id: package.raw_id })
         .expect("Cannot get data from get_package")
         .expect("Empty data from get_package");
 
-    assert_eq!(get_package.name, "New name".to_string());
+    // then
+    assert_eq!(get_package.name, "New Package Name".to_string());
     assert_eq!(get_package.max_size, 1001);
     assert_eq!(get_package.min_size, 101);
     assert_eq!(get_package.max_weight, 3001);
     assert_eq!(get_package.min_weight, 301);
+}
 
-    delete_package(&mut context, new_package.raw_id).expect("Cannot get deleted package");
+#[test]
+fn delete_package() {
+    // setup
+    let mut context = TestContext::new();
 
-    // negative cases
-    let get_package = context.request(get_package::GetPackageInput {
-        id: new_package.raw_id,
-    });
+    // given
+    let package = set_up_package(&mut context).expect("Cannot get data from set_up_package");
+
+    // when
+    context.as_superadmin();
+    context
+        .request(delete_package::DeletePackagesInput { id: package.raw_id })
+        .expect("Cannot get data from delete_package");
+    context.clear_bearer();
+
+    let get_package = context.request(get_package::GetPackageInput { id: package.raw_id });
+    let delete_package_twice =
+        context.request(delete_package::DeletePackagesInput { id: package.raw_id });
+
+    //then
     if get_package.is_ok() && get_package.unwrap().is_some() {
         panic!("Should not be able to get deleted package");
     }
 
-    if delete_package(&mut context, new_package.raw_id).is_ok() {
+    if delete_package_twice.is_ok() {
         panic!("Should not be able to delete the same package twice");
     }
 }
 
 #[test]
-fn create_delete_company_package() {
+fn create_company_package() {
+    // setup
     let mut context = TestContext::new();
-    context.as_superadmin();
 
-    let new_package = create_package(
-        &mut context,
-        create_package::NewPackagesInput {
-            name: "Initial name".to_string(),
-            deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
-            ..create_package::default_create_package_input()
-        },
-    )
-    .expect("Cannot get data from create_package");
+    // given
+    let (package, company, company_package) =
+        set_up_company_package(&mut context).expect("Cannot get data from set_up_company_package");
 
-    let new_company = context
-        .request(create_delivery_company::NewCompanyInput {
-            name: "Test company".to_string(),
-            label: "TEST".to_string(),
-            description: Some("Test description".to_string()),
-            deliveries_from: vec!["RUS".to_string()],
-            logo: "test loge URL".to_string(),
-            ..create_delivery_company::default_create_company_input()
-        })
-        .expect("Cannot get data from create_delivery_company");
-
-    let company_package = add_package_to_company(
-        &mut context,
-        add_package_to_company::NewCompaniesPackagesInput {
-            company_id: new_company.raw_id,
-            package_id: new_package.raw_id,
-            ..add_package_to_company::default_add_package_to_company_input()
-        },
-    )
-    .expect("Cannot get data from add_package_to_company");
-
-    let company = company_package
-        .company
-        .expect("Cannot get company data from add_package_to_company");
-    let package = company_package
-        .package
-        .expect("Empty data from add_package_to_company");
-
-    assert_eq!(company.label, new_company.label);
-    assert_eq!(company.name, new_company.name);
-    assert_eq!(package.name, new_package.name);
-
+    // when
     let company_package = context
         .request(get_company_package::GetCompanyPackageInput {
             id: company_package.raw_id,
         })
         .expect("Cannot get data from get_company_package")
         .expect("Empty data from get_company_package");
-    assert_eq!(company_package.company_id, new_company.raw_id);
-    assert_eq!(company_package.package_id, new_package.raw_id);
 
-    delete_company_package(&mut context, new_company.raw_id, new_package.raw_id)
-        .expect("Cannot get data from delete_company_package");
+    // then
+    assert_eq!(company_package.company_id, company.raw_id);
+    assert_eq!(company_package.package_id, package.raw_id);
+}
 
-    // negative cases
-    let deleted_company_package = context.request(get_company_package::GetCompanyPackageInput {
-        id: company_package.raw_id,
-    });
-    if deleted_company_package.is_ok() && deleted_company_package.unwrap().is_some() {
-        panic!("Should not be able to get deleted company package");
-    }
+fn set_up_package(
+    context: &mut TestContext,
+) -> Result<create_package::RustCreatePackageCreatePackage, FailureError> {
+    context.as_superadmin();
+    let package = context.request(create_package::NewPackagesInput {
+        name: "Package Name".to_string(),
+        deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
+        ..create_package::default_create_package_input()
+    })?;
+    context.clear_bearer();
+    Ok(package)
+}
 
-    if delete_company_package(&mut context, new_company.raw_id, new_package.raw_id).is_ok() {
-        panic!("Should not be able to delete the same company package twice");
-    }
+fn set_up_company_package(
+    context: &mut TestContext,
+) -> Result<
+    (
+        create_package::RustCreatePackageCreatePackage,
+        create_delivery_company::RustCreateCompanyCreateCompany,
+        add_package_to_company::RustAddPackageToCompanyAddPackageToCompany,
+    ),
+    FailureError,
+> {
+    use self::create_delivery_company::Currency;
+
+    context.as_superadmin();
+    let package = context.request(create_package::NewPackagesInput {
+        name: "Package Name".to_string(),
+        deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
+        ..create_package::default_create_package_input()
+    })?;
+    let company = context.request(create_delivery_company::NewCompanyInput {
+        name: "Company Name".to_string(),
+        label: "Company Label".to_string(),
+        description: Some("Company Description".to_string()),
+        deliveries_from: vec!["GBR".to_string()],
+        currency: Currency::STQ,
+        logo: "Company Logo".to_string(),
+        ..create_delivery_company::default_create_company_input()
+    })?;
+    let company_package = context.request(add_package_to_company::NewCompaniesPackagesInput {
+        company_id: company.raw_id,
+        package_id: package.raw_id,
+        ..add_package_to_company::default_add_package_to_company_input()
+    })?;
+    context.clear_bearer();
+    Ok((package, company, company_package))
 }
 
 #[test]
@@ -3041,57 +3081,6 @@ fn set_up_coupon(
     Ok((user, token, store, coupon))
 }
 
-fn add_package_to_company(
-    context: &mut TestContext,
-    payload: add_package_to_company::NewCompaniesPackagesInput,
-) -> Result<add_package_to_company::GraphqlRequestOutput, FailureError> {
-    context.as_superadmin();
-    let company_package = context.request(payload)?;
-    context.clear_bearer();
-    Ok(company_package)
-}
-
-fn delete_company_package(
-    context: &mut TestContext,
-    company_id: i64,
-    package_id: i64,
-) -> Result<delete_company_package::GraphqlRequestOutput, FailureError> {
-    context.as_superadmin();
-    let company_package = context.request(delete_company_package::DeleteCompanyPackageInput {
-        company_id,
-        package_id,
-    })?;
-    context.clear_bearer();
-    Ok(company_package)
-}
-
-fn create_package(
-    context: &mut TestContext,
-    payload: create_package::NewPackagesInput,
-) -> Result<create_package::RustCreatePackageCreatePackage, FailureError> {
-    context.as_superadmin();
-
-    context.request(payload)
-}
-
-fn update_package(
-    context: &mut TestContext,
-    payload: update_package::UpdatePackagesInput,
-) -> Result<update_package::RustUpdatePackageUpdatePackage, FailureError> {
-    context.as_superadmin();
-
-    context.request(payload)
-}
-
-fn delete_package(
-    context: &mut TestContext,
-    id: i64,
-) -> Result<delete_package::RustDeletePackageDeletePackage, FailureError> {
-    context.as_superadmin();
-
-    context.request(delete_package::DeletePackagesInput { id })
-}
-
 fn set_up_warehouse(
     context: &mut TestContext,
 ) -> Result<
@@ -3117,40 +3106,6 @@ fn set_up_warehouse(
     let warehouse = context.request(warehouse_payload)?;
     context.clear_bearer();
     Ok((user, token, store, warehouse))
-}
-
-fn update_warehouse(
-    context: &mut TestContext,
-    token: String,
-    input: update_warehouse::UpdateWarehouseInput,
-) -> Result<(Option<get_store::RustGetStoreStoreWarehouses>), FailureError> {
-    context.set_bearer(token);
-    let updated_warehouse = context.request(input)?;
-    if updated_warehouse.is_none() {
-        return Ok(None);
-    }
-    let updated_warehouse = updated_warehouse.unwrap();
-    let store = context
-        .get_store(updated_warehouse.store_id)?
-        .store
-        .expect("Cannot get data from get_store");
-    context.clear_bearer();
-    Ok(store
-        .warehouses
-        .into_iter()
-        .find(|x| x.id == updated_warehouse.id))
-}
-
-fn delete_warehouse(
-    context: &mut TestContext,
-    token: String,
-    id: String,
-) -> Result<Option<String>, FailureError> {
-    context.set_bearer(token);
-    let deleted_warehouse =
-        context.request(delete_warehouse::DeleteWarehouseInput { id: id.clone() })?;
-    context.clear_bearer();
-    Ok(deleted_warehouse.map(|w| w.id))
 }
 
 fn set_up_user(
