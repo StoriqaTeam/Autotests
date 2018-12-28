@@ -1,0 +1,5 @@
+mutation deleteFromCart($input:  DeleteFromCartInput!) {
+  deleteFromCart(input: $input) {
+    id
+  }
+}

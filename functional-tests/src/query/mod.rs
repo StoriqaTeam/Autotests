@@ -28,6 +28,7 @@ pub mod delete_company_package;
 pub mod delete_coupon;
 pub mod delete_custom_attribute;
 pub mod delete_delivery_company;
+pub mod delete_from_cart;
 pub mod delete_package;
 pub mod delete_store;
 pub mod delete_user;
