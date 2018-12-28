@@ -20,7 +20,7 @@ query GetCartV2($userCountryCode: String!) {
             rawId
             code
             title
-            storeId
+            storeRawId
             scope
             percent
             quantity

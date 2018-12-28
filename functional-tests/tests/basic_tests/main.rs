@@ -2,6 +2,7 @@ extern crate failure;
 extern crate functional_tests;
 
 mod basic_tests;
+mod cart;
 
 use functional_tests::context::TestContext;
 

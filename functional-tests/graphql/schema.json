@@ -3403,9 +3403,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use setQuantityInCartV2",
+              "deprecationReason": null,
               "description": "Sets product quantity in cart.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "setQuantityInCart",
               "type": {
                 "kind": "OBJECT",
@@ -3673,9 +3673,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use setDeliveryMethodInCartV2",
+              "deprecationReason": null,
               "description": "Sets delivery method in the cart.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "setDeliveryMethodInCart",
               "type": {
                 "kind": "NON_NULL",
@@ -3735,9 +3735,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use removeDeliveryMethodFromCartV2",
+              "deprecationReason": null,
               "description": "Removes delivery method from the cart.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "removeDeliveryMethodFromCart",
               "type": {
                 "kind": "NON_NULL",
@@ -3797,9 +3797,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use deleteFromCartV2",
+              "deprecationReason": null,
               "description": "Deletes products from cart.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "deleteFromCart",
               "type": {
                 "kind": "NON_NULL",
@@ -3844,9 +3844,9 @@
             },
             {
               "args": [],
-              "deprecationReason": "use clearCartV2",
+              "deprecationReason": null,
               "description": "Clears cart.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "clearCart",
               "type": {
                 "kind": "NON_NULL",
