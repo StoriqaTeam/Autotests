@@ -48,8 +48,7 @@ pub fn revoke_jwt() {
     let current_user = context
         .request(get_me::GetMeInput)
         .expect("get_me failed")
-        .expect("get_me returnen None");
-    ;
+        .expect("get_me returned None");
     assert_eq!(current_user.email, user.email);
 }
 
@@ -404,7 +403,6 @@ fn create_user_with_products_in_carts(
     context
         .verify_user_email(&user.email)
         .expect("verify_user_email failed for user");
-    ;
     let token: String = context
         .request(get_jwt_by_email::CreateJWTEmailInput {
             email: user.email.clone(),
@@ -776,7 +774,6 @@ pub fn add_in_cart() {
     context
         .verify_user_email(&buyer.email)
         .expect("verify_user_email failed for buyer");
-    ;
     let buyer_token: String = context
         .request(get_jwt_by_email::CreateJWTEmailInput {
             email: buyer.email,
@@ -2688,7 +2685,6 @@ fn update_package() {
 
     // given
     let package = set_up_package(&mut context).expect("Cannot get data from set_up_package");
-    ;
 
     // when
     context.as_superadmin();
