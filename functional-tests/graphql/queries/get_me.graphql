@@ -1,33 +1,59 @@
 query GetMe {
-    me {
+  me {
+    id
+    rawId
+    email
+    isActive
+    phone
+    firstName
+    lastName
+    middleName
+    gender
+    birthdate
+    avatar
+    isBlocked
+    emarsysId
+    createdAt
+    updatedAt
+    referal
+    utmMarks {
+      key
+      value
+    }
+    country {
+      label
+      parent
+      level
+      alpha2
+      alpha3
+      numeric
+    }
+    referer
+    wizardStore {
+      id
+      rawId
+      storeId
+      moderatorComment {
         id
         rawId
-        email
-        isActive
-        phone
-        firstName
-        lastName
-        middleName
-        gender
-        birthdate
-        avatar
-        isBlocked
-        emarsysId
-        createdAt
-        updatedAt
-        referal
-        utmMarks {
-          key
-          value
-        }
-        country {
-          label
-          parent
-          level
-          alpha2
-          alpha3
-          numeric
-        }
-        referer
+        moderatorId
+        storeId
+        comments
+      }
+      shortDescription
+      name
+      slug
+      defaultLanguage
+      country
+      address
+      addressFull {
+        value
+        administrativeAreaLevel1
+        administrativeAreaLevel2
+        country
+        countryCode
+      }
+      completed
     }
+  }
 }

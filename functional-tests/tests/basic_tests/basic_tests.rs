@@ -22,7 +22,8 @@ pub fn refresh_jwt() {
     let current_user = context
         .request(get_me::GetMeInput)
         .expect("get_me failed")
-        .expect("get_me returnen None");;
+        .expect("get_me returnen None");
+    ;
     assert_eq!(current_user.email, user.email);
 }
 
@@ -48,7 +49,8 @@ pub fn revoke_jwt() {
     let current_user = context
         .request(get_me::GetMeInput)
         .expect("get_me failed")
-        .expect("get_me returnen None");;
+        .expect("get_me returnen None");
+    ;
     assert_eq!(current_user.email, user.email);
 }
 
@@ -189,7 +191,7 @@ fn check_delete_products_from_carts_when_store_status_is_changed(
         .expect("set_moderation_status_store failed");
     //then
     let desired_products_in_cart: HashSet<i64> = HashSet::new(); //totaly empty
-                                                                 //first buyer
+    //first buyer
     assert_eq!(
         user_has_products_in_cart(context, buyer_1.token.clone()),
         desired_products_in_cart,
@@ -231,8 +233,8 @@ fn check_delete_products_from_carts_when_base_product_status_is_changed(
         store_2.product_2.product_1.raw_id,
         store_2.product_2.product_2.raw_id,
     ]
-    .into_iter()
-    .collect();
+        .into_iter()
+        .collect();
     //first buyer
     assert_eq!(
         user_has_products_in_cart(context, buyer_1.token.clone()),
@@ -273,8 +275,8 @@ fn check_delete_products_from_carts_when_store_is_deactivated(
         store_2.product_2.product_1.raw_id,
         store_2.product_2.product_2.raw_id,
     ]
-    .into_iter()
-    .collect();
+        .into_iter()
+        .collect();
     //first buyer
     assert_eq!(
         user_has_products_in_cart(context, buyer_1.token.clone()),
@@ -315,8 +317,8 @@ fn check_delete_products_from_carts_when_base_product_is_deactivated(
         store_2.product_2.product_1.raw_id,
         store_2.product_2.product_2.raw_id,
     ]
-    .into_iter()
-    .collect();
+        .into_iter()
+        .collect();
     //first buyer
     assert_eq!(
         user_has_products_in_cart(context, buyer_1.token.clone()),
@@ -357,8 +359,8 @@ fn check_delete_product_from_carts_when_product_is_deactivated(
         store_2.product_2.product_1.raw_id,
         store_2.product_2.product_2.raw_id,
     ]
-    .into_iter()
-    .collect();
+        .into_iter()
+        .collect();
     //first buyer
     assert_eq!(
         user_has_products_in_cart(context, buyer_1.token.clone()),
@@ -402,7 +404,8 @@ fn create_user_with_products_in_carts(
         .expect("create_user failed for user");
     context
         .verify_user_email(&user.email)
-        .expect("verify_user_email failed for user");;
+        .expect("verify_user_email failed for user");
+    ;
     let token: String = context
         .request(get_jwt_by_email::CreateJWTEmailInput {
             email: user.email.clone(),
@@ -773,7 +776,8 @@ pub fn add_in_cart() {
         .expect("create_user failed for buyer");
     context
         .verify_user_email(&buyer.email)
-        .expect("verify_user_email failed for buyer");;
+        .expect("verify_user_email failed for buyer");
+    ;
     let buyer_token: String = context
         .request(get_jwt_by_email::CreateJWTEmailInput {
             email: buyer.email,
@@ -1051,7 +1055,7 @@ pub fn create_base_product_with_variants() {
     let (_user, token, store, category) = set_up_store(&mut context).unwrap();
     context.set_bearer(token);
     //when
-    let base_product = context.request(create_base_product_with_variants::NewBaseProductWithVariantsInput{
+    let base_product = context.request(create_base_product_with_variants::NewBaseProductWithVariantsInput {
         store_id: store.raw_id,
         category_id: category.raw_id,
         ..create_base_product_with_variants::default_create_base_product_with_variants_input()
@@ -2073,7 +2077,7 @@ pub fn delete_attribute_with_values() {
                     "Cannot get data from delete_attribute value ({})",
                     attr_value.code
                 )
-                .as_str(),
+                    .as_str(),
             );
     }
 
@@ -2519,8 +2523,8 @@ fn create_update_delete_warehouse() {
             ..update_warehouse::default_update_warehouse_input()
         },
     )
-    .expect("Cannot get data from update_warehouse")
-    .expect("Empty data from update_warehouse");
+        .expect("Cannot get data from update_warehouse")
+        .expect("Empty data from update_warehouse");
 
     assert_eq!(updated_warehouse.name, Some("New name".to_string()));
     assert_eq!(
@@ -2589,7 +2593,7 @@ fn create_update_delete_package() {
             ..create_package::default_create_package_input()
         },
     )
-    .expect("Cannot get data from create_package");
+        .expect("Cannot get data from create_package");
 
     let get_package = context
         .request(get_package::GetPackageInput {
@@ -2664,7 +2668,7 @@ fn create_update_delete_package() {
             ..update_package::default_update_package_input()
         },
     )
-    .expect("Cannot get data from update_package");
+        .expect("Cannot get data from update_package");
 
     let get_package = context
         .request(get_package::GetPackageInput {
@@ -2707,7 +2711,7 @@ fn create_delete_company_package() {
             ..create_package::default_create_package_input()
         },
     )
-    .expect("Cannot get data from create_package");
+        .expect("Cannot get data from create_package");
 
     let new_company = context
         .request(create_delivery_company::NewCompanyInput {
@@ -2728,7 +2732,7 @@ fn create_delete_company_package() {
             ..add_package_to_company::default_add_package_to_company_input()
         },
     )
-    .expect("Cannot get data from add_package_to_company");
+        .expect("Cannot get data from add_package_to_company");
 
     let company = company_package
         .company
@@ -2818,8 +2822,8 @@ fn create_update_delete_coupon() {
             ..update_coupon::default_update_coupon_input()
         },
     )
-    .expect("Cannot get data from update_coupon")
-    .expect("Empty data from update_coupon");
+        .expect("Cannot get data from update_coupon")
+        .expect("Empty data from update_coupon");
 
     assert_eq!(update_coupon.raw_id, coupon.raw_id);
     assert_eq!(update_coupon.id, coupon.id);
@@ -2833,6 +2837,95 @@ fn create_update_delete_coupon() {
     if delete_coupon(&mut context, coupon.raw_id).is_ok() {
         panic!("Should not be able to delete the same coupon twice");
     }
+}
+
+#[test]
+fn create_wizard_store() {
+    //setup
+    let mut context = TestContext::new();
+
+    // given
+    let (user, token, wizard_store) = set_up_wizard_store(&mut context)
+        .expect("Cannot get data from set_up_wizard_store");
+
+    // when
+
+    // then
+    assert_eq!(wizard_store.completed, false);
+}
+
+#[test]
+fn update_wizard_store() {
+    // setup
+    let mut context = TestContext::new();
+
+    // given
+    let (user, token, wizard_store) = set_up_wizard_store(&mut context).expect("Cannot get data from set_up_wizard_store");
+    context.set_bearer(token);
+
+    // when
+    let update_wizard_store_payload = update_wizard_store::UpdateWizardStoreInput {
+        name: Some("Name".to_string()),
+        short_description: Some("Short Description".to_string()),
+        default_language: Some(update_wizard_store::Language::RU),
+        address_full: update_wizard_store::AddressInput {
+            country: Some("Russian Federation".to_string()),
+            country_code: Some("RUS".to_string()),
+            administrative_area_level1: Some("Moscow Region".to_string()),
+            administrative_area_level2: Some("Moscow".to_string()),
+            ..update_wizard_store::default_address_input()
+        },
+        ..update_wizard_store::default_update_wizard_store_input()
+    };
+    context.request(update_wizard_store_payload).expect("Cannot get data from update_wizard_store");
+    let updated_wizard_store = context.request(get_me::GetMeInput)
+        .expect("Cannot get data from get_me")
+        .expect("Empty data from get_me")
+        .wizard_store
+        .expect("Empty wizard store data");
+
+    // then
+    assert_eq!(updated_wizard_store.id, wizard_store.id);
+    assert_eq!(updated_wizard_store.name, Some("Name".to_string()));
+    assert_eq!(updated_wizard_store.short_description, Some("Short Description".to_string()));
+    assert_eq!(updated_wizard_store.default_language, Some(get_me::Language::RU));
+    assert_eq!(updated_wizard_store.address_full.country, Some("Russian Federation".to_string()));
+    assert_eq!(updated_wizard_store.address_full.country_code, Some("RUS".to_string()));
+    assert_eq!(updated_wizard_store.address_full.administrative_area_level1, Some("Moscow Region".to_string()));
+    assert_eq!(updated_wizard_store.address_full.administrative_area_level2, Some("Moscow".to_string()));
+}
+
+#[test]
+fn delete_wizard_store() {
+    // setup
+    let mut context = TestContext::new();
+
+    // given
+    let (user, token, wizard_store) = set_up_wizard_store(&mut context).expect("Cannot get data from set_up_wizard_store");
+    context.set_bearer(token);
+
+    // when
+    context.request(delete_wizard_store::DeleteWizardStoreInput).expect("Cannot get data from delete_wizard_store");
+
+    // then
+    let me = context.request(get_me::GetMeInput)
+        .expect("Cannot get data from get_me")
+        .expect("Empty data from get_me");
+    let wizard_store = me.wizard_store.expect("Empty wizard store data from get_me");
+
+    assert_eq!(wizard_store.completed, true);
+}
+
+fn set_up_wizard_store(context: &mut TestContext) -> Result<(
+    create_user::RustCreateUserCreateUser,
+    String,
+    create_wizard_store::GraphqlRequestOutput
+), FailureError> {
+    let (user, token) = set_up_user(context)?;
+    context.set_bearer(token.clone());
+    let wizard_store = context.request(create_wizard_store::CreateWizardStoreInput)?;
+
+    Ok((user, token, wizard_store))
 }
 
 fn create_coupon(
