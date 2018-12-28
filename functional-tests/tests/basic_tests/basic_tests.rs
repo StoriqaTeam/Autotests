@@ -2151,7 +2151,7 @@ pub fn create_product_with_attributes() {
     let mut context = TestContext::new();
 
     // given
-    let (_user, token, _store, _category, base_product, attribute, custom_attribute) =
+    let (_user, token, _store, _category, base_product, attribute, _custom_attribute) =
         set_up_base_product_with_attributes(&mut context)
             .expect("Cannot get data from set_up_base_product_with_attributes");
     context.set_bearer(token);
@@ -3451,7 +3451,7 @@ fn set_up_published_base_product(
     Ok((user, token, store, category, base_product))
 }
 
-fn set_up_published_product(
+pub fn set_up_published_product(
     context: &mut TestContext,
 ) -> Result<
     (

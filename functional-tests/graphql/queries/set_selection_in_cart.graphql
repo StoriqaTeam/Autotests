@@ -1,0 +1,5 @@
+mutation setSelectionInCart($input:  SetSelectionInCartInput!) {
+  setSelectionInCart(input: $input) {
+    id
+  }
+}
