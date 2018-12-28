@@ -126,6 +126,15 @@ impl BillingMicroservice {
 }
 
 impl DeliveryMicroservice {
+    pub fn clear_all_data(&self) -> Result<(), FailureError> {
+        let conn = PgConnection::establish(self.database_url.as_ref())?;
+        let _ = diesel::sql_query("TRUNCATE TABLE companies, companies_packages, packages, pickups, products, roles, user_addresses;")
+            .execute(&conn)?;
+        let _ = diesel::sql_query("INSERT INTO user_roles (user_id, name) VALUES (1, 'superuser')")
+            .execute(&conn)?;
+        Ok(())
+    }
+
     pub fn healthcheck(&self) -> Result<(), FailureError> {
         healthcheck(&self.client, &self.url).map_err(|e| {
             e.context("Healthcheck in delivery microservice failed")

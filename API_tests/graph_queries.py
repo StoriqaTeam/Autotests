@@ -770,7 +770,7 @@ queries: Dict[Union[str, Any], Union[str, Any]] = {
         "addressFull": {"value": "gdeto", "country": "Russian Federation", "postalCode": "111111", "countryCode": "RUS"},
         "receiverName": "apitester",
         "receiverPhone": "+79034569874",
-        "currency": "RUB",
+        "currency": "STQ",
         "shippingId": %(shipping_id)i
     }
  }
