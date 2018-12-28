@@ -55,6 +55,7 @@ pub mod set_delivery_method_in_cart;
 pub mod set_moderation_status_base_product;
 pub mod set_moderation_status_store;
 pub mod set_quantity_in_cart;
+pub mod set_selection_in_cart;
 pub mod update_attribute;
 pub mod update_attribute_value;
 pub mod update_base_product;

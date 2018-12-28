@@ -3565,9 +3565,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use setSelectionInCartV2",
+              "deprecationReason": null,
               "description": "Select product in cart.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "setSelectionInCart",
               "type": {
                 "kind": "OBJECT",

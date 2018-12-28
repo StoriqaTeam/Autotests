@@ -43,6 +43,7 @@ query GetCartV2($userCountryCode: String!) {
             id
             rawId
             quantity
+            selected
             selectPackage {
               id
               companyPackageRawId
