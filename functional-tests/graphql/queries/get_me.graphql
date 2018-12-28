@@ -29,31 +29,5 @@ query GetMe {
       numeric
     }
     referer
-    wizardStore {
-      id
-      rawId
-      storeId
-      moderatorComment {
-        id
-        rawId
-        moderatorId
-        storeId
-        comments
-      }
-      shortDescription
-      name
-      slug
-      defaultLanguage
-      country
-      address
-      addressFull {
-        value
-        administrativeAreaLevel1
-        administrativeAreaLevel2
-        country
-        countryCode
-      }
-      completed
-    }
   }
 }

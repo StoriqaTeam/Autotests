@@ -2975,9 +2975,9 @@ fn update_wizard_store() {
         .request(update_wizard_store_payload)
         .expect("Cannot get data from update_wizard_store");
     let updated_wizard_store = context
-        .request(get_me::GetMeInput)
-        .expect("Cannot get data from get_me")
-        .expect("Empty data from get_me")
+        .request(get_wizard_store::GetWizardStoreInput)
+        .expect("Cannot get data from get_wizard_store")
+        .expect("Empty data from get_wizard_store")
         .wizard_store
         .expect("Empty wizard store data");
 
@@ -2990,7 +2990,7 @@ fn update_wizard_store() {
     );
     assert_eq!(
         updated_wizard_store.default_language,
-        Some(get_me::Language::RU)
+        Some(get_wizard_store::Language::RU)
     );
     assert_eq!(
         updated_wizard_store.address_full.country,
@@ -3026,11 +3026,10 @@ fn delete_wizard_store() {
         .expect("Cannot get data from delete_wizard_store");
 
     // then
-    let me = context
-        .request(get_me::GetMeInput)
+    let wizard_store = context
+        .request(get_wizard_store::GetWizardStoreInput)
         .expect("Cannot get data from get_me")
-        .expect("Empty data from get_me");
-    let wizard_store = me
+        .expect("Empty data from get_me")
         .wizard_store
         .expect("Empty wizard store data from get_me");
 

@@ -47,6 +47,7 @@ pub mod get_jwt_by_provider;
 pub mod get_me;
 pub mod get_package;
 pub mod get_store;
+pub mod get_wizard_store;
 pub mod refresh_jwt;
 pub mod request_password_reset;
 pub mod revoke_jwt;
