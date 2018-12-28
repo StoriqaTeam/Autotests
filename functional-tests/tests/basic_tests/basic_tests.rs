@@ -2812,39 +2812,87 @@ fn upsert_shipping() {
 }
 
 #[test]
-fn create_update_delete_coupon() {
+fn create_coupon() {
+    // setup
     let mut context = TestContext::new();
 
-    let (_user, _token, _store, coupon) =
-        create_coupon(&mut context).expect("Cannot get data from create_coupon");
+    // given
+    let (_user, token, _store, coupon) =
+        set_up_coupon(&mut context).expect("Cannot get data from set_up_coupon");
+    context.set_bearer(token);
 
+    // when
+
+    // then
     assert_eq!(coupon.is_active, true);
+}
 
-    let update_coupon = update_coupon(
-        &mut context,
-        update_coupon::UpdateCouponInput {
-            id: coupon.id.clone(),
-            percent: Some(42),
-            quantity: Some(73),
-            is_active: Some(false),
-            ..update_coupon::default_update_coupon_input()
-        },
-    )
-    .expect("Cannot get data from update_coupon")
-    .expect("Empty data from update_coupon");
+#[test]
+fn update_coupon() {
+    // setup
+    let mut context = TestContext::new();
 
+    // given
+    let (_user, token, store, coupon) =
+        set_up_coupon(&mut context).expect("Cannot get data from set_up_coupon");
+    context.set_bearer(token);
+
+    // when
+    let update_coupon_payload = update_coupon::UpdateCouponInput {
+        id: coupon.id.clone(),
+        percent: Some(42),
+        quantity: Some(73),
+        is_active: Some(false),
+        ..update_coupon::default_update_coupon_input()
+    };
+    context
+        .request(update_coupon_payload)
+        .expect("Cannot get data from update_coupon");
+    let store = context
+        .get_store(store.raw_id)
+        .expect("Cannot get data from get_store")
+        .store
+        .expect("Empty data from get_store");
+    let update_coupon = store
+        .coupons
+        .into_iter()
+        .find(|c| c.id == coupon.id)
+        .expect("Empty coupon data from get_store");
+
+    // then
     assert_eq!(update_coupon.raw_id, coupon.raw_id);
     assert_eq!(update_coupon.id, coupon.id);
     assert_eq!(update_coupon.percent, 42);
     assert_eq!(update_coupon.quantity, 73);
     assert_eq!(update_coupon.is_active, false);
+}
 
-    delete_coupon(&mut context, coupon.raw_id).expect("Cannot get data from delete_coupon");
+#[test]
+fn delete_coupon() {
+    // setup
+    let mut context = TestContext::new();
 
-    // negative cases
-    if delete_coupon(&mut context, coupon.raw_id).is_ok() {
-        panic!("Should not be able to delete the same coupon twice");
-    }
+    // given
+    let (_user, token, store, coupon) =
+        set_up_coupon(&mut context).expect("Cannot get data from set_up_coupon");
+    context.set_bearer(token);
+
+    // when
+    context
+        .request(delete_coupon::DeleteCouponInput { id: coupon.raw_id })
+        .expect("Cannot get data from delete_coupon");
+    let store = context
+        .get_store(store.raw_id)
+        .expect("Cannot get data from get_store")
+        .store
+        .expect("Empty data from get_store");
+    let deleted_coupon = store.coupons.into_iter().find(|c| c.id == coupon.id);
+    let delete_coupon_twice =
+        context.request(delete_coupon::DeleteCouponInput { id: coupon.raw_id });
+
+    // then
+    assert_eq!(deleted_coupon, None);
+    delete_coupon_twice.expect_err("Should not be able to delete coupon twice");
 }
 
 #[test]
@@ -2853,8 +2901,9 @@ fn create_wizard_store() {
     let mut context = TestContext::new();
 
     // given
-    let (_user, _token, wizard_store) =
+    let (_user, token, wizard_store) =
         set_up_wizard_store(&mut context).expect("Cannot get data from set_up_wizard_store");
+    context.set_bearer(token);
 
     // when
 
@@ -2969,7 +3018,7 @@ fn set_up_wizard_store(
     Ok((user, token, wizard_store))
 }
 
-fn create_coupon(
+fn set_up_coupon(
     context: &mut TestContext,
 ) -> Result<
     (
@@ -2990,29 +3039,6 @@ fn create_coupon(
         ..create_coupon::default_create_coupon_input()
     })?;
     Ok((user, token, store, coupon))
-}
-
-fn update_coupon(
-    context: &mut TestContext,
-    payload: update_coupon::UpdateCouponInput,
-) -> Result<Option<get_store::RustGetStoreStoreCoupons>, FailureError> {
-    let update_coupon = context.request(payload)?;
-    let store = context
-        .get_store(update_coupon.store_raw_id)?
-        .store
-        .expect("Cannot get store data from get_store");
-    let coupon = store
-        .coupons
-        .into_iter()
-        .find(|coupon| coupon.id == update_coupon.id);
-    Ok(coupon)
-}
-
-fn delete_coupon(
-    context: &mut TestContext,
-    id: i64,
-) -> Result<delete_coupon::GraphqlRequestOutput, FailureError> {
-    context.request(delete_coupon::DeleteCouponInput { id })
 }
 
 fn add_package_to_company(

@@ -7,7 +7,8 @@ use request::GraphqlRequest;
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "graphql/schema.json",
-    query_path = "graphql/queries/delete_coupon.graphql"
+    query_path = "graphql/queries/delete_coupon.graphql",
+    response_derives = "Clone, Debug, PartialEq"
 )]
 pub struct DeleteCouponMutation;
 
