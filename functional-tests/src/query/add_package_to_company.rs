@@ -7,7 +7,8 @@ use request::GraphqlRequest;
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "graphql/schema.json",
-    query_path = "graphql/queries/add_package_to_company.graphql"
+    query_path = "graphql/queries/add_package_to_company.graphql",
+    response_derives = "Debug"
 )]
 pub struct AddPackageToCompanyMutation;
 

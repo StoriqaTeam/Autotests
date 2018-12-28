@@ -2,50 +2,58 @@ query GetCartV2($userCountryCode: String!) {
   cartV2(userCountryCode: $userCountryCode) {
     id
     stores {
-        edges {
-            node {
-                id
-                rawId
-                name {
-                    lang
-                    text
-                }
-                rating
-                logo
-                cover
-                productsCost
-                productsCostWithoutDiscounts
-                coupons {
-                    id
-                    rawId
-                    code
-                    title
-                    storeId
-                    scope
-                    percent
-                    quantity
-                    usedQuantity
-                    expiredAt
-                    isActive
-                    createdAt
-                    updatedAt
-                    baseProducts {
-                        id
-                        rawId
-                    }
-                }
-                couponsDiscount
-                deliveryCost
-                totalCost
-                totalCostWithoutDiscounts
-                totalCount
-                products {
-                    id
-                    rawId
-                    quantity
-                }
+      edges {
+        node {
+          id
+          rawId
+          name {
+            lang
+            text
+          }
+          rating
+          logo
+          cover
+          productsCost
+          productsCostWithoutDiscounts
+          coupons {
+            id
+            rawId
+            code
+            title
+            storeId
+            scope
+            percent
+            quantity
+            usedQuantity
+            expiredAt
+            isActive
+            createdAt
+            updatedAt
+            baseProducts {
+              id
+              rawId
             }
+          }
+          couponsDiscount
+          deliveryCost
+          totalCost
+          totalCostWithoutDiscounts
+          totalCount
+          products {
+            id
+            rawId
+            quantity
+            selectPackage {
+              id
+              companyPackageRawId
+              shippingId
+              name
+              logo
+              price
+            }
+          }
         }
+      }
     }
     productsCost
     productsCostWithoutDiscounts
@@ -54,5 +62,5 @@ query GetCartV2($userCountryCode: String!) {
     totalCost
     totalCostWithoutDiscounts
     totalCount
- }
+  }
 }
