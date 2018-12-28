@@ -303,7 +303,7 @@ pub fn set_delivery_method_in_cart() {
             shipping_id: available_shipping_package.shipping_id,
             ..set_delivery_method_in_cart::default_set_delivery_method_in_cart_input()
         });
-
+    //then
     check_exists_delivery_method_in_cart(
         &mut context,
         &store_1,
@@ -454,15 +454,16 @@ pub fn clear_delivery_method_in_carts_users() {
     let find_product_id_with_delivery = store_1.product_1.product_1.raw_id;
 
     //then
-    assert_eq!(
+    assert!(
         cart_products
             .into_iter()
             .find(|product| product.raw_id == find_product_id_with_delivery)
             .map(|find_product| find_product
                 .select_package
                 .map(|package| package.shipping_id))
-            .unwrap(),
-        None
+            .expect("product was not found in cart_products")
+            .is_none(),
+        "Delivery method should be none"
     );
 }
 
