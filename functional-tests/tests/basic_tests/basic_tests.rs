@@ -172,6 +172,301 @@ pub fn delete_products_from_all_carts_during_various_scenarios() {
     );
 }
 
+fn check_exists_delivery_method_in_cart(
+    context: &mut TestContext,
+    store_1: &Store,
+    shipping_id: i64,
+) {
+    let user_cart = context
+        .request(get_cart_v2::default_get_cart_v2_input())
+        .expect("get_cart_v2 failed for user_cart")
+        .expect("Cannot user_cart");
+
+    let cart_stores = user_cart.stores;
+    let cart_edges = cart_stores.edges;
+    let cart_products = cart_edges
+        .into_iter()
+        .map(|edge| edge.node.products)
+        .flatten();
+    let find_product_id_with_delivery = store_1.product_1.product_1.raw_id;
+
+    //then
+    assert_eq!(
+        cart_products
+            .into_iter()
+            .find(|product| product.raw_id == find_product_id_with_delivery)
+            .map(|find_product| find_product
+                .select_package
+                .map(|package| package.shipping_id))
+            .unwrap(),
+        Some(shipping_id)
+    );
+}
+
+#[test]
+pub fn set_delivery_method_in_cart() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let store_1 = create_store_with_several_products(&mut context, "store-1")
+        .expect("create_store_with_several_products failed to create store 1");
+    context.set_bearer(store_1.token.clone());
+
+    let warehouse_payload = create_warehouse::CreateWarehouseInput {
+        name: Some("Warehouse".to_string()),
+        store_id: store_1.store.raw_id,
+        address_full: create_warehouse::AddressInput {
+            country: Some("Russian Federation".to_string()),
+            country_code: Some("RUS".to_string()),
+            ..create_warehouse::default_address_input()
+        },
+        ..create_warehouse::default_create_warehouse_input()
+    };
+    let _warehouse = context
+        .request(warehouse_payload)
+        .expect("Cannot get data from create_warehouse");
+
+    context.as_superadmin();
+
+    let company_payload = create_delivery_company::NewCompanyInput {
+        name: "Test company".to_string(),
+        label: "TEST".to_string(),
+        description: Some("Test description".to_string()),
+        deliveries_from: vec!["RUS".to_string()],
+        logo: "test loge URL".to_string(),
+        ..create_delivery_company::default_create_company_input()
+    };
+
+    let new_company = context
+        .request(company_payload.clone())
+        .expect("Cannot get data from create_delivery_company");
+
+    let new_package = create_package(
+        &mut context,
+        create_package::NewPackagesInput {
+            name: "Initial name".to_string(),
+            deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
+            ..create_package::default_create_package_input()
+        },
+    )
+    .expect("Cannot get data from create_package");
+
+    let company_package = add_package_to_company(
+        &mut context,
+        add_package_to_company::NewCompaniesPackagesInput {
+            company_id: new_company.raw_id,
+            package_id: new_package.raw_id,
+            ..add_package_to_company::default_add_package_to_company_input()
+        },
+    )
+    .expect("Cannot get data from add_package_to_company");
+    println!("company_package: {:#?}", company_package);
+    context.set_bearer(store_1.token.clone());
+
+    let upsert_shipping_payload = upsert_shipping::NewShippingInput {
+        store_id: store_1.store.raw_id,
+        base_product_id: store_1.product_1.base_product.raw_id,
+        local: vec![upsert_shipping::NewLocalShippingProductsInput {
+            company_package_id: company_package.raw_id,
+            price: Some(10.0),
+        }],
+        ..upsert_shipping::default_upsert_shipping_input()
+    };
+    let _upsert_shipping = context
+        .request(upsert_shipping_payload)
+        .expect("Cannot get data from upsert_shipping");
+    println!("_upsert_shipping: {:#?}", _upsert_shipping);
+    let buyer_1 =
+        create_user_with_products_in_carts(&mut context, "buyer-1@examplemail.com", &[&store_1])
+            .expect("create_user_with_products_in_carts failed to create buyer 1");
+    context.set_bearer(buyer_1.token);
+
+    //when
+    let available_shipping_package = context
+        .request(
+            get_available_shipping_for_user::GetAvailableShippingForUserInput {
+                user_country_code: "RUS".to_string(),
+                base_product_id: store_1.product_1.base_product.raw_id,
+            },
+        )
+        .expect("Cannot get data from available_shipping_for_user")
+        .packages
+        .pop()
+        .expect("Available package not exists");
+    println!(
+        "available_shipping_package: {:#?}",
+        available_shipping_package
+    );
+    let _delivery_payload =
+        context.request(set_delivery_method_in_cart::SetDeliveryMethodInCartInput {
+            product_id: store_1.product_1.product_1.raw_id,
+            shipping_id: available_shipping_package.shipping_id,
+            ..set_delivery_method_in_cart::default_set_delivery_method_in_cart_input()
+        });
+    //then
+    check_exists_delivery_method_in_cart(
+        &mut context,
+        &store_1,
+        available_shipping_package.shipping_id,
+    );
+}
+
+#[test]
+pub fn clear_delivery_method_in_carts_users() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let store_1 = create_store_with_several_products(&mut context, "store-1")
+        .expect("create_store_with_several_products failed to create store 1");
+    context.set_bearer(store_1.token.clone());
+
+    let warehouse_payload = create_warehouse::CreateWarehouseInput {
+        name: Some("Warehouse".to_string()),
+        store_id: store_1.store.raw_id,
+        address_full: create_warehouse::AddressInput {
+            country: Some("Russian Federation".to_string()),
+            country_code: Some("RUS".to_string()),
+            ..create_warehouse::default_address_input()
+        },
+        ..create_warehouse::default_create_warehouse_input()
+    };
+    let _warehouse = context
+        .request(warehouse_payload)
+        .expect("Cannot get data from create_warehouse");
+
+    context.as_superadmin();
+
+    let company_payload = create_delivery_company::NewCompanyInput {
+        name: "Test company".to_string(),
+        label: "TEST".to_string(),
+        description: Some("Test description".to_string()),
+        deliveries_from: vec!["RUS".to_string()],
+        logo: "test loge URL".to_string(),
+        ..create_delivery_company::default_create_company_input()
+    };
+
+    let new_company = context
+        .request(company_payload.clone())
+        .expect("Cannot get data from create_delivery_company");
+
+    let new_package = create_package(
+        &mut context,
+        create_package::NewPackagesInput {
+            name: "Initial name".to_string(),
+            deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
+            ..create_package::default_create_package_input()
+        },
+    )
+    .expect("Cannot get data from create_package");
+
+    let company_package = add_package_to_company(
+        &mut context,
+        add_package_to_company::NewCompaniesPackagesInput {
+            company_id: new_company.raw_id,
+            package_id: new_package.raw_id,
+            ..add_package_to_company::default_add_package_to_company_input()
+        },
+    )
+    .expect("Cannot get data from add_package_to_company");
+    println!("company_package: {:#?}", company_package);
+
+    context.set_bearer(store_1.token.clone());
+
+    let upsert_shipping_payload = upsert_shipping::NewShippingInput {
+        store_id: store_1.store.raw_id,
+        base_product_id: store_1.product_1.base_product.raw_id,
+        local: vec![upsert_shipping::NewLocalShippingProductsInput {
+            company_package_id: company_package.raw_id,
+            price: Some(10.0),
+        }],
+        ..upsert_shipping::default_upsert_shipping_input()
+    };
+    let _upsert_shipping = context
+        .request(upsert_shipping_payload)
+        .expect("Cannot get data from upsert_shipping");
+    println!("_upsert_shipping: {:#?}", _upsert_shipping);
+    let buyer_1 =
+        create_user_with_products_in_carts(&mut context, "buyer-1@examplemail.com", &[&store_1])
+            .expect("create_user_with_products_in_carts failed to create buyer 1");
+
+    context.set_bearer(buyer_1.token.clone());
+
+    //when
+    let available_shipping_package = context
+        .request(
+            get_available_shipping_for_user::GetAvailableShippingForUserInput {
+                user_country_code: "RUS".to_string(),
+                base_product_id: store_1.product_1.base_product.raw_id,
+            },
+        )
+        .expect("Cannot get data from available_shipping_for_user")
+        .packages
+        .pop()
+        .expect("Available package not exists");
+    println!(
+        "available_shipping_package: {:#?}",
+        available_shipping_package
+    );
+    let _delivery_payload =
+        context.request(set_delivery_method_in_cart::SetDeliveryMethodInCartInput {
+            product_id: store_1.product_1.product_1.raw_id,
+            shipping_id: available_shipping_package.shipping_id,
+            ..set_delivery_method_in_cart::default_set_delivery_method_in_cart_input()
+        });
+
+    check_exists_delivery_method_in_cart(
+        &mut context,
+        &store_1,
+        available_shipping_package.shipping_id,
+    );
+
+    context.set_bearer(store_1.token.clone());
+
+    // single update delivery
+    let upsert_shipping_payload = upsert_shipping::NewShippingInput {
+        store_id: store_1.store.raw_id,
+        base_product_id: store_1.product_1.base_product.raw_id,
+        local: vec![upsert_shipping::NewLocalShippingProductsInput {
+            company_package_id: company_package.raw_id,
+            price: Some(100.0),
+        }],
+        ..upsert_shipping::default_upsert_shipping_input()
+    };
+
+    let _update_upsert_shipping = context
+        .request(upsert_shipping_payload)
+        .expect("Cannot get data from update upsert_shipping");
+    println!("_update_upsert_shipping: {:#?}", _update_upsert_shipping);
+
+    context.set_bearer(buyer_1.token.clone());
+
+    let user_cart = context
+        .request(get_cart_v2::default_get_cart_v2_input())
+        .expect("get_cart_v2 failed for user_cart")
+        .expect("Cannot user_cart");
+
+    let cart_stores = user_cart.stores;
+    let cart_edges = cart_stores.edges;
+    let cart_products = cart_edges
+        .into_iter()
+        .map(|edge| edge.node.products)
+        .flatten();
+    let find_product_id_with_delivery = store_1.product_1.product_1.raw_id;
+
+    //then
+    assert!(
+        cart_products
+            .into_iter()
+            .find(|product| product.raw_id == find_product_id_with_delivery)
+            .map(|find_product| find_product
+                .select_package
+                .map(|package| package.shipping_id))
+            .expect("product was not found in cart_products")
+            .is_none(),
+        "Delivery method should be none"
+    );
+}
+
 fn check_delete_products_from_carts_when_store_status_is_changed(
     context: &mut TestContext,
     _store_1: &Store,
@@ -1235,78 +1530,6 @@ pub fn delete_attribute_from_category() {
         .unwrap()
         .get_attributes;
     assert!(changed_category_attributes.is_empty());
-}
-
-#[test]
-pub fn a_users_microservice_healthcheck() {
-    //given
-    let context = TestContext::new();
-    //then
-    let _ = context.users_microservice_healthcheck().unwrap();
-}
-
-#[test]
-pub fn a_stores_microservice_healthcheck() {
-    //given
-    let context = TestContext::new();
-    //then
-    let _ = context.stores_microservice_healthcheck().unwrap();
-}
-
-#[test]
-pub fn a_orders_microservice_healthcheck() {
-    //given
-    let context = TestContext::new();
-    //then
-    let _ = context.orders_microservice_healthcheck().unwrap();
-}
-
-#[test]
-pub fn a_warehouses_microservice_healthcheck() {
-    //given
-    let context = TestContext::new();
-    //then
-    let _ = context.warehouses_microservice_healthcheck().unwrap();
-}
-
-#[test]
-pub fn a_billing_microservice_healthcheck() {
-    //given
-    let context = TestContext::new();
-    //then
-    let _ = context.billing_microservice_healthcheck().unwrap();
-}
-
-#[test]
-pub fn a_notifications_microservice_healthcheck() {
-    //given
-    let context = TestContext::new();
-    //then
-    let _ = context.notifications_microservice_healthcheck().unwrap();
-}
-
-#[test]
-pub fn a_delivery_microservice_healthcheck() {
-    //given
-    let context = TestContext::new();
-    //then
-    let _ = context.delivery_microservice_healthcheck().unwrap();
-}
-
-#[test]
-pub fn a_saga_microservice_healthcheck() {
-    //given
-    let context = TestContext::new();
-    //then
-    let _ = context.saga_microservice_healthcheck().unwrap();
-}
-
-#[test]
-pub fn a_gateway_microservice_healthcheck() {
-    //given
-    let context = TestContext::new();
-    //then
-    let _ = context.gateway_microservice_healthcheck().unwrap();
 }
 
 #[test]
@@ -2797,6 +3020,7 @@ fn upsert_shipping() {
     let _upsert_shipping = context
         .request(upsert_shipping_payload)
         .expect("Cannot get data from upsert_shipping");
+    println!("_upsert_shipping {:#?}", _upsert_shipping);
 }
 
 #[test]
