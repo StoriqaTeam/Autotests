@@ -1931,7 +1931,7 @@ pub fn create_product_with_attributes() {
     let mut context = TestContext::new();
 
     // given
-    let (_user, token, _store, _category, base_product, attribute, custom_attribute) =
+    let (_user, token, _store, _category, base_product, attribute, _custom_attribute) =
         set_up_base_product_with_attributes(&mut context)
             .expect("Cannot get data from set_up_base_product_with_attributes");
     context.set_bearer(token);
@@ -2853,7 +2853,7 @@ fn create_wizard_store() {
     let mut context = TestContext::new();
 
     // given
-    let (user, token, wizard_store) =
+    let (_user, _token, wizard_store) =
         set_up_wizard_store(&mut context).expect("Cannot get data from set_up_wizard_store");
 
     // when
@@ -2868,7 +2868,7 @@ fn update_wizard_store() {
     let mut context = TestContext::new();
 
     // given
-    let (user, token, wizard_store) =
+    let (_user, token, wizard_store) =
         set_up_wizard_store(&mut context).expect("Cannot get data from set_up_wizard_store");
     context.set_bearer(token);
 
@@ -2931,7 +2931,7 @@ fn delete_wizard_store() {
     let mut context = TestContext::new();
 
     // given
-    let (user, token, wizard_store) =
+    let (_user, token, _wizard_store) =
         set_up_wizard_store(&mut context).expect("Cannot get data from set_up_wizard_store");
     context.set_bearer(token);
 
