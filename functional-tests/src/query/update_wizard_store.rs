@@ -22,7 +22,7 @@ pub fn default_update_wizard_store_input() -> UpdateWizardStoreInput {
         short_description: None,
         default_language: None,
         slug: None,
-        address_full: default_address_input()
+        address_full: default_address_input(),
     }
 }
 

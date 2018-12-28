@@ -32,7 +32,7 @@ impl GraphqlRequest for DeleteWizardStoreInput {
 
 impl From<DeleteWizardStoreInput> for serde_json::Value {
     fn from(_val: DeleteWizardStoreInput) -> serde_json::Value {
-        let request_body = DeleteWizardStoreMutation::build_query(Variables {  });
+        let request_body = DeleteWizardStoreMutation::build_query(Variables {});
         serde_json::to_value(request_body).expect("failed to serialize DeleteWizardStoreInput")
     }
 }

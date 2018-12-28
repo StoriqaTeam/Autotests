@@ -32,7 +32,7 @@ impl GraphqlRequest for CreateWizardStoreInput {
 
 impl From<CreateWizardStoreInput> for serde_json::Value {
     fn from(_val: CreateWizardStoreInput) -> serde_json::Value {
-        let request_body = CreateWizardStoreMutation::build_query(Variables {  });
+        let request_body = CreateWizardStoreMutation::build_query(Variables {});
         serde_json::to_value(request_body).expect("failed to serialize CreateWizardStoreInput")
     }
 }

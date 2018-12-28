@@ -22,8 +22,7 @@ pub fn refresh_jwt() {
     let current_user = context
         .request(get_me::GetMeInput)
         .expect("get_me failed")
-        .expect("get_me returnen None");
-    ;
+        .expect("get_me returned None");
     assert_eq!(current_user.email, user.email);
 }
 
@@ -191,7 +190,7 @@ fn check_delete_products_from_carts_when_store_status_is_changed(
         .expect("set_moderation_status_store failed");
     //then
     let desired_products_in_cart: HashSet<i64> = HashSet::new(); //totaly empty
-    //first buyer
+                                                                 //first buyer
     assert_eq!(
         user_has_products_in_cart(context, buyer_1.token.clone()),
         desired_products_in_cart,
@@ -233,8 +232,8 @@ fn check_delete_products_from_carts_when_base_product_status_is_changed(
         store_2.product_2.product_1.raw_id,
         store_2.product_2.product_2.raw_id,
     ]
-        .into_iter()
-        .collect();
+    .into_iter()
+    .collect();
     //first buyer
     assert_eq!(
         user_has_products_in_cart(context, buyer_1.token.clone()),
@@ -275,8 +274,8 @@ fn check_delete_products_from_carts_when_store_is_deactivated(
         store_2.product_2.product_1.raw_id,
         store_2.product_2.product_2.raw_id,
     ]
-        .into_iter()
-        .collect();
+    .into_iter()
+    .collect();
     //first buyer
     assert_eq!(
         user_has_products_in_cart(context, buyer_1.token.clone()),
@@ -317,8 +316,8 @@ fn check_delete_products_from_carts_when_base_product_is_deactivated(
         store_2.product_2.product_1.raw_id,
         store_2.product_2.product_2.raw_id,
     ]
-        .into_iter()
-        .collect();
+    .into_iter()
+    .collect();
     //first buyer
     assert_eq!(
         user_has_products_in_cart(context, buyer_1.token.clone()),
@@ -359,8 +358,8 @@ fn check_delete_product_from_carts_when_product_is_deactivated(
         store_2.product_2.product_1.raw_id,
         store_2.product_2.product_2.raw_id,
     ]
-        .into_iter()
-        .collect();
+    .into_iter()
+    .collect();
     //first buyer
     assert_eq!(
         user_has_products_in_cart(context, buyer_1.token.clone()),
@@ -2023,7 +2022,13 @@ pub fn delete_custom_attribute() {
         .expect("Products list is empty")
         .node
         .clone();
-    assert_eq!(product.attributes.expect("Cannot get attributes list of product").len(), 0);
+    assert_eq!(
+        product
+            .attributes
+            .expect("Cannot get attributes list of product")
+            .len(),
+        0
+    );
 }
 
 #[test]
@@ -2050,13 +2055,16 @@ pub fn delete_attribute_with_values() {
         }],
         ..create_product::default_create_product_input()
     };
-    context.request(product_payload).expect("Cannot get data from create_product");
+    context
+        .request(product_payload)
+        .expect("Cannot get data from create_product");
 
     context
         .request(delete_attribute::DeleteAttributeInput {
             client_mutation_id: "".to_string(),
             id: attribute.id.clone(),
-        }).expect_err("Should not be able to delete an attribute with values");
+        })
+        .expect_err("Should not be able to delete an attribute with values");
 
     context
         .request(delete_custom_attribute::DeleteCustomAttributeInput {
@@ -2077,7 +2085,7 @@ pub fn delete_attribute_with_values() {
                     "Cannot get data from delete_attribute value ({})",
                     attr_value.code
                 )
-                    .as_str(),
+                .as_str(),
             );
     }
 
@@ -2523,8 +2531,8 @@ fn create_update_delete_warehouse() {
             ..update_warehouse::default_update_warehouse_input()
         },
     )
-        .expect("Cannot get data from update_warehouse")
-        .expect("Empty data from update_warehouse");
+    .expect("Cannot get data from update_warehouse")
+    .expect("Empty data from update_warehouse");
 
     assert_eq!(updated_warehouse.name, Some("New name".to_string()));
     assert_eq!(
@@ -2593,7 +2601,7 @@ fn create_update_delete_package() {
             ..create_package::default_create_package_input()
         },
     )
-        .expect("Cannot get data from create_package");
+    .expect("Cannot get data from create_package");
 
     let get_package = context
         .request(get_package::GetPackageInput {
@@ -2668,7 +2676,7 @@ fn create_update_delete_package() {
             ..update_package::default_update_package_input()
         },
     )
-        .expect("Cannot get data from update_package");
+    .expect("Cannot get data from update_package");
 
     let get_package = context
         .request(get_package::GetPackageInput {
@@ -2711,7 +2719,7 @@ fn create_delete_company_package() {
             ..create_package::default_create_package_input()
         },
     )
-        .expect("Cannot get data from create_package");
+    .expect("Cannot get data from create_package");
 
     let new_company = context
         .request(create_delivery_company::NewCompanyInput {
@@ -2732,7 +2740,7 @@ fn create_delete_company_package() {
             ..add_package_to_company::default_add_package_to_company_input()
         },
     )
-        .expect("Cannot get data from add_package_to_company");
+    .expect("Cannot get data from add_package_to_company");
 
     let company = company_package
         .company
@@ -2822,8 +2830,8 @@ fn create_update_delete_coupon() {
             ..update_coupon::default_update_coupon_input()
         },
     )
-        .expect("Cannot get data from update_coupon")
-        .expect("Empty data from update_coupon");
+    .expect("Cannot get data from update_coupon")
+    .expect("Empty data from update_coupon");
 
     assert_eq!(update_coupon.raw_id, coupon.raw_id);
     assert_eq!(update_coupon.id, coupon.id);
@@ -2845,8 +2853,8 @@ fn create_wizard_store() {
     let mut context = TestContext::new();
 
     // given
-    let (user, token, wizard_store) = set_up_wizard_store(&mut context)
-        .expect("Cannot get data from set_up_wizard_store");
+    let (user, token, wizard_store) =
+        set_up_wizard_store(&mut context).expect("Cannot get data from set_up_wizard_store");
 
     // when
 
@@ -2860,7 +2868,8 @@ fn update_wizard_store() {
     let mut context = TestContext::new();
 
     // given
-    let (user, token, wizard_store) = set_up_wizard_store(&mut context).expect("Cannot get data from set_up_wizard_store");
+    let (user, token, wizard_store) =
+        set_up_wizard_store(&mut context).expect("Cannot get data from set_up_wizard_store");
     context.set_bearer(token);
 
     // when
@@ -2877,8 +2886,11 @@ fn update_wizard_store() {
         },
         ..update_wizard_store::default_update_wizard_store_input()
     };
-    context.request(update_wizard_store_payload).expect("Cannot get data from update_wizard_store");
-    let updated_wizard_store = context.request(get_me::GetMeInput)
+    context
+        .request(update_wizard_store_payload)
+        .expect("Cannot get data from update_wizard_store");
+    let updated_wizard_store = context
+        .request(get_me::GetMeInput)
         .expect("Cannot get data from get_me")
         .expect("Empty data from get_me")
         .wizard_store
@@ -2887,12 +2899,30 @@ fn update_wizard_store() {
     // then
     assert_eq!(updated_wizard_store.id, wizard_store.id);
     assert_eq!(updated_wizard_store.name, Some("Name".to_string()));
-    assert_eq!(updated_wizard_store.short_description, Some("Short Description".to_string()));
-    assert_eq!(updated_wizard_store.default_language, Some(get_me::Language::RU));
-    assert_eq!(updated_wizard_store.address_full.country, Some("Russian Federation".to_string()));
-    assert_eq!(updated_wizard_store.address_full.country_code, Some("RUS".to_string()));
-    assert_eq!(updated_wizard_store.address_full.administrative_area_level1, Some("Moscow Region".to_string()));
-    assert_eq!(updated_wizard_store.address_full.administrative_area_level2, Some("Moscow".to_string()));
+    assert_eq!(
+        updated_wizard_store.short_description,
+        Some("Short Description".to_string())
+    );
+    assert_eq!(
+        updated_wizard_store.default_language,
+        Some(get_me::Language::RU)
+    );
+    assert_eq!(
+        updated_wizard_store.address_full.country,
+        Some("Russian Federation".to_string())
+    );
+    assert_eq!(
+        updated_wizard_store.address_full.country_code,
+        Some("RUS".to_string())
+    );
+    assert_eq!(
+        updated_wizard_store.address_full.administrative_area_level1,
+        Some("Moscow Region".to_string())
+    );
+    assert_eq!(
+        updated_wizard_store.address_full.administrative_area_level2,
+        Some("Moscow".to_string())
+    );
 }
 
 #[test]
@@ -2901,26 +2931,37 @@ fn delete_wizard_store() {
     let mut context = TestContext::new();
 
     // given
-    let (user, token, wizard_store) = set_up_wizard_store(&mut context).expect("Cannot get data from set_up_wizard_store");
+    let (user, token, wizard_store) =
+        set_up_wizard_store(&mut context).expect("Cannot get data from set_up_wizard_store");
     context.set_bearer(token);
 
     // when
-    context.request(delete_wizard_store::DeleteWizardStoreInput).expect("Cannot get data from delete_wizard_store");
+    context
+        .request(delete_wizard_store::DeleteWizardStoreInput)
+        .expect("Cannot get data from delete_wizard_store");
 
     // then
-    let me = context.request(get_me::GetMeInput)
+    let me = context
+        .request(get_me::GetMeInput)
         .expect("Cannot get data from get_me")
         .expect("Empty data from get_me");
-    let wizard_store = me.wizard_store.expect("Empty wizard store data from get_me");
+    let wizard_store = me
+        .wizard_store
+        .expect("Empty wizard store data from get_me");
 
     assert_eq!(wizard_store.completed, true);
 }
 
-fn set_up_wizard_store(context: &mut TestContext) -> Result<(
-    create_user::RustCreateUserCreateUser,
-    String,
-    create_wizard_store::GraphqlRequestOutput
-), FailureError> {
+fn set_up_wizard_store(
+    context: &mut TestContext,
+) -> Result<
+    (
+        create_user::RustCreateUserCreateUser,
+        String,
+        create_wizard_store::GraphqlRequestOutput,
+    ),
+    FailureError,
+> {
     let (user, token) = set_up_user(context)?;
     context.set_bearer(token.clone());
     let wizard_store = context.request(create_wizard_store::CreateWizardStoreInput)?;
