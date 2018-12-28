@@ -2242,7 +2242,13 @@ pub fn delete_custom_attribute() {
         .expect("Products list is empty")
         .node
         .clone();
-    assert_eq!(product.attributes.expect("Cannot get attributes list of product").len(), 0);
+    assert_eq!(
+        product
+            .attributes
+            .expect("Cannot get attributes list of product")
+            .len(),
+        0
+    );
 }
 
 #[test]
@@ -2269,13 +2275,16 @@ pub fn delete_attribute_with_values() {
         }],
         ..create_product::default_create_product_input()
     };
-    context.request(product_payload).expect("Cannot get data from create_product");
+    context
+        .request(product_payload)
+        .expect("Cannot get data from create_product");
 
     context
         .request(delete_attribute::DeleteAttributeInput {
             client_mutation_id: "".to_string(),
             id: attribute.id.clone(),
-        }).expect_err("Should not be able to delete an attribute with values");
+        })
+        .expect_err("Should not be able to delete an attribute with values");
 
     context
         .request(delete_custom_attribute::DeleteCustomAttributeInput {
