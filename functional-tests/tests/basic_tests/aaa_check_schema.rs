@@ -1,5 +1,3 @@
-use failure::Error as FailureError;
-
 use graphql_client::Response;
 use serde_json;
 
