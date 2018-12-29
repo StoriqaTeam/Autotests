@@ -1,7 +1,7 @@
 use functional_tests::context::TestContext;
 
 #[test]
-pub fn a_users_microservice_healthcheck() {
+pub fn users_microservice_healthcheck() {
     //given
     let context = TestContext::new();
     //then
@@ -9,7 +9,7 @@ pub fn a_users_microservice_healthcheck() {
 }
 
 #[test]
-pub fn a_stores_microservice_healthcheck() {
+pub fn stores_microservice_healthcheck() {
     //given
     let context = TestContext::new();
     //then
@@ -17,7 +17,7 @@ pub fn a_stores_microservice_healthcheck() {
 }
 
 #[test]
-pub fn a_orders_microservice_healthcheck() {
+pub fn orders_microservice_healthcheck() {
     //given
     let context = TestContext::new();
     //then
@@ -25,7 +25,7 @@ pub fn a_orders_microservice_healthcheck() {
 }
 
 #[test]
-pub fn a_warehouses_microservice_healthcheck() {
+pub fn warehouses_microservice_healthcheck() {
     //given
     let context = TestContext::new();
     //then
@@ -33,7 +33,7 @@ pub fn a_warehouses_microservice_healthcheck() {
 }
 
 #[test]
-pub fn a_billing_microservice_healthcheck() {
+pub fn billing_microservice_healthcheck() {
     //given
     let context = TestContext::new();
     //then
@@ -41,7 +41,7 @@ pub fn a_billing_microservice_healthcheck() {
 }
 
 #[test]
-pub fn a_notifications_microservice_healthcheck() {
+pub fn notifications_microservice_healthcheck() {
     //given
     let context = TestContext::new();
     //then
@@ -49,7 +49,7 @@ pub fn a_notifications_microservice_healthcheck() {
 }
 
 #[test]
-pub fn a_delivery_microservice_healthcheck() {
+pub fn delivery_microservice_healthcheck() {
     //given
     let context = TestContext::new();
     //then
@@ -57,7 +57,7 @@ pub fn a_delivery_microservice_healthcheck() {
 }
 
 #[test]
-pub fn a_saga_microservice_healthcheck() {
+pub fn saga_microservice_healthcheck() {
     //given
     let context = TestContext::new();
     //then
@@ -65,7 +65,7 @@ pub fn a_saga_microservice_healthcheck() {
 }
 
 #[test]
-pub fn a_gateway_microservice_healthcheck() {
+pub fn gateway_microservice_healthcheck() {
     //given
     let context = TestContext::new();
     //then
