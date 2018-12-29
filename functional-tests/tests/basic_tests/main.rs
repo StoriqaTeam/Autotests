@@ -4,7 +4,7 @@ extern crate graphql_client;
 extern crate serde_derive;
 extern crate serde_json;
 
-mod aaa_check_schema;
-mod aab_healthcheck;
+mod a_check_schema;
+mod b_healthcheck;
 mod basic_tests;
 mod cart;
