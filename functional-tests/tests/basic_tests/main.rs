@@ -8,3 +8,4 @@ mod a_check_schema;
 mod b_healthcheck;
 mod basic_tests;
 mod cart;
+mod common;
