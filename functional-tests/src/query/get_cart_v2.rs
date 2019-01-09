@@ -26,6 +26,19 @@ pub fn default_get_cart_v2_input() -> GetCartV2Input {
 
 type GraphqlRequestOutput = Option<RustGetCartV2CartV2>;
 
+impl RustGetCartV2CartV2 {
+    pub fn get_product(
+        self,
+        product_id: i64,
+    ) -> Option<RustGetCartV2CartV2StoresEdgesNodeProducts> {
+        self.stores
+            .edges
+            .into_iter()
+            .flat_map(|e| e.node.products)
+            .find(|product| product.raw_id == product_id)
+    }
+}
+
 impl GraphqlRequest for GetCartV2Input {
     type Output = GraphqlRequestOutput;
 

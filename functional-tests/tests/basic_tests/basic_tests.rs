@@ -1,10 +1,9 @@
-use std::collections::HashSet;
-
 use failure::Error as FailureError;
 
+use functional_tests::context::TestContext;
 use functional_tests::query::*;
 
-use functional_tests::context::TestContext;
+use common::*;
 
 #[test]
 pub fn refresh_jwt() {
@@ -3290,6 +3289,57 @@ fn set_up_coupon(
         ..create_coupon::default_create_coupon_input()
     })?;
     Ok((user, token, store, coupon))
+}
+
+fn add_package_to_company(
+    context: &mut TestContext,
+    payload: add_package_to_company::NewCompaniesPackagesInput,
+) -> Result<add_package_to_company::GraphqlRequestOutput, FailureError> {
+    context.as_superadmin();
+    let company_package = context.request(payload)?;
+    context.clear_bearer();
+    Ok(company_package)
+}
+
+fn delete_company_package(
+    context: &mut TestContext,
+    company_id: i64,
+    package_id: i64,
+) -> Result<delete_company_package::GraphqlRequestOutput, FailureError> {
+    context.as_superadmin();
+    let company_package = context.request(delete_company_package::DeleteCompanyPackageInput {
+        company_id,
+        package_id,
+    })?;
+    context.clear_bearer();
+    Ok(company_package)
+}
+
+fn create_package(
+    context: &mut TestContext,
+    payload: create_package::NewPackagesInput,
+) -> Result<create_package::RustCreatePackageCreatePackage, FailureError> {
+    context.as_superadmin();
+
+    context.request(payload)
+}
+
+fn update_package(
+    context: &mut TestContext,
+    payload: update_package::UpdatePackagesInput,
+) -> Result<update_package::RustUpdatePackageUpdatePackage, FailureError> {
+    context.as_superadmin();
+
+    context.request(payload)
+}
+
+fn delete_package(
+    context: &mut TestContext,
+    id: i64,
+) -> Result<delete_package::RustDeletePackageDeletePackage, FailureError> {
+    context.as_superadmin();
+
+    context.request(delete_package::DeletePackagesInput { id })
 }
 
 fn set_up_warehouse(
