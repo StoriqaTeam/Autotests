@@ -2994,14 +2994,19 @@ fn delete_company_package() {
     let _ = context
         .request(delete_company_package::DeleteCompanyPackageInput {
             company_id: company.raw_id,
-            package_id: package.raw_id
+            package_id: package.raw_id,
         })
         .expect("Cannot get data from delete_company_package");
-    let company_package = context.request(get_company_package::GetCompanyPackageInput { id: company_package.raw_id }).expect("Cannot get data from get_company_package");
-    let delete_company_package_twice = context.request(delete_company_package::DeleteCompanyPackageInput {
-        company_id: company.raw_id,
-        package_id: package.raw_id
-    });
+    let company_package = context
+        .request(get_company_package::GetCompanyPackageInput {
+            id: company_package.raw_id,
+        })
+        .expect("Cannot get data from get_company_package");
+    let delete_company_package_twice =
+        context.request(delete_company_package::DeleteCompanyPackageInput {
+            company_id: company.raw_id,
+            package_id: package.raw_id,
+        });
 
     // then
     assert_eq!(company_package, None);
