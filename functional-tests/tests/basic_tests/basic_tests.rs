@@ -2980,6 +2980,36 @@ fn create_company_package() {
     assert_eq!(company_package.package_id, package.raw_id);
 }
 
+#[test]
+fn delete_company_package() {
+    // setup
+    let mut context = TestContext::new();
+
+    // given
+    let (package, company, company_package) =
+        set_up_company_package(&mut context).expect("Cannot get data from set_up_company_package");
+    context.as_superadmin();
+
+    // when
+    let _ = context
+        .request(delete_company_package::DeleteCompanyPackageInput {
+            company_id: company.raw_id,
+            package_id: package.raw_id
+        })
+        .expect("Cannot get data from delete_company_package");
+    let company_package = context.request(get_company_package::GetCompanyPackageInput { id: company_package.raw_id }).expect("Cannot get data from get_company_package");
+    let delete_company_package_twice = context.request(delete_company_package::DeleteCompanyPackageInput {
+        company_id: company.raw_id,
+        package_id: package.raw_id
+    });
+
+    // then
+    assert_eq!(company_package, None);
+    if delete_company_package_twice.is_ok() {
+        panic!("Should not be able to delete the same package twice");
+    }
+}
+
 fn set_up_package(
     context: &mut TestContext,
 ) -> Result<create_package::RustCreatePackageCreatePackage, FailureError> {
