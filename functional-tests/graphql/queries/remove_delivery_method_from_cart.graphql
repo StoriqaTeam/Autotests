@@ -1,0 +1,21 @@
+mutation RemoveDeliveryMethodFromCart($input: RemoveDeliveryMethodFromCartInput!) {
+  removeDeliveryMethodFromCart(input: $input) {
+    id
+    stores {
+      edges {
+        node {
+          id
+          rawId
+          products {
+            id
+            rawId
+            selectPackage {
+              id
+              shippingId
+            }
+          }
+        }
+      }
+    }
+  }
+}
