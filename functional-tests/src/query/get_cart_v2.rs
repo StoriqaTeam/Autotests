@@ -37,6 +37,15 @@ impl RustGetCartV2CartV2 {
             .flat_map(|e| e.node.products)
             .find(|product| product.raw_id == product_id)
     }
+
+    pub fn get_products(self) -> Vec<RustGetCartV2CartV2StoresEdgesNodeProducts> {
+        self.stores
+            .edges
+            .into_iter()
+            .map(|edge| edge.node.products)
+            .flatten()
+            .collect()
+    }
 }
 
 impl GraphqlRequest for GetCartV2Input {
