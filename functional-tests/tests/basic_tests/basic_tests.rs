@@ -1902,13 +1902,15 @@ fn create_warehouse() {
     let mut context = TestContext::new();
 
     // given
-    let (_user, token, _store, _warehouse) =
+    let (_user, token, store, warehouse) =
         set_up_warehouse(&mut context).expect("Cannot get data from set_up_warehouse");
     context.set_bearer(token);
 
     // when
 
     // then
+    assert_eq!(warehouse.name, Some("Initial name".to_string()));
+    assert_eq!(warehouse.store_id, store.raw_id);
 }
 
 #[test]
