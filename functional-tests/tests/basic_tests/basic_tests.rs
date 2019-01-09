@@ -2295,12 +2295,100 @@ fn upsert_shipping() {
         }],
         ..upsert_shipping::default_upsert_shipping_input()
     };
-    let _upsert_shipping = context
+    let upsert_shipping = context
         .request(upsert_shipping_payload)
         .expect("Cannot get data from upsert_shipping");
-    println!("_upsert_shipping {:#?}", _upsert_shipping);
+    println!("upsert_shipping {:#?}", upsert_shipping);
+    let local = upsert_shipping.local.first().expect("Empty local shipping list from upsert_shipping");
+    let international = upsert_shipping.international.first().expect("Empty international shipping list from upsert_shipping");
 
     // then
+    {
+        assert_eq!(local.company_package_id.clone(), company_package1.id);
+        assert_eq!(local.price, Some(42.));
+        assert_eq!(local.deliveries_to.clone().len(), 1);
+        let xal = local.deliveries_to.first().unwrap();
+
+        assert_eq!(xal.level, 0);
+        assert_eq!(xal.label, "All".to_string());
+        assert_eq!(xal.alpha3, "XAL".to_string());
+        assert_eq!(xal.children.len(), 1);
+
+        let xeu = xal
+            .children
+            .iter()
+            .find(|d| d.label == "Europe".to_string())
+            .expect("Cannot get Europe delivery info");
+        assert_eq!(xeu.level, 1);
+        assert_eq!(xeu.alpha3, "XEU".to_string());
+        assert_eq!(xeu.children.len(), 1);
+
+        let rus = xeu
+            .children
+            .iter()
+            .find(|d| d.label == "Russian Federation".to_string())
+            .expect("Cannot get Russian Federation delivery info");
+        assert_eq!(rus.level, 2);
+        assert_eq!(rus.alpha2, "RU".to_string());
+        assert_eq!(rus.alpha3, "RUS".to_string());
+    }
+
+    {
+        assert_eq!(international.company_package_id, company_package2.id);
+        assert_eq!(international.price, Some(666.));
+        assert_eq!(international.deliveries_to.len(), 1);
+        let xal = international.deliveries_to.first().unwrap();
+
+        assert_eq!(xal.level, 0);
+        assert_eq!(xal.label, "All".to_string());
+        assert_eq!(xal.alpha3, "XAL".to_string());
+        assert_eq!(xal.children.len(), 2);
+
+        let xeu = xal
+            .children
+            .iter()
+            .find(|d| d.label == "Europe".to_string())
+            .expect("Cannot get Europe delivery info");
+        assert_eq!(xeu.level, 1);
+        assert_eq!(xeu.alpha3, "XEU".to_string());
+        assert_eq!(xeu.children.len(), 2);
+
+        let xna = xal
+            .children
+            .iter()
+            .find(|d| d.label == "North America".to_string())
+            .expect("Cannot get North America delivery info");
+        assert_eq!(xna.level, 1);
+        assert_eq!(xna.alpha3, "XNA".to_string());
+        assert_eq!(xna.children.len(), 1);
+
+        let rus = xeu
+            .children
+            .iter()
+            .find(|d| d.label == "Russian Federation".to_string())
+            .expect("Cannot get Russian Federation delivery info");
+        assert_eq!(rus.level, 2);
+        assert_eq!(rus.alpha2, "RU".to_string());
+        assert_eq!(rus.alpha3, "RUS".to_string());
+
+        let gbr = xeu
+            .children
+            .iter()
+            .find(|d| d.label == "United Kingdom")
+            .expect("Cannot get United Kingdom delivery info");
+        assert_eq!(gbr.level, 2);
+        assert_eq!(gbr.alpha2, "GB".to_string());
+        assert_eq!(gbr.alpha3, "GBR".to_string());
+
+        let usa = xna
+            .children
+            .iter()
+            .find(|d| d.label == "United States of America")
+            .expect("Cannot get United States of America delivery info");
+        assert_eq!(usa.level, 2);
+        assert_eq!(usa.alpha2, "US".to_string());
+        assert_eq!(usa.alpha3, "USA".to_string());
+    }
 }
 
 #[test]
