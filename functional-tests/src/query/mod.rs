@@ -49,6 +49,7 @@ pub mod get_package;
 pub mod get_store;
 pub mod introspection;
 pub mod refresh_jwt;
+pub mod remove_delivery_method_from_cart;
 pub mod request_password_reset;
 pub mod revoke_jwt;
 pub mod send_base_product_to_moderation;

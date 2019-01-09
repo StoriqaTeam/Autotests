@@ -54,7 +54,7 @@ impl Clone for Currency {
     }
 }
 
-type GraphqlRequestOutput = RustCreateCompanyCreateCompany;
+pub type GraphqlRequestOutput = RustCreateCompanyCreateCompany;
 
 impl GraphqlRequest for NewCompanyInput {
     type Output = GraphqlRequestOutput;
