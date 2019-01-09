@@ -4,6 +4,7 @@ use functional_tests::context::TestContext;
 use functional_tests::query::*;
 
 use common::*;
+use std::collections::HashSet;
 
 #[test]
 pub fn refresh_jwt() {
@@ -2717,7 +2718,7 @@ fn create_warehouse() {
     let mut context = TestContext::new();
 
     // given
-    let (_user, token, store, warehouse) =
+    let (_user, token, _store, _warehouse) =
         set_up_warehouse(&mut context).expect("Cannot get data from set_up_warehouse");
     context.set_bearer(token);
 
@@ -2732,7 +2733,7 @@ fn update_warehouse() {
     let mut context = TestContext::new();
 
     // given
-    let (_user, token, store, warehouse) =
+    let (_user, token, _store, warehouse) =
         set_up_warehouse(&mut context).expect("Cannot get data from set_up_warehouse");
     context.set_bearer(token);
 
@@ -2796,7 +2797,7 @@ fn delete_warehouse() {
     let mut context = TestContext::new();
 
     // given
-    let (_user, token, store, warehouse) =
+    let (_user, token, _store, warehouse) =
         set_up_warehouse(&mut context).expect("Cannot get data from set_up_warehouse");
     context.set_bearer(token);
 
@@ -3291,57 +3292,6 @@ fn set_up_coupon(
     Ok((user, token, store, coupon))
 }
 
-fn add_package_to_company(
-    context: &mut TestContext,
-    payload: add_package_to_company::NewCompaniesPackagesInput,
-) -> Result<add_package_to_company::GraphqlRequestOutput, FailureError> {
-    context.as_superadmin();
-    let company_package = context.request(payload)?;
-    context.clear_bearer();
-    Ok(company_package)
-}
-
-fn delete_company_package(
-    context: &mut TestContext,
-    company_id: i64,
-    package_id: i64,
-) -> Result<delete_company_package::GraphqlRequestOutput, FailureError> {
-    context.as_superadmin();
-    let company_package = context.request(delete_company_package::DeleteCompanyPackageInput {
-        company_id,
-        package_id,
-    })?;
-    context.clear_bearer();
-    Ok(company_package)
-}
-
-fn create_package(
-    context: &mut TestContext,
-    payload: create_package::NewPackagesInput,
-) -> Result<create_package::RustCreatePackageCreatePackage, FailureError> {
-    context.as_superadmin();
-
-    context.request(payload)
-}
-
-fn update_package(
-    context: &mut TestContext,
-    payload: update_package::UpdatePackagesInput,
-) -> Result<update_package::RustUpdatePackageUpdatePackage, FailureError> {
-    context.as_superadmin();
-
-    context.request(payload)
-}
-
-fn delete_package(
-    context: &mut TestContext,
-    id: i64,
-) -> Result<delete_package::RustDeletePackageDeletePackage, FailureError> {
-    context.as_superadmin();
-
-    context.request(delete_package::DeletePackagesInput { id })
-}
-
 fn set_up_warehouse(
     context: &mut TestContext,
 ) -> Result<
@@ -3457,96 +3407,6 @@ fn set_up_published_store(
     })?;
     context.clear_bearer();
     Ok((user, token, store, category_level_3))
-}
-
-fn set_up_base_product(
-    context: &mut TestContext,
-) -> Result<
-    (
-        create_user::RustCreateUserCreateUser,
-        String,
-        create_store::RustCreateStoreCreateStore,
-        create_category::RustCreateCategoryCreateCategory,
-        create_base_product::RustCreateBaseProductCreateBaseProduct,
-    ),
-    FailureError,
-> {
-    let (user, token, store, category) =
-        set_up_store(context).expect("Cannot get data from set_up_store");
-    context.set_bearer(token.clone());
-
-    let new_base_product = create_base_product::CreateBaseProductInput {
-        store_id: store.raw_id,
-        category_id: category.raw_id,
-        ..create_base_product::default_create_base_product_input()
-    };
-    let base_product = context.request(new_base_product)?;
-    context.clear_bearer();
-
-    Ok((user, token, store, category, base_product))
-}
-
-fn set_up_base_product_with_attributes(
-    context: &mut TestContext,
-) -> Result<
-    (
-        create_user::RustCreateUserCreateUser,
-        String,
-        create_store::RustCreateStoreCreateStore,
-        create_category::RustCreateCategoryCreateCategory,
-        create_base_product::RustCreateBaseProductCreateBaseProduct,
-        create_attribute::RustCreateAttributeCreateAttribute,
-        create_custom_attribute::RustCreateCustomAttributeCreateCustomAttribute,
-    ),
-    FailureError,
-> {
-    let (user, token, store, category) =
-        set_up_store(context).expect("Cannot get data from set_up_store");
-
-    context.set_bearer(token.clone());
-    let new_base_product = create_base_product::CreateBaseProductInput {
-        store_id: store.raw_id,
-        category_id: category.raw_id,
-        ..create_base_product::default_create_base_product_input()
-    };
-    let base_product = context.request(new_base_product)?;
-
-    context.as_superadmin();
-    let new_attribute = create_attribute::CreateAttributeInput {
-        name: vec![create_attribute::TranslationInput {
-            lang: create_attribute::Language::EN,
-            text: "Color".to_string(),
-        }],
-        values: Some(vec![
-            create_attribute::create_attribute_value("RED", "Red", "Красный"),
-            create_attribute::create_attribute_value("BLUE", "Blue", "Синий"),
-            create_attribute::create_attribute_value("GREEN", "Green", "Зелёный"),
-        ]),
-        ..create_attribute::default_create_attribute_input()
-    };
-    let attribute = context
-        .request(new_attribute)
-        .expect("Cannot get data from create_attribute");
-
-    let new_custom_attribute = create_custom_attribute::NewCustomAttributeInput {
-        attribute_id: attribute.raw_id,
-        base_product_id: base_product.raw_id,
-        ..create_custom_attribute::default_create_custom_attribute_input()
-    };
-    let custom_attribute = context
-        .request(new_custom_attribute)
-        .expect("Cannot get data from create_custom_attribute");
-    context.clear_bearer();
-
-    Ok((
-        user,
-        token,
-        store,
-        category,
-        base_product,
-        attribute,
-        custom_attribute,
-    ))
 }
 
 fn set_up_published_base_product(
