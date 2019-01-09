@@ -23,7 +23,7 @@ pub fn default_create_package_input() -> NewPackagesInput {
         min_size: 100,
         max_weight: 3000,
         min_weight: 300,
-        deliveries_to: vec!["USA".to_string(), "GBR".to_string()],
+        deliveries_to: ::defaults::default_deliveries_to(),
     }
 }
 
