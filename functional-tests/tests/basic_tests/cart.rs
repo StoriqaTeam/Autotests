@@ -93,19 +93,12 @@ fn check_exists_delivery_method_in_cart(
         .expect("get_cart_v2 failed for user_cart")
         .expect("Cannot user_cart");
 
-    let cart_stores = user_cart.stores;
-    let cart_edges = cart_stores.edges;
-    let cart_products = cart_edges
-        .into_iter()
-        .map(|edge| edge.node.products)
-        .flatten();
     let find_product_id_with_delivery = store_1.product_1.product_1.raw_id;
+    let cart_product = user_cart.get_product(find_product_id_with_delivery);
 
     //then
     assert_eq!(
-        cart_products
-            .into_iter()
-            .find(|product| product.raw_id == find_product_id_with_delivery)
+        cart_product
             .map(|find_product| find_product
                 .select_package
                 .map(|package| package.shipping_id))
@@ -290,19 +283,12 @@ pub fn remove_delivery_method_from_cart() {
         .expect("get_cart_v2 failed for user_cart")
         .expect("Cannot user_cart");
 
-    let cart_stores = user_cart.stores;
-    let cart_edges = cart_stores.edges;
-    let cart_products = cart_edges
-        .into_iter()
-        .map(|edge| edge.node.products)
-        .flatten();
     let find_product_id_with_delivery = store_1.product_1.product_1.raw_id;
+    let cart_product = user_cart.get_product(find_product_id_with_delivery);
 
     //then
     assert!(
-        cart_products
-            .into_iter()
-            .find(|product| product.raw_id == find_product_id_with_delivery)
+        cart_product
             .map(|find_product| find_product
                 .select_package
                 .map(|package| package.shipping_id))
@@ -381,19 +367,12 @@ pub fn clear_delivery_method_in_carts_users() {
         .expect("get_cart_v2 failed for user_cart")
         .expect("Cannot user_cart");
 
-    let cart_stores = user_cart.stores;
-    let cart_edges = cart_stores.edges;
-    let cart_products = cart_edges
-        .into_iter()
-        .map(|edge| edge.node.products)
-        .flatten();
     let find_product_id_with_delivery = store_1.product_1.product_1.raw_id;
+    let cart_product = user_cart.get_product(find_product_id_with_delivery);
 
     //then
     assert!(
-        cart_products
-            .into_iter()
-            .find(|product| product.raw_id == find_product_id_with_delivery)
+        cart_product
             .map(|find_product| find_product
                 .select_package
                 .map(|package| package.shipping_id))
