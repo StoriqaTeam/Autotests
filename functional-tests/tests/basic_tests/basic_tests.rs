@@ -1,6 +1,7 @@
 use failure::Error as FailureError;
 
 use functional_tests::context::TestContext;
+use functional_tests::defaults::*;
 use functional_tests::query::*;
 
 use common::*;
@@ -1620,7 +1621,7 @@ pub fn create_delivery_company() {
         name: "Test company".to_string(),
         label: "TEST".to_string(),
         description: Some("Test description".to_string()),
-        deliveries_from: vec!["RUS".to_string()],
+        deliveries_from: default_deliveries_from(),
         logo: "test loge URL".to_string(),
         ..create_delivery_company::default_create_company_input()
     };
@@ -2207,7 +2208,7 @@ fn set_up_package(
     context.as_superadmin();
     let package = context.request(create_package::NewPackagesInput {
         name: "Package Name".to_string(),
-        deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
+        deliveries_to: default_deliveries_to(),
         ..create_package::default_create_package_input()
     })?;
     context.clear_bearer();
@@ -2229,14 +2230,14 @@ fn set_up_company_package(
     context.as_superadmin();
     let package = context.request(create_package::NewPackagesInput {
         name: "Package Name".to_string(),
-        deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
+        deliveries_to: default_deliveries_to(),
         ..create_package::default_create_package_input()
     })?;
     let company = context.request(create_delivery_company::NewCompanyInput {
         name: "Company Name".to_string(),
         label: "Company Label".to_string(),
         description: Some("Company Description".to_string()),
-        deliveries_from: vec!["GBR".to_string()],
+        deliveries_from: default_deliveries_from(),
         currency: Currency::STQ,
         logo: "Company Logo".to_string(),
         ..create_delivery_company::default_create_company_input()
@@ -2252,11 +2253,18 @@ fn set_up_company_package(
 
 #[test]
 fn upsert_shipping() {
+    // setup
     let mut context = TestContext::new();
 
+    // given
     let (_user, token, store, _category, base_product) =
         set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
+    let (_, _, company_package1) =
+        set_up_company_package(&mut context).expect("Cannot get data from set_up_company_package");
+    let (_, _, company_package2) =
+        set_up_company_package(&mut context).expect("Cannot get data from set_up_company_package");
 
+    // when
     context.set_bearer(token);
     let warehouse_payload = create_warehouse::CreateWarehouseInput {
         name: Some("Warehouse".to_string()),
@@ -2276,12 +2284,23 @@ fn upsert_shipping() {
     let upsert_shipping_payload = upsert_shipping::NewShippingInput {
         store_id: store.raw_id,
         base_product_id: base_product.raw_id,
+        local: vec![upsert_shipping::NewLocalShippingProductsInput {
+            company_package_id: company_package1.raw_id,
+            price: Some(42.)
+        }],
+        international: vec![upsert_shipping::NewInternationalShippingProductsInput {
+            company_package_id: company_package2.raw_id,
+            price: Some(666.),
+            deliveries_to: default_deliveries_to()
+        }],
         ..upsert_shipping::default_upsert_shipping_input()
     };
     let _upsert_shipping = context
         .request(upsert_shipping_payload)
         .expect("Cannot get data from upsert_shipping");
     println!("_upsert_shipping {:#?}", _upsert_shipping);
+
+    // then
 }
 
 #[test]

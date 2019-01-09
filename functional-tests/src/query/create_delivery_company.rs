@@ -20,7 +20,7 @@ pub fn default_create_company_input() -> NewCompanyInput {
         name: "".to_string(),
         label: "".to_string(),
         description: None,
-        deliveries_from: vec![],
+        deliveries_from: ::defaults::default_deliveries_from(),
         currency: Currency::STQ,
         logo: "".to_string(),
     }

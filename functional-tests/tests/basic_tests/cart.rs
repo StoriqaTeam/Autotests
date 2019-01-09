@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 
 use functional_tests::context::TestContext;
+use functional_tests::defaults::*;
 use functional_tests::query::*;
 
 use common::*;
@@ -143,7 +144,7 @@ pub fn set_delivery_method_in_cart() {
         name: "Test company".to_string(),
         label: "TEST".to_string(),
         description: Some("Test description".to_string()),
-        deliveries_from: vec!["RUS".to_string()],
+        deliveries_from: default_deliveries_from(),
         logo: "test loge URL".to_string(),
         ..create_delivery_company::default_create_company_input()
     };
@@ -155,7 +156,7 @@ pub fn set_delivery_method_in_cart() {
     let new_package = context
         .request(create_package::NewPackagesInput {
             name: "Initial name".to_string(),
-            deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
+            deliveries_to: default_deliveries_to(),
             ..create_package::default_create_package_input()
         })
         .expect("Cannot get data from create_package");
@@ -247,7 +248,7 @@ pub fn clear_delivery_method_in_carts_users() {
         name: "Test company".to_string(),
         label: "TEST".to_string(),
         description: Some("Test description".to_string()),
-        deliveries_from: vec!["RUS".to_string()],
+        deliveries_from: default_deliveries_from(),
         logo: "test loge URL".to_string(),
         ..create_delivery_company::default_create_company_input()
     };
@@ -259,7 +260,7 @@ pub fn clear_delivery_method_in_carts_users() {
     let new_package = context
         .request(create_package::NewPackagesInput {
             name: "Initial name".to_string(),
-            deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
+            deliveries_to: default_deliveries_to(),
             ..create_package::default_create_package_input()
         })
         .expect("Cannot get data from create_package");
