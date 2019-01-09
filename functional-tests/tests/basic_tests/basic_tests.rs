@@ -241,25 +241,21 @@ pub fn set_delivery_method_in_cart() {
         .request(company_payload.clone())
         .expect("Cannot get data from create_delivery_company");
 
-    let new_package = create_package(
-        &mut context,
-        create_package::NewPackagesInput {
+    let new_package = context
+        .request(create_package::NewPackagesInput {
             name: "Initial name".to_string(),
             deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
             ..create_package::default_create_package_input()
-        },
-    )
-    .expect("Cannot get data from create_package");
+        })
+        .expect("Cannot get data from create_package");
 
-    let company_package = add_package_to_company(
-        &mut context,
-        add_package_to_company::NewCompaniesPackagesInput {
+    let company_package = context
+        .request(add_package_to_company::NewCompaniesPackagesInput {
             company_id: new_company.raw_id,
             package_id: new_package.raw_id,
             ..add_package_to_company::default_add_package_to_company_input()
-        },
-    )
-    .expect("Cannot get data from add_package_to_company");
+        })
+        .expect("Cannot get data from add_package_to_company");
     println!("company_package: {:#?}", company_package);
     context.set_bearer(store_1.token.clone());
 
@@ -349,25 +345,21 @@ pub fn clear_delivery_method_in_carts_users() {
         .request(company_payload.clone())
         .expect("Cannot get data from create_delivery_company");
 
-    let new_package = create_package(
-        &mut context,
-        create_package::NewPackagesInput {
+    let new_package = context
+        .request(create_package::NewPackagesInput {
             name: "Initial name".to_string(),
             deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
             ..create_package::default_create_package_input()
-        },
-    )
-    .expect("Cannot get data from create_package");
+        })
+        .expect("Cannot get data from create_package");
 
-    let company_package = add_package_to_company(
-        &mut context,
-        add_package_to_company::NewCompaniesPackagesInput {
+    let company_package = context
+        .request(add_package_to_company::NewCompaniesPackagesInput {
             company_id: new_company.raw_id,
             package_id: new_package.raw_id,
             ..add_package_to_company::default_add_package_to_company_input()
-        },
-    )
-    .expect("Cannot get data from add_package_to_company");
+        })
+        .expect("Cannot get data from add_package_to_company");
     println!("company_package: {:#?}", company_package);
 
     context.set_bearer(store_1.token.clone());

@@ -31,6 +31,7 @@ impl GraphqlRequest for GetCartV2Input {
 
     fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {
         let response_body: Response<ResponseData> = serde_json::from_value(body)?;
+
         match (response_body.data, response_body.errors) {
             (Some(data), None) => Ok(data.cart_v2),
             (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
