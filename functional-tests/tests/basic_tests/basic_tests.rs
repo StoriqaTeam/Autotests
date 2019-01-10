@@ -2286,12 +2286,12 @@ fn upsert_shipping() {
         base_product_id: base_product.raw_id,
         local: vec![upsert_shipping::NewLocalShippingProductsInput {
             company_package_id: company_package1.raw_id,
-            price: Some(42.)
+            price: Some(42.),
         }],
         international: vec![upsert_shipping::NewInternationalShippingProductsInput {
             company_package_id: company_package2.raw_id,
             price: Some(666.),
-            deliveries_to: default_deliveries_to()
+            deliveries_to: default_deliveries_to(),
         }],
         ..upsert_shipping::default_upsert_shipping_input()
     };
@@ -2299,8 +2299,14 @@ fn upsert_shipping() {
         .request(upsert_shipping_payload)
         .expect("Cannot get data from upsert_shipping");
     println!("upsert_shipping {:#?}", upsert_shipping);
-    let local = upsert_shipping.local.first().expect("Empty local shipping list from upsert_shipping");
-    let international = upsert_shipping.international.first().expect("Empty international shipping list from upsert_shipping");
+    let local = upsert_shipping
+        .local
+        .first()
+        .expect("Empty local shipping list from upsert_shipping");
+    let international = upsert_shipping
+        .international
+        .first()
+        .expect("Empty international shipping list from upsert_shipping");
 
     // then
     {

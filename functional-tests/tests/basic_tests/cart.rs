@@ -54,7 +54,7 @@ fn set_coupon_in_cart() {
     //then
     let user_cart = context
         .request(default_get_cart_input())
-        .expect("get_cart_v2 failed for user_cart")
+        .expect("get_cart failed for user_cart")
         .expect("user_cart is none");
     assert!(
         user_cart
@@ -93,7 +93,7 @@ fn increment_in_cart() {
     //then
     let user_cart = context
         .request(default_get_cart_input())
-        .expect("get_cart_v2 failed for user_cart")
+        .expect("get_cart failed for user_cart")
         .expect("user_cart is none");
     assert_eq!(
         user_cart
@@ -129,7 +129,7 @@ fn delete_from_cart() {
     //then
     let user_cart = context
         .request(default_get_cart_input())
-        .expect("get_cart_v2 failed for user_cart")
+        .expect("get_cart failed for user_cart")
         .expect("user_cart is none");
     assert!(user_cart.get_product(created_product.raw_id).is_none());
 }
@@ -169,7 +169,7 @@ pub fn add_in_cart() {
     //then
     let cart = context
         .request(default_get_cart_input())
-        .expect("get_cart_v2 failed for user_cart");
+        .expect("get_cart failed for user_cart");
     assert!(cart.is_some(), "add_in_cart returned None");
     let mut cart = cart.expect("add_in_cart returned None");
     let store = cart.stores.edges.pop();
@@ -190,7 +190,7 @@ fn check_exists_delivery_method_in_cart(
 ) {
     let user_cart = context
         .request(default_get_cart_input())
-        .expect("get_cart_v2 failed for user_cart")
+        .expect("get_cart failed for user_cart")
         .expect("user_cart is none");
 
     let find_product_id_with_delivery = store_1.product_1.product_1.raw_id;
@@ -380,7 +380,7 @@ pub fn remove_delivery_method_from_cart() {
 
     let user_cart = context
         .request(default_get_cart_input())
-        .expect("get_cart_v2 failed for user_cart")
+        .expect("get_cart failed for user_cart")
         .expect("user_cart is none");
 
     let find_product_id_with_delivery = store_1.product_1.product_1.raw_id;
@@ -464,7 +464,7 @@ pub fn clear_delivery_method_in_carts_users() {
 
     let user_cart = context
         .request(default_get_cart_input())
-        .expect("get_cart_v2 failed for user_cart")
+        .expect("get_cart failed for user_cart")
         .expect("user_cart is none");
 
     let find_product_id_with_delivery = store_1.product_1.product_1.raw_id;
@@ -513,7 +513,7 @@ fn check_changed_selection(context: &mut TestContext, product_id: i64, selected:
     //then
     let user_cart = context
         .request(default_get_cart_input())
-        .expect("get_cart_v2 failed for user_cart")
+        .expect("get_cart failed for user_cart")
         .expect("user_cart is none");
     assert_eq!(
         user_cart
@@ -819,9 +819,9 @@ fn user_has_products_in_cart(context: &mut TestContext, user_token: String) -> H
     context.set_bearer(user_token);
     let user_cart = context
         .request(default_get_cart_input())
-        .expect("get_cart_v2 failed for user_cart");
+        .expect("get_cart failed for user_cart");
     user_cart
-        .expect("get_cart_v2 returned None for user")
+        .expect("get_cart returned None for user")
         .stores
         .edges
         .into_iter()
