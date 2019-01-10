@@ -6,7 +6,7 @@ use functional_tests::query::add_base_product_to_coupon::*;
 use functional_tests::query::add_in_cart::*;
 use functional_tests::query::create_coupon::*;
 use functional_tests::query::delete_from_cart::*;
-use functional_tests::query::get_cart_v2::*;
+use functional_tests::query::get_cart::*;
 use functional_tests::query::increment_in_cart::*;
 use functional_tests::query::set_coupon_in_cart::*;
 use functional_tests::query::*;
@@ -26,7 +26,7 @@ fn set_coupon_in_cart() {
             product_id: created_product.raw_id,
             ..default_add_in_cart_input()
         })
-        .expect("add_in_cart_v2 failed");
+        .expect("add_in_cart failed");
     let coupon = context
         .request(NewCouponInput {
             code: "HAPPYTEST".to_string(),
@@ -53,7 +53,7 @@ fn set_coupon_in_cart() {
         .expect("set_coupon_in_cart failed");
     //then
     let user_cart = context
-        .request(default_get_cart_v2_input())
+        .request(default_get_cart_input())
         .expect("get_cart_v2 failed for user_cart")
         .expect("user_cart is none");
     assert!(
@@ -81,7 +81,7 @@ fn increment_in_cart() {
             product_id: created_product.raw_id,
             ..default_add_in_cart_input()
         })
-        .expect("add_in_cart_v2 failed");
+        .expect("add_in_cart failed");
     //when
     let _ = context
         .request(IncrementInCartInput {
@@ -92,7 +92,7 @@ fn increment_in_cart() {
         .expect("increment_in_cart failed");
     //then
     let user_cart = context
-        .request(default_get_cart_v2_input())
+        .request(default_get_cart_input())
         .expect("get_cart_v2 failed for user_cart")
         .expect("user_cart is none");
     assert_eq!(
@@ -118,7 +118,7 @@ fn delete_from_cart() {
             product_id: created_product.raw_id,
             ..default_add_in_cart_input()
         })
-        .expect("add_in_cart_v2 failed");
+        .expect("add_in_cart failed");
     //when
     let _ = context
         .request(DeleteFromCartInput {
@@ -128,7 +128,7 @@ fn delete_from_cart() {
         .expect("delete_from_cart failed");
     //then
     let user_cart = context
-        .request(default_get_cart_v2_input())
+        .request(default_get_cart_input())
         .expect("get_cart_v2 failed for user_cart")
         .expect("user_cart is none");
     assert!(user_cart.get_product(created_product.raw_id).is_none());
@@ -165,13 +165,13 @@ pub fn add_in_cart() {
             value: Some(10),
             ..default_add_in_cart_input()
         })
-        .expect("add_in_cart_v2 failed");
+        .expect("add_in_cart failed");
     //then
     let cart = context
-        .request(default_get_cart_v2_input())
+        .request(default_get_cart_input())
         .expect("get_cart_v2 failed for user_cart");
-    assert!(cart.is_some(), "add_in_cart_v2 returned None");
-    let mut cart = cart.expect("add_in_cart_v2 returned None");
+    assert!(cart.is_some(), "add_in_cart returned None");
+    let mut cart = cart.expect("add_in_cart returned None");
     let store = cart.stores.edges.pop();
     assert!(store.is_some(), "cart returned no stores");
     let mut store = store.expect("cart returned no stores").node;
@@ -189,7 +189,7 @@ fn check_exists_delivery_method_in_cart(
     shipping_id: i64,
 ) {
     let user_cart = context
-        .request(default_get_cart_v2_input())
+        .request(default_get_cart_input())
         .expect("get_cart_v2 failed for user_cart")
         .expect("user_cart is none");
 
@@ -379,7 +379,7 @@ pub fn remove_delivery_method_from_cart() {
     context.set_bearer(buyer_1.token.clone());
 
     let user_cart = context
-        .request(default_get_cart_v2_input())
+        .request(default_get_cart_input())
         .expect("get_cart_v2 failed for user_cart")
         .expect("user_cart is none");
 
@@ -463,7 +463,7 @@ pub fn clear_delivery_method_in_carts_users() {
     context.set_bearer(buyer_1.token.clone());
 
     let user_cart = context
-        .request(default_get_cart_v2_input())
+        .request(default_get_cart_input())
         .expect("get_cart_v2 failed for user_cart")
         .expect("user_cart is none");
 
@@ -495,7 +495,7 @@ fn set_selection_in_cart() {
             product_id: created_product.raw_id,
             ..default_add_in_cart_input()
         })
-        .expect("add_in_cart_v2 failed");
+        .expect("add_in_cart failed");
     //then
     check_changed_selection(&mut context, created_product.raw_id, false);
     check_changed_selection(&mut context, created_product.raw_id, true);
@@ -512,7 +512,7 @@ fn check_changed_selection(context: &mut TestContext, product_id: i64, selected:
         .expect("set_quantity_in_cart failed");
     //then
     let user_cart = context
-        .request(default_get_cart_v2_input())
+        .request(default_get_cart_input())
         .expect("get_cart_v2 failed for user_cart")
         .expect("user_cart is none");
     assert_eq!(
@@ -792,7 +792,7 @@ fn set_quantity_in_cart() {
             product_id: created_product.raw_id,
             ..default_add_in_cart_input()
         })
-        .expect("add_in_cart_v2 failed");
+        .expect("add_in_cart failed");
     //when
     context
         .request(set_quantity_in_cart::SetQuantityInCartInput {
@@ -803,8 +803,8 @@ fn set_quantity_in_cart() {
         .expect("set_quantity_in_cart failed");
     //then
     let user_cart = context
-        .request(default_get_cart_v2_input())
-        .expect("get_cart_v2 failed for user_cart")
+        .request(default_get_cart_input())
+        .expect("get_cart failed for user_cart")
         .expect("user_cart is none");
     assert_eq!(
         user_cart
@@ -818,7 +818,7 @@ fn set_quantity_in_cart() {
 fn user_has_products_in_cart(context: &mut TestContext, user_token: String) -> HashSet<i64> {
     context.set_bearer(user_token);
     let user_cart = context
-        .request(default_get_cart_v2_input())
+        .request(default_get_cart_input())
         .expect("get_cart_v2 failed for user_cart");
     user_cart
         .expect("get_cart_v2 returned None for user")

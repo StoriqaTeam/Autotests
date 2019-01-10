@@ -40,7 +40,7 @@ pub mod generate_coupon_code;
 pub mod get_attributes;
 pub mod get_available_shipping_for_user;
 pub mod get_base_product;
-pub mod get_cart_v2;
+pub mod get_cart;
 pub mod get_categories;
 pub mod get_categories_with_products;
 pub mod get_company_package;
