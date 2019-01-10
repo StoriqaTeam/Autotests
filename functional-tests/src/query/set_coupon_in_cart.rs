@@ -16,7 +16,7 @@ pub use self::set_coupon_in_cart_mutation::*;
 pub fn default_set_coupon_in_cart_input() -> SetCouponInCartInput {
     SetCouponInCartInput {
         client_mutation_id: "".to_string(),
-        store_id: 1,
+        store_id: 0,
         coupon_code: "".to_string(),
     }
 }

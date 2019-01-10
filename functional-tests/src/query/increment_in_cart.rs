@@ -16,7 +16,7 @@ pub use self::increment_in_cart_mutation::*;
 pub fn default_increment_in_cart_input() -> IncrementInCartInput {
     IncrementInCartInput {
         client_mutation_id: "".to_string(),
-        product_id: 1,
+        product_id: 0,
         value: None,
     }
 }
