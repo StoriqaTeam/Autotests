@@ -3295,9 +3295,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use incrementInCartV2",
+              "deprecationReason": null,
               "description": "Increment in cart.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "incrementInCart",
               "type": {
                 "kind": "OBJECT",

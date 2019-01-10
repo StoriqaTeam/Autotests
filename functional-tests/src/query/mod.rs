@@ -50,6 +50,7 @@ pub mod get_me;
 pub mod get_package;
 pub mod get_store;
 pub mod get_wizard_store;
+pub mod increment_in_cart;
 pub mod introspection;
 pub mod refresh_jwt;
 pub mod remove_delivery_method_from_cart;

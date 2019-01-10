@@ -1,0 +1,12 @@
+mutation incrementInCart($input: IncrementInCartInput!) {
+  incrementInCart(input: $input) {
+    id
+    productsCost
+    productsCostWithoutDiscounts
+    couponsDiscounts
+    deliveryCost
+    totalCost
+    totalCostWithoutDiscounts
+    totalCount
+ }
+}
