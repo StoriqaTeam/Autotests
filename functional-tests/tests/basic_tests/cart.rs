@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 
 use functional_tests::context::TestContext;
+use functional_tests::defaults::*;
 use functional_tests::query::add_base_product_to_coupon::*;
 use functional_tests::query::add_in_cart::*;
 use functional_tests::query::create_coupon::*;
@@ -221,7 +222,7 @@ fn set_up_delivery(context: &mut TestContext) -> Delivery {
         name: "Test company".to_string(),
         label: "TEST".to_string(),
         description: Some("Test description".to_string()),
-        deliveries_from: vec!["RUS".to_string()],
+        deliveries_from: default_deliveries_from(),
         logo: "test loge URL".to_string(),
         ..create_delivery_company::default_create_company_input()
     };
@@ -233,7 +234,7 @@ fn set_up_delivery(context: &mut TestContext) -> Delivery {
     let new_package = context
         .request(create_package::NewPackagesInput {
             name: "Initial name".to_string(),
-            deliveries_to: vec!["RUS".to_string(), "USA".to_string()],
+            deliveries_to: default_deliveries_to(),
             ..create_package::default_create_package_input()
         })
         .expect("Cannot get data from create_package");

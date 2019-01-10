@@ -13,12 +13,14 @@ mutation UpsertShipping($input: NewShippingInput!) {
         numeric
         children {
           label
+          level
           parent
           alpha2
           alpha3
           numeric
           children {
             label
+            level
             parent
             alpha2
             alpha3
@@ -40,12 +42,14 @@ mutation UpsertShipping($input: NewShippingInput!) {
         numeric
         children {
           label
+          level
           parent
           alpha2
           alpha3
           numeric
           children {
             label
+            level
             parent
             alpha2
             alpha3

@@ -8,7 +8,7 @@ use request::GraphqlRequest;
 #[graphql(
     schema_path = "graphql/schema.json",
     query_path = "graphql/queries/upsert_shipping.graphql",
-    response_derives = "Debug"
+    response_derives = "Debug, Clone"
 )]
 pub struct UpsertShippingMutation;
 
