@@ -3349,9 +3349,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use addInCartV2",
+              "deprecationReason": null,
               "description": "Add in cart.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "AddInCart",
               "type": {
                 "kind": "OBJECT",

@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use functional_tests::context::TestContext;
 use functional_tests::query::add_base_product_to_coupon::*;
-use functional_tests::query::add_in_cart_v2::*;
+use functional_tests::query::add_in_cart::*;
 use functional_tests::query::create_coupon::*;
 use functional_tests::query::delete_from_cart::*;
 use functional_tests::query::get_cart_v2::*;
@@ -21,9 +21,9 @@ fn set_coupon_in_cart() {
         set_up_published_product(&mut context).expect("set_up_published_product failed");
     context.set_bearer(token);
     let _ = context
-        .request(AddInCartInputV2 {
+        .request(AddInCartInput {
             product_id: created_product.raw_id,
-            ..default_add_in_cart_v2_input()
+            ..default_add_in_cart_input()
         })
         .expect("add_in_cart_v2 failed");
     let coupon = context
@@ -76,9 +76,9 @@ fn increment_in_cart() {
         set_up_published_product(&mut context).expect("set_up_published_product failed");
     context.set_bearer(token);
     let _ = context
-        .request(AddInCartInputV2 {
+        .request(AddInCartInput {
             product_id: created_product.raw_id,
-            ..default_add_in_cart_v2_input()
+            ..default_add_in_cart_input()
         })
         .expect("add_in_cart_v2 failed");
     //when
@@ -113,9 +113,9 @@ fn delete_from_cart() {
         set_up_published_product(&mut context).expect("set_up_published_product failed");
     context.set_bearer(token);
     let _ = context
-        .request(AddInCartInputV2 {
+        .request(AddInCartInput {
             product_id: created_product.raw_id,
-            ..default_add_in_cart_v2_input()
+            ..default_add_in_cart_input()
         })
         .expect("add_in_cart_v2 failed");
     //when
@@ -159,10 +159,10 @@ pub fn add_in_cart() {
     context.set_bearer(buyer_token);
     //when
     let _ = context
-        .request(AddInCartInputV2 {
+        .request(AddInCartInput {
             product_id: created_product.raw_id,
             value: Some(10),
-            ..default_add_in_cart_v2_input()
+            ..default_add_in_cart_input()
         })
         .expect("add_in_cart_v2 failed");
     //then
@@ -490,9 +490,9 @@ fn set_selection_in_cart() {
         set_up_published_product(&mut context).expect("set_up_published_product failed");
     context.set_bearer(token);
     let _ = context
-        .request(AddInCartInputV2 {
+        .request(AddInCartInput {
             product_id: created_product.raw_id,
-            ..default_add_in_cart_v2_input()
+            ..default_add_in_cart_input()
         })
         .expect("add_in_cart_v2 failed");
     //then
@@ -787,9 +787,9 @@ fn set_quantity_in_cart() {
         set_up_published_product(&mut context).expect("set_up_published_product failed");
     context.set_bearer(token);
     let _ = context
-        .request(AddInCartInputV2 {
+        .request(AddInCartInput {
             product_id: created_product.raw_id,
-            ..default_add_in_cart_v2_input()
+            ..default_add_in_cart_input()
         })
         .expect("add_in_cart_v2 failed");
     //when
