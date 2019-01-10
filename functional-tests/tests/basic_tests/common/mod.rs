@@ -41,21 +41,21 @@ pub fn create_user_with_products_in_carts(
     context.set_bearer(token.clone());
     // add products to cart
     for store in stores {
-        let _ = context.request(add_in_cart_v2::AddInCartInputV2 {
+        let _ = context.request(add_in_cart::AddInCartInput {
             product_id: store.product_1.product_1.raw_id,
-            ..add_in_cart_v2::default_add_in_cart_v2_input()
+            ..add_in_cart::default_add_in_cart_input()
         })?;
-        let _ = context.request(add_in_cart_v2::AddInCartInputV2 {
+        let _ = context.request(add_in_cart::AddInCartInput {
             product_id: store.product_1.product_2.raw_id,
-            ..add_in_cart_v2::default_add_in_cart_v2_input()
+            ..add_in_cart::default_add_in_cart_input()
         })?;
-        let _ = context.request(add_in_cart_v2::AddInCartInputV2 {
+        let _ = context.request(add_in_cart::AddInCartInput {
             product_id: store.product_2.product_1.raw_id,
-            ..add_in_cart_v2::default_add_in_cart_v2_input()
+            ..add_in_cart::default_add_in_cart_input()
         })?;
-        let _ = context.request(add_in_cart_v2::AddInCartInputV2 {
+        let _ = context.request(add_in_cart::AddInCartInput {
             product_id: store.product_2.product_2.raw_id,
-            ..add_in_cart_v2::default_add_in_cart_v2_input()
+            ..add_in_cart::default_add_in_cart_input()
         })?;
     }
 

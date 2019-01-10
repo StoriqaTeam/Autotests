@@ -3295,9 +3295,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use incrementInCartV2",
+              "deprecationReason": null,
               "description": "Increment in cart.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "incrementInCart",
               "type": {
                 "kind": "OBJECT",
@@ -3349,9 +3349,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use addInCartV2",
+              "deprecationReason": null,
               "description": "Add in cart.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "AddInCart",
               "type": {
                 "kind": "OBJECT",
@@ -3457,9 +3457,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use setCouponInCartV2",
+              "deprecationReason": null,
               "description": "Sets coupon in cart.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "setCouponInCart",
               "type": {
                 "kind": "OBJECT",

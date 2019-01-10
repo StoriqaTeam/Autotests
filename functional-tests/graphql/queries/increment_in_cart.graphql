@@ -1,5 +1,5 @@
-mutation addInCartV2($input: AddInCartInputV2!) {
-  addInCartV2(input: $input) {
+mutation incrementInCart($input: IncrementInCartInput!) {
+  incrementInCart(input: $input) {
     id
     productsCost
     productsCostWithoutDiscounts
