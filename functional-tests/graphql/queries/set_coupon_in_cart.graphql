@@ -1,0 +1,12 @@
+mutation setCouponInCart($input: SetCouponInCartInput!) {
+  setCouponInCart(input: $input) {
+    id
+    productsCost
+    productsCostWithoutDiscounts
+    couponsDiscounts
+    deliveryCost
+    totalCost
+    totalCostWithoutDiscounts
+    totalCount
+ }
+}

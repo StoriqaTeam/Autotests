@@ -38,6 +38,14 @@ impl RustGetCartV2CartV2 {
             .find(|product| product.raw_id == product_id)
     }
 
+    pub fn get_store(self, store_id: i64) -> Option<RustGetCartV2CartV2StoresEdgesNode> {
+        self.stores
+            .edges
+            .into_iter()
+            .map(|e| e.node)
+            .find(|store| store.raw_id == store_id)
+    }
+
     pub fn get_products(self) -> Vec<RustGetCartV2CartV2StoresEdgesNodeProducts> {
         self.stores
             .edges

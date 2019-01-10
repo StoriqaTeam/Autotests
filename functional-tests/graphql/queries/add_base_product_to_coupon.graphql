@@ -1,0 +1,5 @@
+mutation addBaseProductToCoupon($input: ChangeBaseProductsInCoupon!) {
+  addBaseProductToCoupon(input: $input) {
+    mock
+ }
+}

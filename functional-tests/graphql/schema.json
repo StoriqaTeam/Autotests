@@ -3457,9 +3457,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use setCouponInCartV2",
+              "deprecationReason": null,
               "description": "Sets coupon in cart.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "setCouponInCart",
               "type": {
                 "kind": "OBJECT",
