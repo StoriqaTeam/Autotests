@@ -23185,9 +23185,9 @@
             },
             {
               "args": [],
-              "deprecationReason": "use cartV2",
+              "deprecationReason": null,
               "description": "Fetches cart products.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "cart",
               "type": {
                 "kind": "OBJECT",

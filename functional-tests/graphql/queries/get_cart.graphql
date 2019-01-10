@@ -1,5 +1,5 @@
-query GetCartV2($userCountryCode: String!) {
-  cartV2(userCountryCode: $userCountryCode) {
+query GetCart($userCountryCode: String!) {
+  cart(userCountryCode: $userCountryCode) {
     id
     stores {
       edges {

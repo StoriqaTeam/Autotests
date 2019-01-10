@@ -7,30 +7,27 @@ use request::GraphqlRequest;
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "graphql/schema.json",
-    query_path = "graphql/queries/get_cart_v2.graphql",
+    query_path = "graphql/queries/get_cart.graphql",
     response_derives = "Debug, PartialEq"
 )]
-pub struct GetCartV2Query;
+pub struct GetCartQuery;
 
-pub use self::get_cart_v2_query::*;
+pub use self::get_cart_query::*;
 
-pub struct GetCartV2Input {
+pub struct GetCartInput {
     user_country_code: String,
 }
 
-pub fn default_get_cart_v2_input() -> GetCartV2Input {
-    GetCartV2Input {
+pub fn default_get_cart_input() -> GetCartInput {
+    GetCartInput {
         user_country_code: "RUS".to_string(),
     }
 }
 
-type GraphqlRequestOutput = Option<RustGetCartV2CartV2>;
+type GraphqlRequestOutput = Option<RustGetCartCart>;
 
-impl RustGetCartV2CartV2 {
-    pub fn get_product(
-        self,
-        product_id: i64,
-    ) -> Option<RustGetCartV2CartV2StoresEdgesNodeProducts> {
+impl RustGetCartCart {
+    pub fn get_product(self, product_id: i64) -> Option<RustGetCartCartStoresEdgesNodeProducts> {
         self.stores
             .edges
             .into_iter()
@@ -38,7 +35,7 @@ impl RustGetCartV2CartV2 {
             .find(|product| product.raw_id == product_id)
     }
 
-    pub fn get_store(self, store_id: i64) -> Option<RustGetCartV2CartV2StoresEdgesNode> {
+    pub fn get_store(self, store_id: i64) -> Option<RustGetCartCartStoresEdgesNode> {
         self.stores
             .edges
             .into_iter()
@@ -46,7 +43,7 @@ impl RustGetCartV2CartV2 {
             .find(|store| store.raw_id == store_id)
     }
 
-    pub fn get_products(self) -> Vec<RustGetCartV2CartV2StoresEdgesNodeProducts> {
+    pub fn get_products(self) -> Vec<RustGetCartCartStoresEdgesNodeProducts> {
         self.stores
             .edges
             .into_iter()
@@ -56,25 +53,25 @@ impl RustGetCartV2CartV2 {
     }
 }
 
-impl GraphqlRequest for GetCartV2Input {
+impl GraphqlRequest for GetCartInput {
     type Output = GraphqlRequestOutput;
 
     fn response(body: serde_json::Value) -> Result<GraphqlRequestOutput, FailureError> {
         let response_body: Response<ResponseData> = serde_json::from_value(body)?;
 
         match (response_body.data, response_body.errors) {
-            (Some(data), None) => Ok(data.cart_v2),
+            (Some(data), None) => Ok(data.cart),
             (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
             _ => unreachable!(),
         }
     }
 }
 
-impl From<GetCartV2Input> for serde_json::Value {
-    fn from(val: GetCartV2Input) -> serde_json::Value {
-        let request_body = GetCartV2Query::build_query(Variables {
+impl From<GetCartInput> for serde_json::Value {
+    fn from(val: GetCartInput) -> serde_json::Value {
+        let request_body = GetCartQuery::build_query(Variables {
             user_country_code: val.user_country_code,
         });
-        serde_json::to_value(request_body).expect("failed to serialize GetCartV2Input")
+        serde_json::to_value(request_body).expect("failed to serialize GetCartInput")
     }
 }
