@@ -9,3 +9,4 @@ mod b_healthcheck;
 mod basic_tests;
 mod cart;
 mod common;
+mod user_address;
