@@ -4,6 +4,7 @@ use functional_tests::context::TestContext;
 use functional_tests::defaults::*;
 use functional_tests::query::add_base_product_to_coupon::*;
 use functional_tests::query::add_in_cart::*;
+use functional_tests::query::add_in_cart_v2::*;
 use functional_tests::query::create_coupon::*;
 use functional_tests::query::delete_from_cart::*;
 use functional_tests::query::get_cart::*;
@@ -164,6 +165,55 @@ pub fn add_in_cart() {
             product_id: created_product.raw_id,
             value: Some(10),
             ..default_add_in_cart_input()
+        })
+        .expect("add_in_cart failed");
+    //then
+    let cart = context
+        .request(default_get_cart_input())
+        .expect("get_cart failed for user_cart");
+    assert!(cart.is_some(), "add_in_cart returned None");
+    let mut cart = cart.expect("add_in_cart returned None");
+    let store = cart.stores.edges.pop();
+    assert!(store.is_some(), "cart returned no stores");
+    let mut store = store.expect("cart returned no stores").node;
+    assert_eq!(store.raw_id, created_store.raw_id);
+    let product = store.products.pop();
+    assert!(product.is_some(), "store returned no products");
+    let product = product.expect("store returned no products");
+    assert_eq!(product.raw_id, created_product.raw_id);
+    assert_eq!(product.quantity, 10);
+}
+
+#[test]
+pub fn add_in_cart_v2() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, _token, created_store, _category, _base_product, created_product) =
+        set_up_published_product(&mut context).expect("set_up_published_product failed");
+    let buyer = context
+        .request(create_user::CreateUserInput {
+            email: "buyer@email.com".to_string(),
+            ..create_user::default_create_user_input()
+        })
+        .expect("create_user failed for buyer");
+    context
+        .verify_user_email(&buyer.email)
+        .expect("verify_user_email failed for buyer");;
+    let buyer_token: String = context
+        .request(get_jwt_by_email::CreateJWTEmailInput {
+            email: buyer.email,
+            ..get_jwt_by_email::default_create_jwt_email_input()
+        })
+        .expect("get_jwt_by_email failed for buyer")
+        .token;
+    context.set_bearer(buyer_token);
+    //when
+    let _ = context
+        .request(AddInCartInputV2 {
+            product_id: created_product.raw_id,
+            value: Some(10),
+            ..default_add_in_cart_v2_input()
         })
         .expect("add_in_cart failed");
     //then

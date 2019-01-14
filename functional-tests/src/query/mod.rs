@@ -1,6 +1,7 @@
 pub mod add_attribute_to_category;
 pub mod add_base_product_to_coupon;
 pub mod add_in_cart;
+pub mod add_in_cart_v2;
 pub mod add_package_to_company;
 pub mod apply_password_reset;
 pub mod change_password;
