@@ -40,7 +40,6 @@ pub fn default_update_base_product_input() -> UpdateBaseProductInput {
         }]),
         currency: Some(Currency::BTC),
         category_id: None,
-        rating: Some(1.0),
         slug: Some("updated-slug".to_string()),
         length_cm: None,
         width_cm: None,
