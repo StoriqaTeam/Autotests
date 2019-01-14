@@ -40,7 +40,6 @@ pub fn default_update_store_input() -> UpdateStoreInput {
         facebook_url: Some("updated facebook url".to_string()),
         default_language: Some(Language::CH),
         slogan: Some("updated slogan".to_string()),
-        rating: Some(1.0),
         address_full: AddressInput {
             value: Some("updated address value".to_string()),
             country: Some("Updated".to_string()),
