@@ -68,9 +68,17 @@ fn update_user_address() {
             id: delivery_address.id,
             is_priority: Some(true),
             address_full: update_user_delivery_address_full::AddressInput {
-                country: Some("Russian Federation".to_string()),
-                administrative_area_level1: Some("Moscow Region".to_string()),
-                administrative_area_level2: Some("Moscow".to_string()),
+                value: Some("New Value".to_string()),
+                country: Some("New Country".to_string()),
+                country_code: Some("New Country Code".to_string()),
+                administrative_area_level1: Some("New Administrative Area Level 1".to_string()),
+                administrative_area_level2: Some("New Administrative Area Level 2".to_string()),
+                locality: Some("New Locality".to_string()),
+                political: Some("New Political".to_string()),
+                postal_code: Some("New Postal Code".to_string()),
+                route: Some("New Route".to_string()),
+                street_number: Some("New Street Number".to_string()),
+                place_id: Some("New Place ID".to_string()),
                 ..update_user_delivery_address_full::default_address_input()
             },
             ..default_update_user_delivery_address_full_input()
@@ -88,23 +96,23 @@ fn update_user_address() {
         .expect("Empty delivery_addresses_full from get_delivery_address");
     assert_eq!(delivery_addresses.len(), 1);
     let address = delivery_addresses.first().unwrap().address.clone();
-    assert_eq!(address.value, Some("Value".to_string()));
-    assert_eq!(address.country, Some("Russian Federation".to_string()));
-    assert_eq!(address.country_code, Some("Country Code".to_string()));
+    assert_eq!(address.value, Some("New Value".to_string()));
+    assert_eq!(address.country, Some("New Country".to_string()));
+    assert_eq!(address.country_code, Some("New Country Code".to_string()));
     assert_eq!(
         address.administrative_area_level1,
-        Some("Moscow Region".to_string())
+        Some("New Administrative Area Level 1".to_string())
     );
     assert_eq!(
         address.administrative_area_level2,
-        Some("Moscow".to_string())
+        Some("New Administrative Area Level 2".to_string())
     );
-    assert_eq!(address.locality, Some("Locality".to_string()));
-    assert_eq!(address.political, Some("Political".to_string()));
-    assert_eq!(address.postal_code, Some("Postal Code".to_string()));
-    assert_eq!(address.route, Some("Route".to_string()));
-    assert_eq!(address.street_number, Some("Street Number".to_string()));
-    // assert_eq!(address.place_id, Some("Place ID".to_string()));
+    assert_eq!(address.locality, Some("New Locality".to_string()));
+    assert_eq!(address.political, Some("New Political".to_string()));
+    assert_eq!(address.postal_code, Some("New Postal Code".to_string()));
+    assert_eq!(address.route, Some("New Route".to_string()));
+    assert_eq!(address.street_number, Some("New Street Number".to_string()));
+    // assert_eq!(address.place_id, Some("New Place ID".to_string()));
 }
 
 #[test]
