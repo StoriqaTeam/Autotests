@@ -3619,9 +3619,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use setCommentInCartV2",
+              "deprecationReason": null,
               "description": "Set comment in cart.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "setCommentInCart",
               "type": {
                 "kind": "OBJECT",
@@ -5886,16 +5886,6 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "Int",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": "Rating.",
-              "name": "rating",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
                 "ofType": null
               }
             },
@@ -9633,16 +9623,6 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": "Rating",
-              "name": "rating",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
                 "ofType": null
               }
             },
