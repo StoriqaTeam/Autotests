@@ -9,10 +9,48 @@ use functional_tests::query::create_coupon::*;
 use functional_tests::query::delete_from_cart::*;
 use functional_tests::query::get_cart::*;
 use functional_tests::query::increment_in_cart::*;
+use functional_tests::query::set_comment_in_cart::*;
 use functional_tests::query::set_coupon_in_cart::*;
 use functional_tests::query::*;
 
 use common::*;
+
+#[test]
+fn set_comment_in_cart() {
+    //setup
+    let mut context = TestContext::new();
+    //given
+    let (_user, token, _created_store, _category, _base_product, created_product) =
+        set_up_published_product(&mut context).expect("set_up_published_product failed");
+    context.set_bearer(token);
+    let _ = context
+        .request(AddInCartInput {
+            product_id: created_product.raw_id,
+            ..default_add_in_cart_input()
+        })
+        .expect("add_in_cart failed");
+    //when
+    let _ = context
+        .request(SetCommentInCartInput {
+            product_id: created_product.raw_id,
+            value: "some product comment".to_string(),
+            ..default_set_comment_in_cart_input()
+        })
+        .expect("increment_in_cart failed");
+    //then
+    let user_cart = context
+        .request(default_get_cart_input())
+        .expect("get_cart failed for user_cart")
+        .expect("user_cart is none");
+    assert_eq!(
+        user_cart
+            .get_product(created_product.raw_id)
+            .expect("Could not found target product")
+            .comment,
+        "some product comment".to_string(),
+        "Wrong comment"
+    );
+}
 
 #[test]
 fn set_coupon_in_cart() {

@@ -60,6 +60,7 @@ pub mod request_password_reset;
 pub mod revoke_jwt;
 pub mod send_base_product_to_moderation;
 pub mod send_store_to_moderation;
+pub mod set_comment_in_cart;
 pub mod set_coupon_in_cart;
 pub mod set_delivery_method_in_cart;
 pub mod set_moderation_status_base_product;
