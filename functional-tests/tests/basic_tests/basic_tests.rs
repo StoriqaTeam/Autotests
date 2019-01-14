@@ -434,6 +434,7 @@ pub fn update_base_product() {
     let (_user, token, _store, _category, base_product) =
         set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
     context.set_bearer(token);
+    let initial_rating = base_product.rating;
     //when
     let updated_base_product = context
         .request(update_base_product::UpdateBaseProductInput {
@@ -452,7 +453,7 @@ pub fn update_base_product() {
         .base_product
         .unwrap();
     let expected_values = update_base_product::default_update_base_product_input();
-    assert!((updated_base_product.rating - expected_values.rating.unwrap()).abs() < 0.001);
+    assert!((updated_base_product.rating - initial_rating).abs() < 0.001);
     assert_eq!(updated_base_product.slug, expected_values.slug.unwrap());
     assert_eq!(updated_base_product.length_cm, Some(20));
     assert_eq!(updated_base_product.width_cm, Some(30));
@@ -490,7 +491,6 @@ pub fn update_base_product() {
 }
 
 #[test]
-#[ignore]
 pub fn update_base_product_does_not_update_rating() {
     //setup
     let mut context = TestContext::new();
@@ -600,7 +600,6 @@ pub fn update_store() {
 }
 
 #[test]
-#[ignore]
 pub fn update_store_does_not_update_rating() {
     //setup
     let mut context = TestContext::new();
@@ -1810,7 +1809,7 @@ fn verify_update_store_values(
         updated_store.slogan.expect("update_store.slogan is none"),
         expected_values.slogan.unwrap()
     );
-    assert!((updated_store.rating - expected_values.rating.unwrap()).abs() < 0.001);
+//    assert!((updated_store.rating - expected_values.rating.unwrap()).abs() < 0.001);
 
     assert_eq!(
         updated_store

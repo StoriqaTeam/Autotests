@@ -5891,16 +5891,6 @@
             },
             {
               "defaultValue": null,
-              "description": "Rating.",
-              "name": "rating",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
               "description": "Slug.",
               "name": "slug",
               "type": {
@@ -9633,16 +9623,6 @@
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
-                "ofType": null
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": "Rating",
-              "name": "rating",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Float",
                 "ofType": null
               }
             },
