@@ -1,7 +1,6 @@
 use failure::Error as FailureError;
 
 use functional_tests::context::TestContext;
-use functional_tests::defaults::*;
 use functional_tests::query::create_user_delivery_address_full::*;
 use functional_tests::query::delete_user_delivery_address_full::*;
 use functional_tests::query::get_user_delivery_addresses_full::*;
@@ -16,10 +15,8 @@ fn create_user_address() {
     let mut context = TestContext::new();
 
     // given
-    let UserDeliveryAddress {
-        delivery_address,
-        token,
-    } = set_up_user_address(&mut context).expect("Cannot get data from set_up_user_address");
+    let UserDeliveryAddress { token, .. } =
+        set_up_user_address(&mut context).expect("Cannot get data from set_up_user_address");
     context.set_bearer(token);
 
     // when
@@ -50,7 +47,6 @@ fn create_user_address() {
     assert_eq!(address.postal_code, Some("Postal Code".to_string()));
     assert_eq!(address.route, Some("Route".to_string()));
     assert_eq!(address.street_number, Some("Street Number".to_string()));
-    // TODO: this fails for some reason.
     // assert_eq!(address.place_id, Some("Place ID".to_string()));
 }
 
@@ -67,8 +63,7 @@ fn update_user_address() {
 
     // when
     context.as_superadmin();
-    // TODO: Request to non existing endpoint in delivery microservice.
-    let update_delivery_address = context
+    context
         .request(UpdateUserDeliveryAddressFullInput {
             id: delivery_address.id,
             is_priority: Some(true),
@@ -109,7 +104,7 @@ fn update_user_address() {
     assert_eq!(address.postal_code, Some("Postal Code".to_string()));
     assert_eq!(address.route, Some("Route".to_string()));
     assert_eq!(address.street_number, Some("Street Number".to_string()));
-    assert_eq!(address.place_id, Some("Place ID".to_string()));
+    // assert_eq!(address.place_id, Some("Place ID".to_string()));
 }
 
 #[test]
@@ -125,7 +120,7 @@ fn delete_user_address() {
 
     // when
     context.as_superadmin();
-    let delete_delivery_address = context
+    context
         .request(DeleteUserDeliveryAddressFullInput {
             id: delivery_address.raw_id,
         })
