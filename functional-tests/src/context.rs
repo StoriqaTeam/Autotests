@@ -5,7 +5,7 @@ use reqwest::Client;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
-use config::Config;
+use config::{Config, Env};
 use microservice::*;
 use query::*;
 use request::GraphqlRequest;
@@ -26,10 +26,8 @@ pub struct TestContext {
 }
 
 impl TestContext {
-    pub fn new() -> TestContext {
+    pub fn with_config(config: Config) -> TestContext {
         let client = Client::new();
-
-        let config = Config::new().expect("Could not read config");
 
         let context = TestContext {
             users_microservice: UsersMicroservice {
@@ -81,6 +79,13 @@ impl TestContext {
             client: client.clone(),
         };
 
+        context
+    }
+
+    pub fn new() -> TestContext {
+        let config = Config::new().expect("Could not read config");
+        let context = TestContext::with_config(config);
+
         context.clear_all_data().unwrap();
         context
     }
@@ -90,10 +95,18 @@ impl TestContext {
     }
 
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
-        self.users_microservice.clear_all_data()?;
-        self.stores_microservice.clear_all_data()?;
-        self.orders_microservice.clear_all_data()?;
-        self.notifications_microservice.clear_all_data()?;
+        match self.config.environment.clone() {
+            Env::Docker => {
+                self.users_microservice.clear_all_data()?;
+                self.stores_microservice.clear_all_data()?;
+                self.orders_microservice.clear_all_data()?;
+                self.notifications_microservice.clear_all_data()?;
+            }
+            Env::Cluster { url } => {
+                // TODO.
+            }
+        };
+
         Ok(())
     }
 

@@ -29,10 +29,10 @@ pub struct Gateway {
 }
 
 #[derive(Debug, Deserialize, Clone)]
-#[serde(tag = "type", rename_all="lowercase")]
+#[serde(tag = "type", rename_all = "lowercase")]
 pub enum Env {
     Docker,
-    Cluster { url: String }
+    Cluster { url: String },
 }
 
 impl Config {
@@ -45,11 +45,15 @@ impl Config {
         s.merge(File::with_name("config/base"))?;
         // Optional file specific for environment
         let env = env::var("RUN_MODE").unwrap_or_else(|_| "dev".into());
-        s.merge(File::with_name(&format!("config/{}", env.to_string())).required(false))?;
+        Config::with_env(env)
+    }
 
-        // Add in settings from the environment (with a prefix of STQ_FUNCTIONAL_TESTS)
+    pub fn with_env(env: impl Into<String>) -> Result<Self, ConfigError> {
+        let mut s = RawConfig::new();
+
+        s.merge(File::with_name("config/base"))?;
+        s.merge(File::with_name(&format!("config/{}", env.into())).required(false))?;
         s.merge(Environment::with_prefix("STQ_FUNCTIONAL_TESTS"))?;
-
         s.try_into()
     }
 }
