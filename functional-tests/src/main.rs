@@ -18,7 +18,7 @@ mod routes {
     use functional_tests::context::TestContext;
 
     #[derive(Serialize)]
-    #[serde(tag = "type", rename_all="camelCase")]
+    #[serde(tag = "type", rename_all = "camelCase")]
     pub enum Error {
         NotFound { url: String },
         CouldNotReadConfig {},
@@ -28,13 +28,16 @@ mod routes {
     #[derive(Serialize)]
     pub struct Response {
         pub status: StatusCodeWrapper,
-        pub errors: Vec<Error>
+        pub errors: Vec<Error>,
     }
 
     pub struct StatusCodeWrapper(StatusCode);
 
     impl serde::ser::Serialize for StatusCodeWrapper {
-        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error> where S: serde::Serializer {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: serde::Serializer,
+        {
             serializer.serialize_u16(self.0.as_u16())
         }
     }
@@ -57,7 +60,7 @@ mod routes {
         pub fn with_errors(status: StatusCode, errors: Vec<Error>) -> Response {
             Response {
                 status: StatusCodeWrapper(status),
-                errors
+                errors,
             }
         }
 
@@ -70,27 +73,32 @@ mod routes {
         }
 
         pub fn could_not_read_config() -> Response {
-            Response::with_error(StatusCode::INTERNAL_SERVER_ERROR, Error::CouldNotReadConfig {})
+            Response::with_error(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Error::CouldNotReadConfig {},
+            )
         }
 
         pub fn could_not_clear_data() -> Response {
-            Response::with_error(StatusCode::INTERNAL_SERVER_ERROR, Error::CouldNotClearData {})
+            Response::with_error(
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Error::CouldNotClearData {},
+            )
         }
     }
 
     pub fn clear(_req: &HttpRequest) -> Result<HttpResponse> {
         let config = match Config::with_env("nightly") {
             Ok(config) => config,
-            Err(_) => {
-                return Response::could_not_read_config().to_http_response()
-            }
+            Err(_) => return Response::could_not_read_config().to_http_response(),
         };
         let context = TestContext::with_config(config);
 
         match context.clear_all_data() {
             Ok(_) => Response::ok(),
-            Err(_) => Response::could_not_clear_data()
-        }.to_http_response()
+            Err(_) => Response::could_not_clear_data(),
+        }
+        .to_http_response()
     }
 
     pub fn not_found(req: &HttpRequest) -> Result<HttpResponse> {

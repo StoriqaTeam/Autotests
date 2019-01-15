@@ -29,7 +29,7 @@ pub struct Gateway {
 }
 
 #[derive(Debug, Deserialize, Clone)]
-#[serde(tag = "type", rename_all = "lowercase")]
+#[serde(tag = "type", rename_all = "camelCase")]
 pub enum Env {
     Docker,
     Cluster { url: String },
@@ -37,8 +37,8 @@ pub enum Env {
 
 impl Config {
     /// Creates config from base.toml, which are overwritten by <env>.toml, where env is one of dev,
-    /// k8s. After that it could be overwritten by env variables like STQ_FUNCTIONAL_TESTS (this
-    /// will override `url` field in config).
+    /// k8s, nightly. After that it could be overwritten by env variables like STQ_FUNCTIONAL_TESTS
+    /// (this will override `url` field in config).
     pub fn new() -> Result<Self, ConfigError> {
         let mut s = RawConfig::new();
 
