@@ -103,8 +103,7 @@ impl TestContext {
                 self.notifications_microservice.clear_all_data()?;
             }
             Env::Cluster { url } => {
-                let _ = url;
-                // TODO.
+                self.client.clone().post(url.as_str()).send()?;
             }
         };
 
