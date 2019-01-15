@@ -44,6 +44,7 @@ query GetCart($userCountryCode: String!) {
             rawId
             quantity
             selected
+            comment
             selectPackage {
               id
               companyPackageRawId

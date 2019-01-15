@@ -3619,9 +3619,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use setCommentInCartV2",
+              "deprecationReason": null,
               "description": "Set comment in cart.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "setCommentInCart",
               "type": {
                 "kind": "OBJECT",
