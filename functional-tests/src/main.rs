@@ -11,7 +11,7 @@ use actix_web::http::Method;
 use actix_web::{pred, server, App, HttpResponse};
 
 mod routes {
-    use actix_web::http::{Method, StatusCode};
+    use actix_web::http::StatusCode;
     use actix_web::{HttpRequest, HttpResponse, Result};
 
     use functional_tests::config::Config;
@@ -78,7 +78,7 @@ mod routes {
         }
     }
 
-    pub fn clear(req: &HttpRequest) -> Result<HttpResponse> {
+    pub fn clear(_req: &HttpRequest) -> Result<HttpResponse> {
         let config = match Config::with_env("nightly") {
             Ok(config) => config,
             Err(_) => {
@@ -100,7 +100,7 @@ mod routes {
 
 fn main() {
     let sys = actix::System::new("main");
-    let addr = server::new(|| {
+    let _ = server::new(|| {
         App::new()
             .resource("/clear", |r| r.method(Method::POST).f(routes::clear))
             .default_resource(|r| {
@@ -110,7 +110,7 @@ fn main() {
                 // all requests that are not `GET`
                 r.route()
                     .filter(pred::Not(pred::Get()))
-                    .f(|req| HttpResponse::MethodNotAllowed());
+                    .f(|_| HttpResponse::MethodNotAllowed());
             })
     })
     .bind("0.0.0.0:8000")
