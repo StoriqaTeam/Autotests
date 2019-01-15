@@ -1,6 +1,7 @@
 pub mod add_attribute_to_category;
 pub mod add_base_product_to_coupon;
 pub mod add_in_cart;
+pub mod add_in_cart_v2;
 pub mod add_package_to_company;
 pub mod apply_password_reset;
 pub mod change_password;
@@ -63,6 +64,7 @@ pub mod request_password_reset;
 pub mod revoke_jwt;
 pub mod send_base_product_to_moderation;
 pub mod send_store_to_moderation;
+pub mod set_comment_in_cart;
 pub mod set_coupon_in_cart;
 pub mod set_delivery_method_in_cart;
 pub mod set_moderation_status_base_product;
