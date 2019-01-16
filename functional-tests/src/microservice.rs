@@ -105,6 +105,11 @@ impl NotificationsMicroservice {
             .json(json)
             .send()?;
 
+        let conn = PgConnection::establish(self.database_url.as_ref())?;
+        let _ = diesel::sql_query("TRUNCATE TABLE user_roles;").execute(&conn)?;
+        let _ = diesel::sql_query("INSERT INTO user_roles (user_id, name) VALUES (1, 'superuser')")
+            .execute(&conn)?;
+
         Ok(())
     }
 
@@ -117,6 +122,15 @@ impl NotificationsMicroservice {
 }
 
 impl BillingMicroservice {
+    pub fn clear_all_data(&self) -> Result<(), FailureError> {
+        let conn = PgConnection::establish(self.database_url.as_ref())?;
+        let _ = diesel::sql_query("TRUNCATE TABLE payment_intent, accounts, amounts_received, event_store, invoices, invoices_v2, merchants, order_exchange_rates, orders, orders_info, roles;")
+            .execute(&conn)?;
+        let _ = diesel::sql_query("INSERT INTO roles (user_id, name) VALUES (1, 'superuser')")
+            .execute(&conn)?;
+        Ok(())
+    }
+
     pub fn healthcheck(&self) -> Result<(), FailureError> {
         healthcheck(&self.client, &self.url).map_err(|e| {
             e.context("Healthcheck in billing microservice failed")
@@ -128,9 +142,9 @@ impl BillingMicroservice {
 impl DeliveryMicroservice {
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
         let conn = PgConnection::establish(self.database_url.as_ref())?;
-        let _ = diesel::sql_query("TRUNCATE TABLE companies, companies_packages, packages, pickups, products, roles, user_addresses;")
+        let _ = diesel::sql_query("TRUNCATE TABLE shipping_rates, companies, companies_packages, packages, pickups, products, roles, user_addresses;")
             .execute(&conn)?;
-        let _ = diesel::sql_query("INSERT INTO user_roles (user_id, name) VALUES (1, 'superuser')")
+        let _ = diesel::sql_query("INSERT INTO roles (user_id, name) VALUES (1, 'superuser')")
             .execute(&conn)?;
         Ok(())
     }
@@ -149,6 +163,17 @@ impl WarehousesMicroservice {
             e.context("Healthcheck in warehouses microservice failed")
                 .into()
         })
+    }
+
+    pub fn clear_all_data(&self) -> Result<(), FailureError> {
+        // let conn = PgConnection::establish(self.database_url.as_ref())?;
+        // let _ = diesel::sql_query("TRUNCATE TABLE roles, stocks, warehouses;")
+        //     .execute(&conn)?;
+        //
+        // TODO: field `data` of table `roles` cannot be null.
+        // let _ = diesel::sql_query("INSERT INTO roles (user_id, name) VALUES (1, 'superuser')")
+        //    .execute(&conn)?;
+        Ok(())
     }
 }
 

@@ -1,0 +1,3 @@
+[environment]
+type = "cluster"
+url = "http://functional-tests:8000"

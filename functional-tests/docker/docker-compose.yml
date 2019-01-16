@@ -14,7 +14,9 @@ services:
     environment:
       - "RUST_LOG=functional_tests=debug"
     ports:
-      - 8000:8000
+      - "8000"
+    expose:
+      - 8000
     stdin_open: true
 
 volumes:

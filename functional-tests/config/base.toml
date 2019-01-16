@@ -33,3 +33,6 @@ database_url="postgresql://notifications:notifications@notifications-pg:5432/not
 [delivery_microservice]
 url="http://delivery:8000"
 database_url="postgresql://delivery:delivery@delivery-pg:5432/delivery"
+
+[environment]
+type = "docker"
