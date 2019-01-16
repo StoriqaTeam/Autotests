@@ -101,6 +101,10 @@ mod routes {
         .to_http_response()
     }
 
+    pub fn healthcheck(_req: &HttpRequest) -> Result<HttpResponse> {
+        Response::ok().to_http_response()
+    }
+
     pub fn not_found(req: &HttpRequest) -> Result<HttpResponse> {
         Response::not_found(req.path().to_string()).to_http_response()
     }
@@ -111,6 +115,7 @@ fn main() {
     let _ = server::new(|| {
         App::new()
             .resource("/clear", |r| r.method(Method::POST).f(routes::clear))
+            .resource("/healthcheck", |r| r.method(Method::GET).f(routes::healthcheck))
             .default_resource(|r| {
                 // 404 for GET request
                 r.method(Method::GET).f(routes::not_found);
