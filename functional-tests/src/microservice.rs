@@ -72,11 +72,11 @@ impl OrdersMicroservice {
         let _ = diesel::sql_query(
             "TRUNCATE TABLE cart_items_session, cart_items_user, order_diffs, orders, roles;",
         )
-            .execute(&conn)?;
+        .execute(&conn)?;
         let _ = diesel::sql_query(
             "INSERT INTO roles (user_id, name, data) VALUES (1, 'superadmin', 'null')",
         )
-            .execute(&conn)?;
+        .execute(&conn)?;
 
         Ok(())
     }
@@ -98,7 +98,7 @@ impl NotificationsMicroservice {
                 "email": "user@mail.com"
             }"#,
         )
-            .unwrap();
+        .unwrap();
 
         self.client
             .delete(&format!("{}/emarsys/contact", self.url))
@@ -106,8 +106,7 @@ impl NotificationsMicroservice {
             .send()?;
 
         let conn = PgConnection::establish(self.database_url.as_ref())?;
-        let _ = diesel::sql_query("TRUNCATE TABLE user_roles;")
-            .execute(&conn)?;
+        let _ = diesel::sql_query("TRUNCATE TABLE user_roles;").execute(&conn)?;
         let _ = diesel::sql_query("INSERT INTO user_roles (user_id, name) VALUES (1, 'superuser')")
             .execute(&conn)?;
 
@@ -125,7 +124,7 @@ impl NotificationsMicroservice {
 impl BillingMicroservice {
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
         let conn = PgConnection::establish(self.database_url.as_ref())?;
-        let _ = diesel::sql_query("TRUNCATE TABLE accounts, amounts_received, event_store, invoices, invoices_v2, merchants, order_exchange_rates, orders, orders_info, roles;")
+        let _ = diesel::sql_query("TRUNCATE TABLE payment_intent, accounts, amounts_received, event_store, invoices, invoices_v2, merchants, order_exchange_rates, orders, orders_info, roles;")
             .execute(&conn)?;
         let _ = diesel::sql_query("INSERT INTO roles (user_id, name) VALUES (1, 'superuser')")
             .execute(&conn)?;
@@ -143,7 +142,7 @@ impl BillingMicroservice {
 impl DeliveryMicroservice {
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
         let conn = PgConnection::establish(self.database_url.as_ref())?;
-        let _ = diesel::sql_query("TRUNCATE TABLE companies, companies_packages, packages, pickups, products, roles, user_addresses;")
+        let _ = diesel::sql_query("TRUNCATE TABLE shipping_rates, companies, companies_packages, packages, pickups, products, roles, user_addresses;")
             .execute(&conn)?;
         let _ = diesel::sql_query("INSERT INTO roles (user_id, name) VALUES (1, 'superuser')")
             .execute(&conn)?;
@@ -167,9 +166,10 @@ impl WarehousesMicroservice {
     }
 
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
-        let conn = PgConnection::establish(self.database_url.as_ref())?;
-        let _ = diesel::sql_query("TRUNCATE TABLE roles, stocks, warehouses;")
-            .execute(&conn)?;
+        // let conn = PgConnection::establish(self.database_url.as_ref())?;
+        // let _ = diesel::sql_query("TRUNCATE TABLE roles, stocks, warehouses;")
+        //     .execute(&conn)?;
+        //
         // TODO: field `data` of table `roles` cannot be null.
         // let _ = diesel::sql_query("INSERT INTO roles (user_id, name) VALUES (1, 'superuser')")
         //    .execute(&conn)?;
@@ -223,7 +223,7 @@ impl UsersMicroservice {
             "UPDATE users SET email_verified=true WHERE email='{}';",
             email
         ))
-            .execute(&conn)?;
+        .execute(&conn)?;
 
         Ok(())
     }

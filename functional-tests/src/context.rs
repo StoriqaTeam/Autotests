@@ -100,10 +100,10 @@ impl TestContext {
                 self.users_microservice.clear_all_data()?;
                 self.stores_microservice.clear_all_data()?;
                 self.orders_microservice.clear_all_data()?;
-//                self.notifications_microservice.clear_all_data()?;
-//                self.delivery_microservice.clear_all_data()?;
-//                self.billing_microservice.clear_all_data()?;
-//                self.warehouses_microservice.clear_all_data()?;
+                self.notifications_microservice.clear_all_data()?;
+                self.delivery_microservice.clear_all_data()?;
+                self.billing_microservice.clear_all_data()?;
+                self.warehouses_microservice.clear_all_data()?;
             }
             Env::Cluster { url } => {
                 self.client.clone().post(url.as_str()).send()?;

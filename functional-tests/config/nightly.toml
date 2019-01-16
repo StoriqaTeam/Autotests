@@ -1,4 +1,0 @@
-# This config is used for HTTP server that clears database on nightly cluster.
-
-[environment]
-type = "docker"

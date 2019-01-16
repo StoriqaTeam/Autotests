@@ -88,7 +88,7 @@ mod routes {
     }
 
     pub fn clear(_req: &HttpRequest) -> Result<HttpResponse> {
-        let config = match Config::with_env("nightly") {
+        let config = match Config::with_env("base") {
             Ok(config) => config,
             Err(_) => return Response::could_not_read_config().to_http_response(),
         };
@@ -115,7 +115,9 @@ fn main() {
     let _ = server::new(|| {
         App::new()
             .resource("/clear", |r| r.method(Method::POST).f(routes::clear))
-            .resource("/healthcheck", |r| r.method(Method::GET).f(routes::healthcheck))
+            .resource("/healthcheck", |r| {
+                r.method(Method::GET).f(routes::healthcheck)
+            })
             .default_resource(|r| {
                 // 404 for GET request
                 r.method(Method::GET).f(routes::not_found);
