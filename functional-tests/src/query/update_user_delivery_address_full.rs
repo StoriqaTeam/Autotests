@@ -18,7 +18,7 @@ pub type GraphqlRequestOutput = RustUpdateUserDeliveryAddressFullUpdateUserDeliv
 pub fn default_update_user_delivery_address_full_input() -> UpdateUserDeliveryAddressFullInput {
     UpdateUserDeliveryAddressFullInput {
         client_mutation_id: "".to_string(),
-        id: "".to_string(),
+        id: 0,
         address_full: default_address_input(),
         is_priority: None,
     }
