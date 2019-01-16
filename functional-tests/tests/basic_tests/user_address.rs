@@ -65,7 +65,7 @@ fn update_user_address() {
     context.as_superadmin();
     context
         .request(UpdateUserDeliveryAddressFullInput {
-            id: delivery_address.id,
+            id: delivery_address.raw_id,
             is_priority: Some(true),
             address_full: update_user_delivery_address_full::AddressInput {
                 value: Some("New Value".to_string()),
