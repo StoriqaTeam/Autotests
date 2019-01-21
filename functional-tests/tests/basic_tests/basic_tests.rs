@@ -2049,7 +2049,7 @@ fn create_package() {
         .expect("Cannot get Europe delivery info");
     assert_eq!(xeu.level, 1);
     assert_eq!(xeu.alpha3, "XEU".to_string());
-    assert_eq!(xeu.children.len(), 1);
+    assert_eq!(xeu.children.len(), 2);
 
     let xna = xal
         .children
@@ -2068,6 +2068,15 @@ fn create_package() {
     assert_eq!(rus.level, 2);
     assert_eq!(rus.alpha2, "RU".to_string());
     assert_eq!(rus.alpha3, "RUS".to_string());
+
+    let gbr = xeu
+        .children
+        .iter()
+        .find(|d| d.label == "United Kingdom")
+        .expect("Cannot get United Kingdom delivery info");
+    assert_eq!(gbr.level, 2);
+    assert_eq!(gbr.alpha2, "GB".to_string());
+    assert_eq!(gbr.alpha3, "GBR".to_string());
 
     let usa = xna
         .children
