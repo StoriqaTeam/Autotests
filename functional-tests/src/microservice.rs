@@ -166,13 +166,13 @@ impl WarehousesMicroservice {
     }
 
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
-        // let conn = PgConnection::establish(self.database_url.as_ref())?;
-        // let _ = diesel::sql_query("TRUNCATE TABLE roles, stocks, warehouses;")
-        //     .execute(&conn)?;
-        //
-        // TODO: field `data` of table `roles` cannot be null.
-        // let _ = diesel::sql_query("INSERT INTO roles (user_id, name) VALUES (1, 'superuser')")
-        //    .execute(&conn)?;
+        let conn = PgConnection::establish(self.database_url.as_ref())?;
+        let _ = diesel::sql_query("TRUNCATE TABLE roles, stocks, warehouses;").execute(&conn)?;
+
+        let _ = diesel::sql_query(
+            "INSERT INTO roles (user_id, name, data) VALUES (1, 'superadmin', 'null')",
+        )
+        .execute(&conn)?;
         Ok(())
     }
 }
