@@ -124,7 +124,7 @@ impl NotificationsMicroservice {
 impl BillingMicroservice {
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
         let conn = PgConnection::establish(self.database_url.as_ref())?;
-        let _ = diesel::sql_query("TRUNCATE TABLE payment_intent, accounts, amounts_received, event_store, invoices, invoices_v2, merchants, order_exchange_rates, orders, orders_info, roles;")
+        let _ = diesel::sql_query("TRUNCATE TABLE accounts, amounts_received, event_store, invoices, invoices_v2, merchants, order_exchange_rates, orders, orders_info, roles;")
             .execute(&conn)?;
         let _ = diesel::sql_query("INSERT INTO roles (user_id, name) VALUES (1, 'superuser')")
             .execute(&conn)?;
