@@ -5,6 +5,7 @@ pub mod add_in_cart_v2;
 pub mod add_package_to_company;
 pub mod apply_password_reset;
 pub mod change_password;
+pub mod clear_cart;
 pub mod create_attribute;
 pub mod create_attribute_value;
 pub mod create_base_product;

@@ -1809,7 +1809,7 @@ fn verify_update_store_values(
         updated_store.slogan.expect("update_store.slogan is none"),
         expected_values.slogan.unwrap()
     );
-    //    assert!((updated_store.rating - expected_values.rating.unwrap()).abs() < 0.001);
+    // assert!((updated_store.rating - expected_values.rating.unwrap()).abs() < 0.001);
 
     assert_eq!(
         updated_store
