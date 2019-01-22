@@ -795,72 +795,72 @@ queries: Dict[Union[str, Any], Union[str, Any]] = {
 }
 ''',
 
-'deleteCompanyPackage' : '''
-{"query":
-    "mutation deleteCompanyPackage {deleteCompanyPackage(companyId: %(company_rawid)i, packageId: %(package_rawid)i) {id}}"
-}
-''',
+#'deleteCompanyPackage' : '''
+#{"query":
+#    "mutation deleteCompanyPackage {deleteCompanyPackage(companyId: %(company_rawid)i, packageId: %(package_rawid)i) {id}}"
+#}
+#''',
 
-'deletePackage' : '''
-{"query":
-    "mutation deletePackage {deletePackage(id: %(package_rawid)i) {id}}"
-}
-''',
+#'deletePackage' : '''
+#{"query":
+#    "mutation deletePackage {deletePackage(id: %(package_rawid)i) {id}}"
+#}
+#''',
 
-'deleteCompany' : '''
-{"query":
-    "mutation deleteCompany {deleteCompany(id: %(company_rawid)i) {id}}"
-}
-''',
+#'deleteCompany' : '''
+#{"query":
+#    "mutation deleteCompany {deleteCompany(id: %(company_rawid)i) {id}}"
+#}
+#''',
 
-'deleteAttributeFromCategory' : '''
-{"query":
-    "mutation deleteAttributeFromCategory($input: DeleteAttributeFromCategory!) {deleteAttributeFromCategory(input: $input) {mock}}",
-    "variables": {
-        "input": {
-            "clientMutationId": "",
-            "catId": %(cat_rawid_3)i,
-            "attrId": %(attr_rawid)i
-        }
-    }
-}
-''',
+#'deleteAttributeFromCategory' : '''
+#{"query":
+#    "mutation deleteAttributeFromCategory($input: DeleteAttributeFromCategory!) {deleteAttributeFromCategory(input: $input) {mock}}",
+#    "variables": {
+#        "input": {
+#            "clientMutationId": "",
+#            "catId": %(cat_rawid_3)i,
+#            "attrId": %(attr_rawid)i
+#        }
+#    }
+#}
+#''',
 
-'deactivateProduct' : '''
-{"query":
-    "mutation deactivateProduct($input: DeactivateProductInput!) {deactivateProduct(input: $input) {id, isActive}}",
-    "variables": {
-        "input": {
-            "clientMutationId": "",
-            "id": "%(prod_id)s"
-        }
-    }
-}
-''',
+#'deactivateProduct' : '''
+#{"query":
+#    "mutation deactivateProduct($input: DeactivateProductInput!) {deactivateProduct(input: $input) {id, isActive}}",
+#    "variables": {
+#        "input": {
+#            "clientMutationId": "",
+#            "id": "%(prod_id)s"
+#        }
+#    }
+#}
+#''',
 
-'deactivateBaseProduct' : '''
-{"query":
-    "mutation deactivateBaseProduct($input: DeactivateBaseProductInput!) {deactivateBaseProduct(input: $input) {id, isActive}}",
-    "variables": {
-        "input": {
-            "clientMutationId": "",
-            "id": "%(b_prod_id)s"
-        }
-    }
-}
-''',
+#'deactivateBaseProduct' : '''
+#{"query":
+#    "mutation deactivateBaseProduct($input: DeactivateBaseProductInput!) {deactivateBaseProduct(input: $input) {id, isActive}}",
+#    "variables": {
+#        "input": {
+#            "clientMutationId": "",
+#            "id": "%(b_prod_id)s"
+#        }
+#    }
+#}
+#''',
 
-'deactivateStore' : '''
-{"query":
-    "mutation deactivateStore($input: DeactivateStoreInput!) {deactivateStore(input: $input) {id, isActive}}",
-    "variables": {
-        "input":{
-            "clientMutationId": "",
-            "id": "%(store_id)s"
-        }
-    }
-}
-'''
+#'deactivateStore' : '''
+#{"query":
+#    "mutation deactivateStore($input: DeactivateStoreInput!) {deactivateStore(input: $input) {id, isActive}}",
+#    "variables": {
+#        "input":{
+#            "clientMutationId": "",
+#            "id": "%(store_id)s"
+#        }
+#    }
+#}
+#'''
 }
 
 
