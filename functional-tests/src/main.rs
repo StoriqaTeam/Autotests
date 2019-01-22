@@ -7,8 +7,6 @@ extern crate serde_json;
 #[macro_use]
 extern crate serde_derive;
 
-use std::sync::{Arc, Mutex};
-
 use actix_web::http::Method;
 use actix_web::{pred, server, App, HttpResponse};
 
@@ -16,8 +14,6 @@ use functional_tests::config::Config;
 use functional_tests::context::TestContext;
 
 mod routes {
-    use std::sync::{Arc, Mutex};
-
     use actix_web::http::StatusCode;
     use actix_web::{HttpRequest, HttpResponse, Result};
 
@@ -37,7 +33,7 @@ mod routes {
     }
 
     pub struct AppState {
-        pub context: Arc<Mutex<TestContext>>,
+        pub context: TestContext,
     }
 
     pub struct StatusCodeWrapper(StatusCode);
@@ -90,7 +86,7 @@ mod routes {
     }
 
     pub fn clear(req: &HttpRequest<AppState>) -> Result<HttpResponse> {
-        let context = req.state().context.lock().unwrap();
+        let ref context = req.state().context;
 
         match context.clear_all_data() {
             Ok(_) => Response::ok(),
@@ -111,7 +107,7 @@ mod routes {
 fn main() {
     let sys = actix::System::new("main");
     let config = Config::with_env("base").expect("Cannot read config 'base'");
-    let context = Arc::new(Mutex::new(TestContext::with_config(config)));
+    let context = TestContext::with_config(config);
     let _ = server::new(move || {
         App::with_state(routes::AppState {
             context: context.clone(),
