@@ -4,54 +4,63 @@ use diesel::query_dsl::RunQueryDsl;
 use failure::Error as FailureError;
 use reqwest::Client;
 
+#[derive(Clone)]
 pub struct UsersMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct StoresMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct OrdersMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct BillingMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct DeliveryMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct WarehousesMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct SagaMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct NotificationsMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct GatewayMicroservice {
     pub url: String,
     pub client: Client,
@@ -166,13 +175,13 @@ impl WarehousesMicroservice {
     }
 
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
-        // let conn = PgConnection::establish(self.database_url.as_ref())?;
-        // let _ = diesel::sql_query("TRUNCATE TABLE roles, stocks, warehouses;")
-        //     .execute(&conn)?;
-        //
-        // TODO: field `data` of table `roles` cannot be null.
-        // let _ = diesel::sql_query("INSERT INTO roles (user_id, name) VALUES (1, 'superuser')")
-        //    .execute(&conn)?;
+        let conn = PgConnection::establish(self.database_url.as_ref())?;
+        let _ = diesel::sql_query("TRUNCATE TABLE roles, stocks, warehouses;").execute(&conn)?;
+
+        let _ = diesel::sql_query(
+            "INSERT INTO roles (user_id, name, data) VALUES (1, 'superadmin', 'null')",
+        )
+        .execute(&conn)?;
         Ok(())
     }
 }

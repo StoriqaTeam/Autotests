@@ -10,6 +10,7 @@ use microservice::*;
 use query::*;
 use request::GraphqlRequest;
 
+#[derive(Clone)]
 pub struct TestContext {
     bearer: Option<String>,
     client: Client,
