@@ -748,16 +748,16 @@ queries: Dict[Union[str, Any], Union[str, Any]] = {
  }}
 ''',
 
-'deleteFromCart' : '''
-{"query":
-    "mutation deleteFromCart($input: DeleteFromCartInput!) {deleteFromCart(input: $input) {id, totalCost}}",
-"variables": {
-    "input": {
-        "clientMutationId": "",
-        "productId": %(prod_rawid)i
-    }
- }}
-''',
+#'deleteFromCart' : '''
+#{"query":
+#    "mutation deleteFromCart($input: DeleteFromCartInput!) {deleteFromCart(input: $input) {id, totalCost}}",
+#"variables": {
+#    "input": {
+#        "clientMutationId": "",
+#        "productId": %(prod_rawid)i
+#    }
+# }}
+#''',
 
 'buyNow' : '''
 {"query":
