@@ -15,12 +15,12 @@ pub struct GetCartQuery;
 pub use self::get_cart_query::*;
 
 pub struct GetCartInput {
-    user_country_code: String,
+    currency_type: Option<CurrencyType>,
 }
 
 pub fn default_get_cart_input() -> GetCartInput {
     GetCartInput {
-        user_country_code: "RUS".to_string(),
+        currency_type: Some(CurrencyType::CRYPTO),
     }
 }
 
@@ -70,7 +70,7 @@ impl GraphqlRequest for GetCartInput {
 impl From<GetCartInput> for serde_json::Value {
     fn from(val: GetCartInput) -> serde_json::Value {
         let request_body = GetCartQuery::build_query(Variables {
-            user_country_code: val.user_country_code,
+            currency_type: val.currency_type,
         });
         serde_json::to_value(request_body).expect("failed to serialize GetCartInput")
     }
