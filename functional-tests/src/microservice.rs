@@ -4,54 +4,63 @@ use diesel::query_dsl::RunQueryDsl;
 use failure::Error as FailureError;
 use reqwest::Client;
 
+#[derive(Clone)]
 pub struct UsersMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct StoresMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct OrdersMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct BillingMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct DeliveryMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct WarehousesMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct SagaMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct NotificationsMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct GatewayMicroservice {
     pub url: String,
     pub client: Client,
