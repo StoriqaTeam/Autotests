@@ -826,41 +826,41 @@ queries: Dict[Union[str, Any], Union[str, Any]] = {
 #}
 #''',
 
-#'deactivateProduct' : '''
-#{"query":
-#    "mutation deactivateProduct($input: DeactivateProductInput!) {deactivateProduct(input: $input) {id, isActive}}",
-#    "variables": {
-#        "input": {
-#            "clientMutationId": "",
-#            "id": "%(prod_id)s"
-#        }
-#    }
-#}
-#''',
+'deactivateProduct' : '''
+{"query":
+    "mutation deactivateProduct($input: DeactivateProductInput!) {deactivateProduct(input: $input) {id, isActive}}",
+    "variables": {
+        "input": {
+            "clientMutationId": "",
+            "id": "%(prod_id)s"
+        }
+    }
+}
+''',
 
-#'deactivateBaseProduct' : '''
-#{"query":
-#    "mutation deactivateBaseProduct($input: DeactivateBaseProductInput!) {deactivateBaseProduct(input: $input) {id, isActive}}",
-#    "variables": {
-#        "input": {
-#            "clientMutationId": "",
-#            "id": "%(b_prod_id)s"
-#        }
-#    }
-#}
-#''',
+'deactivateBaseProduct' : '''
+{"query":
+    "mutation deactivateBaseProduct($input: DeactivateBaseProductInput!) {deactivateBaseProduct(input: $input) {id, isActive}}",
+    "variables": {
+        "input": {
+            "clientMutationId": "",
+            "id": "%(b_prod_id)s"
+        }
+    }
+}
+''',
 
-#'deactivateStore' : '''
-#{"query":
-#    "mutation deactivateStore($input: DeactivateStoreInput!) {deactivateStore(input: $input) {id, isActive}}",
-#    "variables": {
-#        "input":{
-#            "clientMutationId": "",
-#            "id": "%(store_id)s"
-#        }
-#    }
-#}
-#'''
+'deactivateStore' : '''
+{"query":
+    "mutation deactivateStore($input: DeactivateStoreInput!) {deactivateStore(input: $input) {id, isActive}}",
+    "variables": {
+        "input":{
+            "clientMutationId": "",
+            "id": "%(store_id)s"
+        }
+    }
+}
+'''
 }
 
 
