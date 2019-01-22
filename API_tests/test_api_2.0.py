@@ -149,8 +149,8 @@ def action(dictq:dict):
                 context['order_slug'] = answer.json()['data']['createOrders']['invoice']['orders'][0]['slug']
             elif dictq[i] == q.queries['buyNow']:
                 context['invoice_id'] = answer.json()['data']['buyNow']['invoice']['id']
-            elif dictq[i] == q.queries['deleteFromCart']:
-                token_headers['Authorization'] = ad_token
+            #elif dictq[i] == q.queries['deleteFromCart']:
+            #    token_headers['Authorization'] = ad_token
             print(answer.json())
             if 'errors' in answer.text:
                 error_message = 'ERROR IN QUERY: ' + str(i) + answer.text
