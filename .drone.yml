@@ -1,0 +1,82 @@
+clone:
+  git:
+    image: plugins/git
+    pull: true
+    recursive: true
+
+pipeline:
+  restore-cache:
+    image: plugins/s3-cache:1
+    pull: true
+    secrets: [ aws_access_key_id, aws_secret_access_key ]
+    mount:
+    - functional-tests/deps
+    restore: true
+    when:
+      event:
+      - pull_request
+      - push
+      - tag
+
+###
+# Build and deploy to nightly / stage
+###
+
+  build:
+    image: rust:1.31-stretch
+    environment:
+    - CARGO_HOME=deps
+    - RUSTFLAGS=-C opt-level=1 -C debuginfo=0
+    commands:
+    - cd functional-tests
+    - cargo build --locked
+    when:
+      event: push
+  package:
+    image: plugins/docker
+    repo: storiqateam/stq-functional-tests
+    tags:
+    - ${DRONE_BRANCH//\//_}
+    - ${DRONE_BRANCH//\//_}${DRONE_BUILD_NUMBER}
+    - latest
+    secrets:
+    - docker_username
+    - docker_password
+    when:
+      event: push
+  deploy2nightly:
+    image: jackthestripper/drone_setimage
+    namespace: default
+    kind: deployment
+    object: billing
+    img_names: storiqateam/stq-functional-tests
+    img_tags: ${DRONE_BRANCH//\//_}${DRONE_BUILD_NUMBER}
+    img_cnts: billing
+    secrets:
+    - source: k8s_nightly_ca
+      target: k8s_ca
+    - source: k8s_nightly_user
+      target: k8s_user
+    - source: k8s_nightly_token
+      target: k8s_token
+    - source: k8s_nightly_addr
+      target: k8s_addr
+    when:
+      branch: master
+      event: push
+
+###
+# Notifications and post deploy ops
+###
+
+  rebuild-cache:
+    group: package
+    image: plugins/s3-cache:1
+    pull: true
+    secrets: [ aws_access_key_id, aws_secret_access_key ]
+    mount:
+    - functional-tests/deps
+    rebuild: true
+    when:
+      event: push
+      branch: master
