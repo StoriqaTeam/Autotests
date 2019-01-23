@@ -736,17 +736,17 @@ queries: Dict[Union[str, Any], Union[str, Any]] = {
  }}
 ''',
 
-'setOrderStatusComplete' : '''
-{"query":
-    "mutation setOrderStatusComplete($input: OrderStatusCompleteInput!) {setOrderStatusComplete (input: $input) {state, trackId}}",
-"variables": {
-    "input": {
-        "clientMutationId": "",
-        "orderSlug": %(order_slug)i,
-        "comment": "test"
-    }
- }}
-''',
+#'setOrderStatusComplete' : '''
+#{"query":
+#    "mutation setOrderStatusComplete($input: OrderStatusCompleteInput!) {setOrderStatusComplete (input: $input) {state, trackId}}",
+#"variables": {
+#    "input": {
+#        "clientMutationId": "",
+#        "orderSlug": %(order_slug)i,
+#        "comment": "test"
+#    }
+# }}
+#''',
 
 #'deleteFromCart' : '''
 #{"query":
