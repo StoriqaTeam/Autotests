@@ -3,3 +3,4 @@ mutation deleteFromCart($input:  DeleteFromCartInput!) {
     id
   }
 }
+ 
