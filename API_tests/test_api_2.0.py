@@ -83,7 +83,6 @@ context = {
 def action(dictq:dict):
     token_headers = {"currency" : "STQ", "fiatcurrency" : "EUR"}
     cookie = {"holyshit": "iamcool"}
-    answer
     count = 0
     context['regmail'] = 'test' + context['n'] + '@test.test'
     for i in dictq:

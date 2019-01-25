@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 #Это словарь со всеми запросами для GaphQL
-from typing import Dict, Any, Union
+#from typing import Dict, Any, Union
 
 queries = {
 
