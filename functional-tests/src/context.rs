@@ -118,8 +118,9 @@ impl TestContext {
                 self.billing_microservice.clear_all_data()?;
                 self.warehouses_microservice.clear_all_data()?;
             }
-            Env::Cluster { url } => {
-                self.client.clone().post(url.as_str()).send()?;
+            Env::Cluster { .. } => {
+                //todo uncomment later
+                // self.client.clone().post(url.as_str()).send()?;
             }
         };
 
