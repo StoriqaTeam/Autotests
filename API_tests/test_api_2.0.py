@@ -81,7 +81,7 @@ context:dict = {
 }
 # Действие со списком запросов. Основная логика теста.
 def action(dictq:dict):
-    token_headers:dict = {"currency" : "STQ"}
+    token_headers:dict = {"currency" : "STQ", "fiatcurrency" : "EUR"}
     cookie:dict = {"holyshit": "iamcool"}
     answer:json
     count:int = 0

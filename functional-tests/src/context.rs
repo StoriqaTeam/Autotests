@@ -13,6 +13,8 @@ use request::GraphqlRequest;
 #[derive(Clone)]
 pub struct TestContext {
     bearer: Option<String>,
+    currency: String,
+    fiat_currency: String,
     client: Client,
     config: Config,
     users_microservice: UsersMicroservice,
@@ -77,6 +79,8 @@ impl TestContext {
             },
             config,
             bearer: None,
+            currency: "STQ".to_string(),
+            fiat_currency: "USD".to_string(),
             client: client.clone(),
         };
 
@@ -89,6 +93,14 @@ impl TestContext {
 
         context.clear_all_data().unwrap();
         context
+    }
+
+    pub fn set_currency(&mut self, currency: impl Into<String>) {
+        self.currency = currency.into();
+    }
+
+    pub fn set_fiat_currency(&mut self, fiat_currency: impl Into<String>) {
+        self.fiat_currency = fiat_currency.into();
     }
 
     pub fn verify_user_email(&self, email: &str) -> Result<(), FailureError> {
@@ -320,7 +332,8 @@ impl TestContext {
         let mut request = self
             .client
             .post(&self.config.gateway_microservice.graphql_url)
-            .header("Currency", "STQ");
+            .header("Currency", self.currency.as_str())
+            .header("FiatCurrency", self.fiat_currency.as_str());
         if let Some(ref bearer) = self.bearer {
             request = request.header("Authorization", format!("Bearer {}", bearer));
         }

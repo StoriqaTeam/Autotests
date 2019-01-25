@@ -1322,6 +1322,126 @@ pub fn create_product_without_attributes() {
 }
 
 #[test]
+pub fn create_product_with_stq_currency() {
+    // setup
+    let mut context = TestContext::new();
+
+    // given
+    let (_user, token, _store, _category, base_product) =
+        set_up_base_product(&mut context).expect("Cannot get data from set_up_base_product");
+    context.set_bearer(token);
+
+    // when
+    let product_payload = create_product::CreateProductWithAttributesInput {
+        product: create_product::NewProduct {
+            base_product_id: Some(base_product.raw_id),
+            ..create_product::default_new_product()
+        },
+        ..create_product::default_create_product_input()
+    };
+
+    let _ = context
+        .request(product_payload)
+        .expect("Cannot get data from create_product");
+    context.set_currency("STQ");
+    let product_stq = context
+        .get_base_product(base_product.raw_id)
+        .expect("Cannot get data from get_base_product")
+        .base_product
+        .expect("Empty data from get_base_product")
+        .products
+        .expect("Empty products data from get_base_product")
+        .edges
+        .first()
+        .expect("No element in products list")
+        .node
+        .clone();
+    context.set_currency("BTC");
+    let product_btc = context
+        .get_base_product(base_product.raw_id)
+        .expect("Cannot get data from get_base_product")
+        .base_product
+        .expect("Empty data from get_base_product")
+        .products
+        .expect("Empty products data from get_base_product")
+        .edges
+        .first()
+        .expect("No element in products list")
+        .node
+        .clone();
+
+    // then
+    assert_eq!(
+        product_stq.customer_price.currency,
+        get_base_product::Currency::STQ
+    );
+    assert_eq!(
+        product_btc.customer_price.currency,
+        get_base_product::Currency::BTC
+    );
+}
+
+#[test]
+pub fn create_product_with_usd_currency() {
+    // setup
+    let mut context = TestContext::new();
+
+    // given
+    let (_user, token, _store, _category, base_product) =
+        set_up_base_product_fiat(&mut context).expect("Cannot get data from set_up_base_product");
+    context.set_bearer(token);
+
+    // when
+    let product_payload = create_product::CreateProductWithAttributesInput {
+        product: create_product::NewProduct {
+            base_product_id: Some(base_product.raw_id),
+            ..create_product::default_new_product()
+        },
+        ..create_product::default_create_product_input()
+    };
+
+    let _ = context
+        .request(product_payload)
+        .expect("Cannot get data from create_product");
+    context.set_fiat_currency("USD");
+    let product_usd = context
+        .get_base_product(base_product.raw_id)
+        .expect("Cannot get data from get_base_product")
+        .base_product
+        .expect("Empty data from get_base_product")
+        .products
+        .expect("Empty products data from get_base_product")
+        .edges
+        .first()
+        .expect("No element in products list")
+        .node
+        .clone();
+    context.set_fiat_currency("RUB");
+    let product_rub = context
+        .get_base_product(base_product.raw_id)
+        .expect("Cannot get data from get_base_product")
+        .base_product
+        .expect("Empty data from get_base_product")
+        .products
+        .expect("Empty products data from get_base_product")
+        .edges
+        .first()
+        .expect("No element in products list")
+        .node
+        .clone();
+
+    // then
+    assert_eq!(
+        product_usd.customer_price.currency,
+        get_base_product::Currency::USD
+    );
+    assert_eq!(
+        product_rub.customer_price.currency,
+        get_base_product::Currency::RUB
+    );
+}
+
+#[test]
 pub fn create_product_with_attributes() {
     // setup
     let mut context = TestContext::new();

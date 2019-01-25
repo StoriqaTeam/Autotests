@@ -269,6 +269,34 @@ pub fn set_up_base_product(
     Ok((user, token, store, category, base_product))
 }
 
+pub fn set_up_base_product_fiat(
+    context: &mut TestContext,
+) -> Result<
+    (
+        create_user::RustCreateUserCreateUser,
+        String,
+        create_store::RustCreateStoreCreateStore,
+        create_category::RustCreateCategoryCreateCategory,
+        create_base_product::RustCreateBaseProductCreateBaseProduct,
+    ),
+    FailureError,
+> {
+    let (user, token, store, category) =
+        set_up_store(context).expect("Cannot get data from set_up_store");
+    context.set_bearer(token.clone());
+
+    let new_base_product = create_base_product::CreateBaseProductInput {
+        store_id: store.raw_id,
+        category_id: category.raw_id,
+        currency: create_base_product::Currency::USD,
+        ..create_base_product::default_create_base_product_input()
+    };
+    let base_product = context.request(new_base_product)?;
+    context.clear_bearer();
+
+    Ok((user, token, store, category, base_product))
+}
+
 pub fn set_up_base_product_with_attributes(
     context: &mut TestContext,
 ) -> Result<
