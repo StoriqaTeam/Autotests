@@ -3,7 +3,7 @@
 #Это словарь со всеми запросами для GaphQL
 from typing import Dict, Any, Union
 
-queries: Dict[Union[str, Any], Union[str, Any]] = {
+queries = {
 
 'version' : '''{"query":
                 "query {apiVersion}"}''',
