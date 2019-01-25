@@ -41,7 +41,7 @@ data:
     [delivery_microservice]
     url="http://delivery:8000"
     database_url="postgresql://delivery:delivery@db-postgresql:5432/delivery"
-  k8s.toml: 
+  k8s.toml: |
     [environment]
     type = "cluster"
     url = "http://functional-tests:8000"
