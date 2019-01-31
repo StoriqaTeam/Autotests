@@ -112,7 +112,9 @@ fn main() {
         App::with_state(routes::AppState {
             context: context.clone(),
         })
-        .resource("/clear", |r| r.method(Method::POST).f(routes::clear))
+        .resource("/testtools/clear", |r| {
+            r.method(Method::POST).f(routes::clear)
+        })
         .resource("/healthcheck", |r| {
             r.method(Method::GET).f(routes::healthcheck)
         })

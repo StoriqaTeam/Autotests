@@ -48,7 +48,6 @@ pub struct WarehousesMicroservice {
 
 #[derive(Clone)]
 pub struct SagaMicroservice {
-    pub database_url: String,
     pub url: String,
     pub client: Client,
 }

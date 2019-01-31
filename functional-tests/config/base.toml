@@ -1,5 +1,4 @@
 [gateway_microservice]
-graphql_url="http://gateway:8000/graphql"
 url="http://gateway:8000"
 
 [users_microservice]
@@ -20,7 +19,6 @@ database_url="postgresql://billing:billing@billing-pg:5432/billing"
 
 [saga_microservice]
 url="http://saga:8000"
-database_url=""
 
 [warehouses_microservice]
 url="http://warehouses:8000"
@@ -33,6 +31,3 @@ database_url="postgresql://notifications:notifications@notifications-pg:5432/not
 [delivery_microservice]
 url="http://delivery:8000"
 database_url="postgresql://delivery:delivery@delivery-pg:5432/delivery"
-
-[environment]
-type = "docker"
