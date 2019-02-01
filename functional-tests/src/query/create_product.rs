@@ -31,7 +31,7 @@ pub fn default_new_product() -> NewProduct {
         additional_photos: None,
         vendor_code: "1".to_string(),
         cashback: None,
-        price: 1f64, // TODO: validate > 0.0 need test
+        price: 50000f64, // TODO: validate > 0.0 need test
         pre_order: None,
         pre_order_days: None,
     }

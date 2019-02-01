@@ -2,6 +2,7 @@ use failure::Error as FailureError;
 
 use functional_tests::context::TestContext;
 use functional_tests::defaults::*;
+use functional_tests::fixtures::*;
 use functional_tests::query::*;
 
 use common::*;

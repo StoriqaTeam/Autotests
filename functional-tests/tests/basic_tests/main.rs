@@ -4,9 +4,11 @@ extern crate graphql_client;
 extern crate serde_derive;
 extern crate serde_json;
 
+#[macro_use]
+mod common;
+
 mod a_check_schema;
 mod b_healthcheck;
 mod basic_tests;
 mod cart;
-mod common;
 mod user_address;

@@ -2,7 +2,10 @@ use failure::Error as FailureError;
 use functional_tests::context::TestContext;
 use functional_tests::query::*;
 
+#[macro_use]
+pub mod macros;
 pub mod models;
+
 pub use self::models::*;
 
 pub fn set_up_user(
