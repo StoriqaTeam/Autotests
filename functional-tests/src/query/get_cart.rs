@@ -8,7 +8,7 @@ use request::GraphqlRequest;
 #[graphql(
     schema_path = "graphql/schema.json",
     query_path = "graphql/queries/get_cart.graphql",
-    response_derives = "Debug, PartialEq"
+    response_derives = "Clone, Debug, PartialEq"
 )]
 pub struct GetCartQuery;
 

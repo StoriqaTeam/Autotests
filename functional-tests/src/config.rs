@@ -40,9 +40,6 @@ impl Config {
     /// k8s, nightly. After that it could be overwritten by env variables like STQ_FUNCTIONAL_TESTS
     /// (this will override `url` field in config).
     pub fn new() -> Result<Self, ConfigError> {
-        let mut s = RawConfig::new();
-
-        s.merge(File::with_name("config/base"))?;
         // Optional file specific for environment
         let env = env::var("RUN_MODE").unwrap_or_else(|_| "dev".into());
         Config::with_env(env)
