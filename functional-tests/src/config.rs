@@ -4,16 +4,16 @@ use config_crate::{Config as RawConfig, ConfigError, Environment, File};
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Config {
-    pub environment: Env,
-    pub gateway_microservice: Gateway,
+    pub gateway_microservice: GatewayMicroservice,
     pub users_microservice: Microservice,
     pub stores_microservice: Microservice,
-    pub saga_microservice: Microservice,
+    pub saga_microservice: SagaMicroservice,
     pub orders_microservice: Microservice,
     pub billing_microservice: Microservice,
     pub warehouses_microservice: Microservice,
     pub notifications_microservice: Microservice,
     pub delivery_microservice: Microservice,
+    pub test_environment: Option<RunMode>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -23,16 +23,25 @@ pub struct Microservice {
 }
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct Gateway {
-    pub graphql_url: String,
+pub struct GatewayMicroservice {
+    pub url: String,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct SagaMicroservice {
     pub url: String,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 #[serde(tag = "type", rename_all = "camelCase")]
-pub enum Env {
-    Docker,
-    Cluster { url: String },
+pub enum RunMode {
+    Local {
+        graphql_url: String,
+    },
+    Cluster {
+        graphql_url: String,
+        test_tools_url: String,
+    },
 }
 
 impl Config {

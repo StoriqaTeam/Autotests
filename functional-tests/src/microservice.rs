@@ -48,7 +48,6 @@ pub struct WarehousesMicroservice {
 
 #[derive(Clone)]
 pub struct SagaMicroservice {
-    pub database_url: String,
     pub url: String,
     pub client: Client,
 }
@@ -133,8 +132,30 @@ impl NotificationsMicroservice {
 impl BillingMicroservice {
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
         let conn = PgConnection::establish(self.database_url.as_ref())?;
-        let _ = diesel::sql_query("TRUNCATE TABLE payment_intent, accounts, amounts_received, event_store, invoices, invoices_v2, merchants, order_exchange_rates, orders, orders_info, roles;")
-            .execute(&conn)?;
+        let _ = diesel::sql_query(
+            "TRUNCATE TABLE 
+        payment_intent,
+        accounts,
+        customers,
+        event_store,
+        fees,
+        international_billing_info,
+        payment_intents_fees,
+        payment_intents_invoices,
+        proxy_companies_billing_info,
+        russia_billing_info,
+        store_billing_type,
+        amounts_received,
+        event_store,
+        invoices,
+        invoices_v2,
+        merchants,
+        order_exchange_rates,
+        orders,
+        orders_info,
+        roles;",
+        )
+        .execute(&conn)?;
         let _ = diesel::sql_query("INSERT INTO roles (user_id, name) VALUES (1, 'superuser')")
             .execute(&conn)?;
         Ok(())
