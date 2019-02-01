@@ -16,7 +16,6 @@ trait DataContext {
     fn verify_user_email(&self, email: &str) -> Result<(), FailureError>;
     fn graphql_url(&self) -> String;
     fn clear_all_data(&self) -> Result<(), FailureError>;
-    fn microservice_healthcheck(&self) -> Result<(), FailureError>;
     fn users_microservice_healthcheck(&self) -> Result<(), FailureError>;
     fn stores_microservice_healthcheck(&self) -> Result<(), FailureError>;
     fn orders_microservice_healthcheck(&self) -> Result<(), FailureError>;
@@ -115,17 +114,6 @@ impl DataContext for MicroserviceDataContextImpl {
         Ok(())
     }
 
-    fn microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.users_microservice.healthcheck()?;
-        self.stores_microservice.healthcheck()?;
-        self.orders_microservice.healthcheck()?;
-        self.notifications_microservice.healthcheck()?;
-        self.delivery_microservice.healthcheck()?;
-        self.billing_microservice.healthcheck()?;
-        self.warehouses_microservice.healthcheck()?;
-        Ok(())
-    }
-
     fn users_microservice_healthcheck(&self) -> Result<(), FailureError> {
         self.users_microservice.healthcheck()?;
         Ok(())
@@ -193,11 +181,39 @@ impl HttpDataContextImpl {
     pub fn send_request(&self, request_path: &str) -> reqwest::Result<reqwest::Response> {
         self.build_request(request_path).send()
     }
+
+    pub fn send_heath_check_microservice(
+        &self,
+        microservice: Microservice,
+    ) -> reqwest::Result<reqwest::Response> {
+        let payload = HeathCheckMicroservice { microservice };
+        self.build_request("microservice_healthcheck")
+            .json(&payload)
+            .send()
+    }
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct VerifyUserEmail {
-    email: String,
+    pub email: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub enum Microservice {
+    Users,
+    Stores,
+    Saga,
+    Gateway,
+    Orders,
+    Billing,
+    Warehouses,
+    Notifications,
+    Delivery,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct HeathCheckMicroservice {
+    pub microservice: Microservice,
 }
 
 impl DataContext for HttpDataContextImpl {
@@ -222,51 +238,55 @@ impl DataContext for HttpDataContextImpl {
         Ok(())
     }
 
-    fn microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_request("microservice_healthcheck")?;
-        Ok(())
-    }
-
     fn users_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_request("users_microservice_healthcheck")?;
-        Ok(())
+        self.send_heath_check_microservice(Microservice::Users)
+            .map_err(|e| e.into())
+            .map(|_| ())
     }
 
     fn stores_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_request("stores_microservice_healthcheck")?;
-        Ok(())
+        self.send_heath_check_microservice(Microservice::Stores)
+            .map_err(|e| e.into())
+            .map(|_| ())
     }
 
     fn orders_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_request("orders_microservice_healthcheck")?;
-        Ok(())
+        self.send_heath_check_microservice(Microservice::Orders)
+            .map_err(|e| e.into())
+            .map(|_| ())
     }
 
     fn warehouses_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_request("warehouses_microservice_healthcheck")?;
-        Ok(())
+        self.send_heath_check_microservice(Microservice::Warehouses)
+            .map_err(|e| e.into())
+            .map(|_| ())
     }
 
     fn billing_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_request("billing_microservice_healthcheck")?;
-        Ok(())
+        self.send_heath_check_microservice(Microservice::Billing)
+            .map_err(|e| e.into())
+            .map(|_| ())
     }
     fn notifications_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_request("notifications_microservice_healthcheck")?;
-        Ok(())
+        self.send_heath_check_microservice(Microservice::Notifications)
+            .map_err(|e| e.into())
+            .map(|_| ())
     }
     fn delivery_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_request("delivery_microservice_healthcheck")?;
-        Ok(())
+        self.send_heath_check_microservice(Microservice::Delivery)
+            .map_err(|e| e.into())
+            .map(|_| ())
     }
     fn saga_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_request("saga_microservice_healthcheck")?;
-        Ok(())
+        self.send_heath_check_microservice(Microservice::Saga)
+            .map_err(|e| e.into())
+            .map(|_| ())
     }
 
     fn gateway_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_request("gateway_microservice_healthcheck")?;
-        Ok(())
+        self.send_heath_check_microservice(Microservice::Gateway)
+            .map_err(|e| e.into())
+            .map(|_| ())
     }
 }
 
@@ -316,11 +336,21 @@ impl TestContext {
     }
 
     pub fn new() -> TestContext {
-        let config = Config::new().expect("Could not read config");
-        let context = TestContext::with_config(config);
+        let context = TestContext::inner_new();
 
         context.clear_all_data().expect("Cannot clear data");
+
         context
+    }
+
+    pub fn new_without_clear_data() -> TestContext {
+        TestContext::inner_new()
+    }
+
+    fn inner_new() -> TestContext {
+        let config = Config::new().expect("Could not read config");
+
+        TestContext::with_config(config)
     }
 
     pub fn set_currency(&mut self, currency: impl Into<String>) {
@@ -431,20 +461,6 @@ impl TestContext {
             (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
             _ => unreachable!(),
         }
-    }
-
-    pub fn microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.data_context.users_microservice_healthcheck()?;
-        self.data_context.stores_microservice_healthcheck()?;
-        self.data_context.orders_microservice_healthcheck()?;
-        self.data_context.warehouses_microservice_healthcheck()?;
-        self.data_context.billing_microservice_healthcheck()?;
-        self.data_context.notifications_microservice_healthcheck()?;
-        self.data_context.delivery_microservice_healthcheck()?;
-        self.data_context.saga_microservice_healthcheck()?;
-        self.data_context.gateway_microservice_healthcheck()?;
-
-        Ok(())
     }
 
     pub fn users_microservice_healthcheck(&self) -> Result<(), FailureError> {
