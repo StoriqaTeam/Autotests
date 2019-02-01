@@ -14,6 +14,7 @@ extern crate time;
 pub mod config;
 pub mod context;
 pub mod defaults;
+pub mod fixtures;
 pub mod microservice;
 pub mod query;
 pub mod request;

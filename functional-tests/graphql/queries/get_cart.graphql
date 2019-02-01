@@ -45,6 +45,13 @@ query GetCart($currencyType: CurrencyType) {
             quantity
             selected
             comment
+            deliveryCost
+            price
+            baseProduct {
+              id
+              rawId
+              currency
+            }
             selectPackage {
               id
               companyPackageRawId

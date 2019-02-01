@@ -2,6 +2,7 @@ use std::collections::HashSet;
 
 use functional_tests::context::TestContext;
 use functional_tests::defaults::*;
+use functional_tests::fixtures::*;
 use functional_tests::query::add_base_product_to_coupon::*;
 use functional_tests::query::add_in_cart::*;
 use functional_tests::query::add_in_cart_v2::*;
@@ -468,7 +469,7 @@ fn set_up_delivery(context: &mut TestContext) -> Delivery {
         base_product_id: store_1.product_1.base_product.raw_id,
         local: vec![upsert_shipping::NewLocalShippingProductsInput {
             company_package_id: company_package.raw_id,
-            price: Some(10.0),
+            price: Some(10000.0),
         }],
         ..upsert_shipping::default_upsert_shipping_input()
     };
@@ -490,6 +491,8 @@ pub fn set_delivery_method_in_cart() {
     //setup
     let mut context = TestContext::new();
     //given
+    let exchange_data: currency_exchange::CurrencyExchangeData = Default::default();
+
     let Delivery { store: store_1, .. } = set_up_delivery(&mut context);
 
     let buyer_1 =
@@ -519,12 +522,80 @@ pub fn set_delivery_method_in_cart() {
             shipping_id: available_shipping_package.shipping_id,
             ..set_delivery_method_in_cart::default_set_delivery_method_in_cart_input()
         });
+    context.set_currency("STQ");
+    let cart_stq = context
+        .request(get_cart::default_get_cart_input())
+        .expect("Cannot get data from get_cart")
+        .expect("Empty data from get_cart");
+    context.set_currency("ETH");
+    let cart_eth = context
+        .request(get_cart::default_get_cart_input())
+        .expect("Cannot get data from get_cart")
+        .expect("Empty data from get_cart");
+    context.set_currency("BTC");
+    let cart_btc = context
+        .request(get_cart::default_get_cart_input())
+        .expect("Cannot get data from get_cart")
+        .expect("Empty data from get_cart");
+    let store_stq = cart_stq
+        .stores
+        .edges
+        .first()
+        .expect("Could not get store from STQ cart")
+        .clone();
+    let store_eth = cart_eth
+        .stores
+        .edges
+        .first()
+        .expect("Could not get store from ETH cart")
+        .clone();
+    let store_btc = cart_btc
+        .stores
+        .edges
+        .first()
+        .expect("Could not get store from BTC cart")
+        .clone();
+    let product_stq = store_stq
+        .node
+        .products
+        .into_iter()
+        .find(|p| p.raw_id == store_1.product_1.product_1.raw_id)
+        .expect("Could not get product from STQ cart");
+    let product_eth = store_eth
+        .node
+        .products
+        .into_iter()
+        .find(|p| p.raw_id == store_1.product_1.product_1.raw_id)
+        .expect("Could not get product from ETH cart");
+    let product_btc = store_btc
+        .node
+        .products
+        .into_iter()
+        .find(|p| p.raw_id == store_1.product_1.product_1.raw_id)
+        .expect("Could not get product from BTC cart");
     //then
     check_exists_delivery_method_in_cart(
         &mut context,
         &store_1,
         available_shipping_package.shipping_id,
     );
+    let btc_rate = exchange_data.0["BTC"]["STQ"];
+    let eth_rate = exchange_data.0["ETH"]["STQ"];
+
+    assert_eq_f64!(product_stq.delivery_cost, 10000.0);
+    assert_eq_f64!(product_stq.price, 50000.0);
+
+    assert_eq_f64!(
+        product_stq.delivery_cost * eth_rate,
+        product_eth.delivery_cost
+    );
+    assert_eq_f64!(
+        product_stq.delivery_cost * btc_rate,
+        product_btc.delivery_cost
+    );
+
+    assert_eq_f64!(product_stq.price * eth_rate, product_eth.price);
+    assert_eq_f64!(product_stq.price * btc_rate, product_btc.price);
 }
 
 #[test]

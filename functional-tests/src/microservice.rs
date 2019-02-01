@@ -4,6 +4,8 @@ use diesel::query_dsl::RunQueryDsl;
 use failure::Error as FailureError;
 use reqwest::Client;
 
+use fixtures::currency_exchange::CURRENCY_EXCHANGE_DATA;
+
 #[derive(Clone)]
 pub struct UsersMicroservice {
     pub database_url: String,
@@ -133,7 +135,7 @@ impl BillingMicroservice {
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
         let conn = PgConnection::establish(self.database_url.as_ref())?;
         let _ = diesel::sql_query(
-            "TRUNCATE TABLE 
+            "TRUNCATE TABLE
         payment_intent,
         accounts,
         customers,
@@ -221,6 +223,12 @@ impl StoresMicroservice {
             .execute(&conn)?;
         let _ = diesel::sql_query("INSERT INTO user_roles (user_id, name) VALUES (1, 'superuser')")
             .execute(&conn)?;
+        // TODO: This is unsafe, rewrite using proper special characters escaping!
+        let _ = diesel::sql_query(format!(
+            "INSERT INTO currency_exchange (data) values ('{}')",
+            CURRENCY_EXCHANGE_DATA
+        ))
+        .execute(&conn)?;
         Ok(())
     }
 

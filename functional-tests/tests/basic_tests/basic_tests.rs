@@ -2,6 +2,7 @@ use failure::Error as FailureError;
 
 use functional_tests::context::TestContext;
 use functional_tests::defaults::*;
+use functional_tests::fixtures::*;
 use functional_tests::query::*;
 
 use common::*;
@@ -1379,6 +1380,10 @@ pub fn create_product_with_stq_currency() {
         product_btc.customer_price.currency,
         get_base_product::Currency::BTC
     );
+    assert_ne!(
+        product_btc.customer_price.price,
+        product_stq.customer_price.price
+    );
 }
 
 #[test]
@@ -1438,6 +1443,10 @@ pub fn create_product_with_usd_currency() {
     assert_eq!(
         product_rub.customer_price.currency,
         get_base_product::Currency::RUB
+    );
+    assert_ne!(
+        product_usd.customer_price.price,
+        product_rub.customer_price.price
     );
 }
 
