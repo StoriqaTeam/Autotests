@@ -540,9 +540,25 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": null,
+              "description": "GraphqlID",
               "isDeprecated": false,
               "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "rawId",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -574,7 +590,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "swiftBic",
+              "name": "account",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -590,7 +606,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "bankName",
+              "name": "currency",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -606,7 +622,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "fullName",
+              "name": "name",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -622,7 +638,87 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "iban",
+              "name": "bank",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "swift",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "bankAddress",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "country",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "city",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "recipientAddress",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -5946,6 +6042,37 @@
                   "ofType": null
                 }
               }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "Create payment intent for fee input",
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "CreatePaymentIntentFeeInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "Create payment intent for fee",
+              "isDeprecated": false,
+              "name": "createPaymentIntentFee",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PaymentIntent",
+                  "ofType": null
+                }
+              }
             }
           ],
           "inputFields": null,
@@ -7489,9 +7616,25 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": null,
+              "description": "GraphqlID",
               "isDeprecated": false,
               "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "rawId",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -7714,8 +7857,8 @@
             },
             {
               "defaultValue": null,
-              "description": "swift bic.",
-              "name": "swiftBic",
+              "description": "account.",
+              "name": "account",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -7724,8 +7867,22 @@
             },
             {
               "defaultValue": null,
-              "description": "bank name.",
-              "name": "bankName",
+              "description": "currency.",
+              "name": "currency",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "Currency",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "name.",
+              "name": "name",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -7734,8 +7891,8 @@
             },
             {
               "defaultValue": null,
-              "description": "full name.",
-              "name": "fullName",
+              "description": "bank.",
+              "name": "bank",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -7744,8 +7901,48 @@
             },
             {
               "defaultValue": null,
-              "description": "iban.",
-              "name": "iban",
+              "description": "swift.",
+              "name": "swift",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "bank address.",
+              "name": "bankAddress",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "country.",
+              "name": "country",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "city.",
+              "name": "city",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "recipient address.",
+              "name": "recipientAddress",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -10550,8 +10747,8 @@
             },
             {
               "defaultValue": null,
-              "description": "swift bic.",
-              "name": "swiftBic",
+              "description": "account.",
+              "name": "account",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -10564,8 +10761,22 @@
             },
             {
               "defaultValue": null,
-              "description": "bank name.",
-              "name": "bankName",
+              "description": "currency.",
+              "name": "currency",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "Currency",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "name.",
+              "name": "name",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -10578,8 +10789,8 @@
             },
             {
               "defaultValue": null,
-              "description": "full name.",
-              "name": "fullName",
+              "description": "bank.",
+              "name": "bank",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -10592,8 +10803,64 @@
             },
             {
               "defaultValue": null,
-              "description": "iban.",
-              "name": "iban",
+              "description": "swift.",
+              "name": "swift",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "bank address.",
+              "name": "bankAddress",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "country.",
+              "name": "country",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "city.",
+              "name": "city",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "recipient address.",
+              "name": "recipientAddress",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -11572,10 +11839,10 @@
             {
               "defaultValue": null,
               "description": "Order id.",
-              "name": "orderId",
+              "name": "orderSlug",
               "type": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "Int",
                 "ofType": null
               }
             }
@@ -13490,8 +13757,8 @@
             },
             {
               "defaultValue": null,
-              "description": "bic.",
-              "name": "kpp",
+              "description": "bank name.",
+              "name": "bankName",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -13504,8 +13771,18 @@
             },
             {
               "defaultValue": null,
-              "description": "bic.",
-              "name": "bic",
+              "description": "branch name.",
+              "name": "branchName",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "swift bic.",
+              "name": "swiftBic",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -13518,8 +13795,8 @@
             },
             {
               "defaultValue": null,
-              "description": "inn.",
-              "name": "inn",
+              "description": "tax id.",
+              "name": "taxId",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -13532,8 +13809,46 @@
             },
             {
               "defaultValue": null,
-              "description": "full name.",
-              "name": "fullName",
+              "description": "correspondent account.",
+              "name": "correspondentAccount",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "current account.",
+              "name": "currentAccount",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "personal account.",
+              "name": "personalAccount",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "beneficiary full name.",
+              "name": "beneficiaryFullName",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -16154,6 +16469,45 @@
           "possibleTypes": null
         },
         {
+          "description": "Update product with attributes input object",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Client mutation id.",
+              "name": "clientMutationId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Fee id.",
+              "name": "feeId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "CreatePaymentIntentFeeInput",
+          "possibleTypes": null
+        },
+        {
           "description": "Delete coupon from cart by code and store id input object",
           "enumValues": null,
           "fields": null,
@@ -17224,13 +17578,149 @@
               "isDeprecated": false,
               "name": "order",
               "type": {
+                "kind": "OBJECT",
+                "name": "Order",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Base64 Unique id",
+              "isDeprecated": false,
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "sellerCurrency",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "Currency",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "totalAmount",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cashbackAmount",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Base64 invoice id",
+              "isDeprecated": false,
+              "name": "invoiceId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Store id",
+              "isDeprecated": false,
+              "name": "storeId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Store",
+              "isDeprecated": false,
+              "name": "store",
+              "type": {
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "OrderBilling",
+                  "name": "Store",
                   "ofType": null
                 }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "state",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "PaymentState",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Fee",
+              "isDeprecated": false,
+              "name": "fee",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Fee",
+                "ofType": null
               }
             },
             {
@@ -17299,9 +17789,25 @@
             {
               "args": [],
               "deprecationReason": null,
-              "description": null,
+              "description": "GraphqlID",
               "isDeprecated": false,
               "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "rawId",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -17333,7 +17839,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "kpp",
+              "name": "bankName",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -17349,7 +17855,19 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "bic",
+              "name": "branchName",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "swiftBic",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -17365,7 +17883,7 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "inn",
+              "name": "taxId",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -17381,7 +17899,51 @@
               "deprecationReason": null,
               "description": null,
               "isDeprecated": false,
-              "name": "fullName",
+              "name": "correspondentAccount",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "currentAccount",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "personalAccount",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "beneficiaryFullName",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -17973,8 +18535,8 @@
             },
             {
               "defaultValue": null,
-              "description": "bic.",
-              "name": "kpp",
+              "description": "bank name.",
+              "name": "bankName",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -17983,8 +18545,8 @@
             },
             {
               "defaultValue": null,
-              "description": "bic.",
-              "name": "bic",
+              "description": "branch name.",
+              "name": "branchName",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -17993,8 +18555,8 @@
             },
             {
               "defaultValue": null,
-              "description": "inn.",
-              "name": "inn",
+              "description": "swift bic.",
+              "name": "swiftBic",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -18003,8 +18565,48 @@
             },
             {
               "defaultValue": null,
-              "description": "full name.",
-              "name": "fullName",
+              "description": "tax id.",
+              "name": "taxId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "correspondent account.",
+              "name": "correspondentAccount",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "current account.",
+              "name": "currentAccount",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "personal account.",
+              "name": "personalAccount",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "beneficiary full name.",
+              "name": "beneficiaryFullName",
               "type": {
                 "kind": "SCALAR",
                 "name": "String",
@@ -24037,7 +24639,7 @@
                 {
                   "defaultValue": null,
                   "description": "Search parameters",
-                  "name": "searchParams",
+                  "name": "searchTerm",
                   "type": {
                     "kind": "NON_NULL",
                     "name": null,
