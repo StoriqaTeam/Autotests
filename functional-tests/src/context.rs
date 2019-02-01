@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use failure::Error as FailureError;
 use graphql_client::GraphQLQuery;
 use graphql_client::Response;
@@ -5,34 +7,44 @@ use reqwest::Client;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 
-use config::{Config, Env};
+use config::{Config, RunMode};
 use microservice::*;
 use query::*;
 use request::GraphqlRequest;
 
-#[derive(Clone)]
-pub struct TestContext {
-    bearer: Option<String>,
-    currency: String,
-    fiat_currency: String,
-    client: Client,
-    config: Config,
-    users_microservice: UsersMicroservice,
-    stores_microservice: StoresMicroservice,
-    orders_microservice: OrdersMicroservice,
-    warehouses_microservice: WarehousesMicroservice,
-    billing_microservice: BillingMicroservice,
-    notifications_microservice: NotificationsMicroservice,
-    delivery_microservice: DeliveryMicroservice,
-    saga_microservice: SagaMicroservice,
-    gateway_microservice: GatewayMicroservice,
+trait DataContext {
+    fn verify_user_email(&self, email: &str) -> Result<(), FailureError>;
+    fn graphql_url(&self) -> String;
+    fn clear_all_data(&self) -> Result<(), FailureError>;
+    fn users_microservice_healthcheck(&self) -> Result<(), FailureError>;
+    fn stores_microservice_healthcheck(&self) -> Result<(), FailureError>;
+    fn orders_microservice_healthcheck(&self) -> Result<(), FailureError>;
+    fn warehouses_microservice_healthcheck(&self) -> Result<(), FailureError>;
+    fn billing_microservice_healthcheck(&self) -> Result<(), FailureError>;
+    fn notifications_microservice_healthcheck(&self) -> Result<(), FailureError>;
+    fn delivery_microservice_healthcheck(&self) -> Result<(), FailureError>;
+    fn saga_microservice_healthcheck(&self) -> Result<(), FailureError>;
+    fn gateway_microservice_healthcheck(&self) -> Result<(), FailureError>;
 }
 
-impl TestContext {
-    pub fn with_config(config: Config) -> TestContext {
-        let client = Client::new();
+#[derive(Clone)]
+pub struct MicroserviceDataContextImpl {
+    pub graphql_url: String,
+    pub users_microservice: UsersMicroservice,
+    pub stores_microservice: StoresMicroservice,
+    pub orders_microservice: OrdersMicroservice,
+    pub warehouses_microservice: WarehousesMicroservice,
+    pub billing_microservice: BillingMicroservice,
+    pub notifications_microservice: NotificationsMicroservice,
+    pub delivery_microservice: DeliveryMicroservice,
+    pub saga_microservice: SagaMicroservice,
+    pub gateway_microservice: GatewayMicroservice,
+}
 
-        let context = TestContext {
+impl MicroserviceDataContextImpl {
+    pub fn new(config: Config, client: Client, graphql_url: String) -> Self {
+        Self {
+            graphql_url,
             users_microservice: UsersMicroservice {
                 url: config.users_microservice.url.clone(),
                 database_url: config.users_microservice.database_url.clone(),
@@ -70,29 +82,275 @@ impl TestContext {
             },
             saga_microservice: SagaMicroservice {
                 url: config.saga_microservice.url.clone(),
-                database_url: config.saga_microservice.database_url.clone(),
                 client: client.clone(),
             },
             gateway_microservice: GatewayMicroservice {
                 url: config.gateway_microservice.url.clone(),
                 client: client.clone(),
             },
+        }
+    }
+}
+
+impl DataContext for MicroserviceDataContextImpl {
+    fn graphql_url(&self) -> String {
+        self.graphql_url.to_string()
+    }
+
+    fn verify_user_email(&self, email: &str) -> Result<(), FailureError> {
+        self.users_microservice.verify_email(email)?;
+        Ok(())
+    }
+
+    fn clear_all_data(&self) -> Result<(), FailureError> {
+        self.users_microservice.clear_all_data()?;
+        self.stores_microservice.clear_all_data()?;
+        self.orders_microservice.clear_all_data()?;
+        self.notifications_microservice.clear_all_data()?;
+        self.delivery_microservice.clear_all_data()?;
+        self.billing_microservice.clear_all_data()?;
+        self.warehouses_microservice.clear_all_data()?;
+
+        Ok(())
+    }
+
+    fn users_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.users_microservice.healthcheck()?;
+        Ok(())
+    }
+
+    fn stores_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.stores_microservice.healthcheck()?;
+        Ok(())
+    }
+
+    fn orders_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.orders_microservice.healthcheck()?;
+        Ok(())
+    }
+
+    fn warehouses_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.warehouses_microservice.healthcheck()?;
+        Ok(())
+    }
+
+    fn billing_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.billing_microservice.healthcheck()?;
+        Ok(())
+    }
+    fn notifications_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.notifications_microservice.healthcheck()?;
+        Ok(())
+    }
+    fn delivery_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.delivery_microservice.healthcheck()?;
+        Ok(())
+    }
+    fn saga_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.saga_microservice.healthcheck()?;
+        Ok(())
+    }
+
+    fn gateway_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.gateway_microservice.healthcheck()?;
+        Ok(())
+    }
+}
+
+#[derive(Clone)]
+pub struct HttpDataContextImpl {
+    pub test_tools_url: String,
+    pub graphql_url: String,
+    pub client: Client,
+}
+
+impl HttpDataContextImpl {
+    pub fn new(client: Client, graphql_url: String, test_tools_url: String) -> Self {
+        Self {
+            client,
+            graphql_url,
+            test_tools_url,
+        }
+    }
+
+    pub fn build_request(&self, request_path: &str) -> reqwest::RequestBuilder {
+        let path = format!("{}/{}", self.test_tools_url, request_path);
+        self.client.post(&path).header("cookie", "holyshit=iamcool")
+    }
+
+    pub fn send_request(&self, request_path: &str) -> reqwest::Result<reqwest::Response> {
+        self.build_request(request_path).send()
+    }
+
+    pub fn send_heath_check_microservice(
+        &self,
+        microservice: Microservice,
+    ) -> reqwest::Result<reqwest::Response> {
+        let payload = HeathCheckMicroservice { microservice };
+        self.build_request("microservice_healthcheck")
+            .json(&payload)
+            .send()
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct VerifyUserEmail {
+    pub email: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub enum Microservice {
+    Users,
+    Stores,
+    Saga,
+    Gateway,
+    Orders,
+    Billing,
+    Warehouses,
+    Notifications,
+    Delivery,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct HeathCheckMicroservice {
+    pub microservice: Microservice,
+}
+
+impl DataContext for HttpDataContextImpl {
+    fn graphql_url(&self) -> String {
+        self.graphql_url.to_string()
+    }
+
+    fn verify_user_email(&self, email: &str) -> Result<(), FailureError> {
+        let payload = VerifyUserEmail {
+            email: email.to_string(),
+        };
+
+        self.build_request("verify_user_email")
+            .json(&payload)
+            .send()?;
+
+        Ok(())
+    }
+
+    fn clear_all_data(&self) -> Result<(), FailureError> {
+        self.send_request("clear_all_data")?;
+        Ok(())
+    }
+
+    fn users_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.send_heath_check_microservice(Microservice::Users)
+            .map_err(|e| e.into())
+            .map(|_| ())
+    }
+
+    fn stores_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.send_heath_check_microservice(Microservice::Stores)
+            .map_err(|e| e.into())
+            .map(|_| ())
+    }
+
+    fn orders_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.send_heath_check_microservice(Microservice::Orders)
+            .map_err(|e| e.into())
+            .map(|_| ())
+    }
+
+    fn warehouses_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.send_heath_check_microservice(Microservice::Warehouses)
+            .map_err(|e| e.into())
+            .map(|_| ())
+    }
+
+    fn billing_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.send_heath_check_microservice(Microservice::Billing)
+            .map_err(|e| e.into())
+            .map(|_| ())
+    }
+    fn notifications_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.send_heath_check_microservice(Microservice::Notifications)
+            .map_err(|e| e.into())
+            .map(|_| ())
+    }
+    fn delivery_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.send_heath_check_microservice(Microservice::Delivery)
+            .map_err(|e| e.into())
+            .map(|_| ())
+    }
+    fn saga_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.send_heath_check_microservice(Microservice::Saga)
+            .map_err(|e| e.into())
+            .map(|_| ())
+    }
+
+    fn gateway_microservice_healthcheck(&self) -> Result<(), FailureError> {
+        self.send_heath_check_microservice(Microservice::Gateway)
+            .map_err(|e| e.into())
+            .map(|_| ())
+    }
+}
+
+#[derive(Clone)]
+pub struct TestContext {
+    bearer: Option<String>,
+    currency: String,
+    fiat_currency: String,
+    client: Client,
+    config: Config,
+    data_context: Arc<dyn DataContext + 'static + Send + Sync>,
+}
+
+impl TestContext {
+    pub fn with_config(config: Config) -> TestContext {
+        let client = Client::new();
+
+        let data_context = match config
+            .test_environment
+            .clone()
+            .expect("Cannot get test environment")
+        {
+            RunMode::Local { graphql_url } => Arc::new(MicroserviceDataContextImpl::new(
+                config.clone(),
+                client.clone(),
+                graphql_url,
+            ))
+                as Arc<dyn DataContext + 'static + Send + Sync>,
+            RunMode::Cluster {
+                graphql_url,
+                test_tools_url,
+            } => Arc::new(HttpDataContextImpl::new(
+                client.clone(),
+                graphql_url,
+                test_tools_url,
+            )) as Arc<dyn DataContext + 'static + Send + Sync>,
+        };
+
+        Self {
             config,
             bearer: None,
             currency: "STQ".to_string(),
-            fiat_currency: "USD".to_string(),
+            fiat_currency: "EUR".to_string(),
             client: client.clone(),
-        };
+            data_context,
+        }
+    }
+
+    pub fn new() -> TestContext {
+        let context = TestContext::inner_new();
+
+        context.clear_all_data().expect("Cannot clear data");
 
         context
     }
 
-    pub fn new() -> TestContext {
-        let config = Config::new().expect("Could not read config");
-        let context = TestContext::with_config(config);
+    pub fn new_without_clear_data() -> TestContext {
+        TestContext::inner_new()
+    }
 
-        context.clear_all_data().unwrap();
-        context
+    fn inner_new() -> TestContext {
+        let config = Config::new().expect("Could not read config");
+
+        TestContext::with_config(config)
     }
 
     pub fn set_currency(&mut self, currency: impl Into<String>) {
@@ -104,25 +362,11 @@ impl TestContext {
     }
 
     pub fn verify_user_email(&self, email: &str) -> Result<(), FailureError> {
-        self.users_microservice.verify_email(email)
+        self.data_context.verify_user_email(email)
     }
 
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
-        match self.config.environment.clone() {
-            Env::Docker => {
-                self.users_microservice.clear_all_data()?;
-                self.stores_microservice.clear_all_data()?;
-                self.orders_microservice.clear_all_data()?;
-                self.notifications_microservice.clear_all_data()?;
-                self.delivery_microservice.clear_all_data()?;
-                self.billing_microservice.clear_all_data()?;
-                self.warehouses_microservice.clear_all_data()?;
-            }
-            Env::Cluster { .. } => {
-                //todo uncomment later
-                // self.client.clone().post(url.as_str()).send()?;
-            }
-        };
+        self.data_context.clear_all_data()?;
 
         Ok(())
     }
@@ -219,61 +463,48 @@ impl TestContext {
         }
     }
 
-    pub fn microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.users_microservice.healthcheck()?;
-        self.stores_microservice.healthcheck()?;
-        self.orders_microservice.healthcheck()?;
-        self.warehouses_microservice.healthcheck()?;
-        self.billing_microservice.healthcheck()?;
-        self.notifications_microservice.healthcheck()?;
-        self.delivery_microservice.healthcheck()?;
-        self.saga_microservice.healthcheck()?;
-        self.gateway_microservice.healthcheck()?;
-        Ok(())
-    }
-
     pub fn users_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.users_microservice.healthcheck()?;
+        self.data_context.users_microservice_healthcheck()?;
         Ok(())
     }
 
     pub fn stores_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.stores_microservice.healthcheck()?;
+        self.data_context.stores_microservice_healthcheck()?;
         Ok(())
     }
 
     pub fn orders_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.orders_microservice.healthcheck()?;
+        self.data_context.orders_microservice_healthcheck()?;
         Ok(())
     }
 
     pub fn warehouses_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.warehouses_microservice.healthcheck()?;
+        self.data_context.warehouses_microservice_healthcheck()?;
         Ok(())
     }
 
     pub fn billing_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.billing_microservice.healthcheck()?;
+        self.data_context.billing_microservice_healthcheck()?;
         Ok(())
     }
 
     pub fn notifications_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.notifications_microservice.healthcheck()?;
+        self.data_context.notifications_microservice_healthcheck()?;
         Ok(())
     }
 
     pub fn delivery_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.delivery_microservice.healthcheck()?;
+        self.data_context.delivery_microservice_healthcheck()?;
         Ok(())
     }
 
     pub fn saga_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.saga_microservice.healthcheck()?;
+        self.data_context.saga_microservice_healthcheck()?;
         Ok(())
     }
 
     pub fn gateway_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.gateway_microservice.healthcheck()?;
+        self.data_context.gateway_microservice_healthcheck()?;
         Ok(())
     }
 
@@ -332,7 +563,7 @@ impl TestContext {
     ) -> Result<S, FailureError> {
         let mut request = self
             .client
-            .post(&self.config.gateway_microservice.graphql_url)
+            .post(&self.data_context.graphql_url())
             .header("Currency", self.currency.as_str())
             .header("FiatCurrency", self.fiat_currency.as_str());
         if let Some(ref bearer) = self.bearer {

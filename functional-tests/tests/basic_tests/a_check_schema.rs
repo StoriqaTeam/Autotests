@@ -6,7 +6,7 @@ use functional_tests::query::*;
 
 #[test]
 pub fn check_schema() {
-    let context = TestContext::new();
+    let context = TestContext::new_without_clear_data();
 
     let response_data = context
         .request(introspection::IntrospectionInput)

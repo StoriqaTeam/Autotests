@@ -4,7 +4,7 @@ use diesel::query_dsl::RunQueryDsl;
 use failure::Error as FailureError;
 use reqwest::Client;
 
-const CURRENCY_EXCHANGE_DATA: &'static str = r#"{"BTC":{"BTC":1,"ETH":0.03125308,"EUR":0.00032189359069340675,"RUB":0.0000043859649122807014,"STQ":1e-7,"USD":0.0002915451895043732},"ETH":{"BTC":31.86540054808489,"ETH":1,"EUR":0.010283658265572796,"RUB":0.00014027212792818068,"STQ":0.0000032772323515661525,"USD":0.009324483793737874},"EUR":{"BTC":3091.01545511,"ETH":96.80517305,"EUR":1,"STQ":0.000316,"USD":0.90131254},"RUB":{"BTC":227401.13700264,"ETH":7100.28408493,"RUB":1,"STQ":0.022813,"USD":64.75},"STQ":{"BTC":9090909.090909092,"ETH":305135.5206847361,"EUR":3021.1480362537764,"RUB":42.58037044922291,"STQ":1,"USD":2725.166916473634},"USD":{"BTC":3419.98277928,"ETH":106.95,"EUR":1.1043704998696733,"RUB":0.015384615386982249,"STQ":0.0003505,"USD":1}}"#;
+pub const CURRENCY_EXCHANGE_DATA: &'static str = r#"{"BTC":{"BTC":1,"ETH":0.03125308,"EUR":0.00032189359069340675,"RUB":0.0000043859649122807014,"STQ":1e-7,"USD":0.0002915451895043732},"ETH":{"BTC":31.86540054808489,"ETH":1,"EUR":0.010283658265572796,"RUB":0.00014027212792818068,"STQ":0.0000032772323515661525,"USD":0.009324483793737874},"EUR":{"BTC":3091.01545511,"ETH":96.80517305,"EUR":1,"STQ":0.000316,"USD":0.90131254},"RUB":{"BTC":227401.13700264,"ETH":7100.28408493,"RUB":1,"STQ":0.022813,"USD":64.75},"STQ":{"BTC":9090909.090909092,"ETH":305135.5206847361,"EUR":3021.1480362537764,"RUB":42.58037044922291,"STQ":1,"USD":2725.166916473634},"USD":{"BTC":3419.98277928,"ETH":106.95,"EUR":1.1043704998696733,"RUB":0.015384615386982249,"STQ":0.0003505,"USD":1}}"#;
 
 #[derive(Clone)]
 pub struct UsersMicroservice {
@@ -50,7 +50,6 @@ pub struct WarehousesMicroservice {
 
 #[derive(Clone)]
 pub struct SagaMicroservice {
-    pub database_url: String,
     pub url: String,
     pub client: Client,
 }
@@ -135,8 +134,30 @@ impl NotificationsMicroservice {
 impl BillingMicroservice {
     pub fn clear_all_data(&self) -> Result<(), FailureError> {
         let conn = PgConnection::establish(self.database_url.as_ref())?;
-        let _ = diesel::sql_query("TRUNCATE TABLE payment_intent, accounts, amounts_received, event_store, invoices, invoices_v2, merchants, order_exchange_rates, orders, orders_info, roles, payment_intents_invoices, payment_intents_fees, fees;")
-            .execute(&conn)?;
+        let _ = diesel::sql_query(
+            "TRUNCATE TABLE
+        payment_intent,
+        accounts,
+        customers,
+        event_store,
+        fees,
+        international_billing_info,
+        payment_intents_fees,
+        payment_intents_invoices,
+        proxy_companies_billing_info,
+        russia_billing_info,
+        store_billing_type,
+        amounts_received,
+        event_store,
+        invoices,
+        invoices_v2,
+        merchants,
+        order_exchange_rates,
+        orders,
+        orders_info,
+        roles;",
+        )
+        .execute(&conn)?;
         let _ = diesel::sql_query("INSERT INTO roles (user_id, name) VALUES (1, 'superuser')")
             .execute(&conn)?;
         Ok(())

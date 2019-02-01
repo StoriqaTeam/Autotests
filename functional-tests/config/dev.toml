@@ -1,2 +1,3 @@
-[environment]
-type = "docker"
+[test_environment]
+type = "local"
+graphql_url = "http://gateway:8000/graphql"

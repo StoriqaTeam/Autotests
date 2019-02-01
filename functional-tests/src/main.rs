@@ -1,6 +1,7 @@
 extern crate actix;
 extern crate actix_web;
 extern crate functional_tests;
+extern crate futures;
 extern crate hyper;
 extern crate serde;
 extern crate serde_json;
@@ -11,13 +12,18 @@ use actix_web::http::Method;
 use actix_web::{pred, server, App, HttpResponse};
 
 use functional_tests::config::Config;
-use functional_tests::context::TestContext;
 
 mod routes {
     use actix_web::http::StatusCode;
-    use actix_web::{HttpRequest, HttpResponse, Result};
+    use actix_web::{
+        AsyncResponder, Error as ActixError, HttpMessage, HttpRequest, HttpResponse, Result,
+    };
+    use futures::Future;
 
-    use functional_tests::context::TestContext;
+    use functional_tests::config::Config;
+    use functional_tests::context::{
+        HeathCheckMicroservice, Microservice, TestContext, VerifyUserEmail,
+    };
 
     #[derive(Serialize)]
     #[serde(tag = "type", rename_all = "camelCase")]
@@ -33,7 +39,7 @@ mod routes {
     }
 
     pub struct AppState {
-        pub context: TestContext,
+        pub config: Config,
     }
 
     pub struct StatusCodeWrapper(StatusCode);
@@ -85,14 +91,63 @@ mod routes {
         }
     }
 
-    pub fn clear(req: &HttpRequest<AppState>) -> Result<HttpResponse> {
-        let ref context = req.state().context;
+    pub fn clear_all_data(req: &HttpRequest<AppState>) -> Result<HttpResponse> {
+        let config = req.state().config.clone();
+        let context = TestContext::with_config(config);
 
         match context.clear_all_data() {
             Ok(_) => Response::ok(),
             Err(_) => Response::could_not_clear_data(),
         }
         .to_http_response()
+    }
+
+    pub fn verify_user_email(
+        req: &HttpRequest<AppState>,
+    ) -> Box<Future<Item = HttpResponse, Error = ActixError>> {
+        let config = req.state().config.clone();
+        let context = TestContext::with_config(config);
+
+        req.json()
+            .from_err()
+            .and_then(move |data: VerifyUserEmail| {
+                match context.verify_user_email(&data.email) {
+                    Ok(_) => Response::ok(),
+                    Err(_) => Response::new(StatusCode::INTERNAL_SERVER_ERROR),
+                }
+                .to_http_response()
+            })
+            .responder()
+    }
+
+    pub fn microservice_healthcheck(
+        req: &HttpRequest<AppState>,
+    ) -> Box<Future<Item = HttpResponse, Error = ActixError>> {
+        let config = req.state().config.clone();
+        let context = TestContext::with_config(config);
+
+        req.json()
+            .from_err()
+            .and_then(move |data: HeathCheckMicroservice| {
+                let res = match data.microservice {
+                    Microservice::Users => context.users_microservice_healthcheck(),
+                    Microservice::Stores => context.stores_microservice_healthcheck(),
+                    Microservice::Saga => context.saga_microservice_healthcheck(),
+                    Microservice::Warehouses => context.warehouses_microservice_healthcheck(),
+                    Microservice::Billing => context.billing_microservice_healthcheck(),
+                    Microservice::Delivery => context.delivery_microservice_healthcheck(),
+                    Microservice::Gateway => context.gateway_microservice_healthcheck(),
+                    Microservice::Notifications => context.notifications_microservice_healthcheck(),
+                    Microservice::Orders => context.orders_microservice_healthcheck(),
+                };
+
+                match res {
+                    Ok(_) => Response::ok(),
+                    Err(_) => Response::new(StatusCode::INTERNAL_SERVER_ERROR),
+                }
+                .to_http_response()
+            })
+            .responder()
     }
 
     pub fn healthcheck(_req: &HttpRequest<AppState>) -> Result<HttpResponse> {
@@ -107,12 +162,19 @@ mod routes {
 fn main() {
     let sys = actix::System::new("main");
     let config = Config::with_env("base").expect("Cannot read config 'base'");
-    let context = TestContext::with_config(config);
     let _ = server::new(move || {
         App::with_state(routes::AppState {
-            context: context.clone(),
+            config: config.clone(),
         })
-        .resource("/clear", |r| r.method(Method::POST).f(routes::clear))
+        .resource("/testtools/clear_all_data", |r| {
+            r.method(Method::POST).f(routes::clear_all_data)
+        })
+        .resource("/testtools/verify_user_email", |r| {
+            r.method(Method::POST).f(routes::verify_user_email)
+        })
+        .resource("/testtools/microservice_healthcheck", |r| {
+            r.method(Method::POST).f(routes::microservice_healthcheck)
+        })
         .resource("/healthcheck", |r| {
             r.method(Method::GET).f(routes::healthcheck)
         })
