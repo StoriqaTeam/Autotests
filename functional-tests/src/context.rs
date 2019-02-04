@@ -12,24 +12,14 @@ use microservice::*;
 use query::*;
 use request::GraphqlRequest;
 
-trait DataContext {
+pub trait DataContext {
     fn verify_user_email(&self, email: &str) -> Result<(), FailureError>;
-    fn graphql_url(&self) -> String;
     fn clear_all_data(&self) -> Result<(), FailureError>;
-    fn users_microservice_healthcheck(&self) -> Result<(), FailureError>;
-    fn stores_microservice_healthcheck(&self) -> Result<(), FailureError>;
-    fn orders_microservice_healthcheck(&self) -> Result<(), FailureError>;
-    fn warehouses_microservice_healthcheck(&self) -> Result<(), FailureError>;
-    fn billing_microservice_healthcheck(&self) -> Result<(), FailureError>;
-    fn notifications_microservice_healthcheck(&self) -> Result<(), FailureError>;
-    fn delivery_microservice_healthcheck(&self) -> Result<(), FailureError>;
-    fn saga_microservice_healthcheck(&self) -> Result<(), FailureError>;
-    fn gateway_microservice_healthcheck(&self) -> Result<(), FailureError>;
+    fn microservice_healthcheck(&self, microservice: Microservice) -> Result<(), FailureError>;
 }
 
 #[derive(Clone)]
 pub struct MicroserviceDataContextImpl {
-    pub graphql_url: String,
     pub users_microservice: UsersMicroservice,
     pub stores_microservice: StoresMicroservice,
     pub orders_microservice: OrdersMicroservice,
@@ -42,9 +32,8 @@ pub struct MicroserviceDataContextImpl {
 }
 
 impl MicroserviceDataContextImpl {
-    pub fn new(config: Config, client: Client, graphql_url: String) -> Self {
+    pub fn new(config: Config, client: Client) -> Self {
         Self {
-            graphql_url,
             users_microservice: UsersMicroservice {
                 url: config.users_microservice.url.clone(),
                 database_url: config.users_microservice.database_url.clone(),
@@ -93,10 +82,6 @@ impl MicroserviceDataContextImpl {
 }
 
 impl DataContext for MicroserviceDataContextImpl {
-    fn graphql_url(&self) -> String {
-        self.graphql_url.to_string()
-    }
-
     fn verify_user_email(&self, email: &str) -> Result<(), FailureError> {
         self.users_microservice.verify_email(email)?;
         Ok(())
@@ -114,45 +99,19 @@ impl DataContext for MicroserviceDataContextImpl {
         Ok(())
     }
 
-    fn users_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.users_microservice.healthcheck()?;
-        Ok(())
-    }
+    fn microservice_healthcheck(&self, microservice: Microservice) -> Result<(), FailureError> {
+        match microservice {
+            Microservice::Users => self.users_microservice.healthcheck()?,
+            Microservice::Stores => self.stores_microservice.healthcheck()?,
+            Microservice::Saga => self.saga_microservice.healthcheck()?,
+            Microservice::Warehouses => self.warehouses_microservice.healthcheck()?,
+            Microservice::Billing => self.billing_microservice.healthcheck()?,
+            Microservice::Delivery => self.delivery_microservice.healthcheck()?,
+            Microservice::Gateway => self.gateway_microservice.healthcheck()?,
+            Microservice::Notifications => self.notifications_microservice.healthcheck()?,
+            Microservice::Orders => self.orders_microservice.healthcheck()?,
+        }
 
-    fn stores_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.stores_microservice.healthcheck()?;
-        Ok(())
-    }
-
-    fn orders_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.orders_microservice.healthcheck()?;
-        Ok(())
-    }
-
-    fn warehouses_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.warehouses_microservice.healthcheck()?;
-        Ok(())
-    }
-
-    fn billing_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.billing_microservice.healthcheck()?;
-        Ok(())
-    }
-    fn notifications_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.notifications_microservice.healthcheck()?;
-        Ok(())
-    }
-    fn delivery_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.delivery_microservice.healthcheck()?;
-        Ok(())
-    }
-    fn saga_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.saga_microservice.healthcheck()?;
-        Ok(())
-    }
-
-    fn gateway_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.gateway_microservice.healthcheck()?;
         Ok(())
     }
 }
@@ -160,15 +119,13 @@ impl DataContext for MicroserviceDataContextImpl {
 #[derive(Clone)]
 pub struct HttpDataContextImpl {
     pub test_tools_url: String,
-    pub graphql_url: String,
     pub client: Client,
 }
 
 impl HttpDataContextImpl {
-    pub fn new(client: Client, graphql_url: String, test_tools_url: String) -> Self {
+    pub fn new(client: Client, test_tools_url: String) -> Self {
         Self {
             client,
-            graphql_url,
             test_tools_url,
         }
     }
@@ -217,10 +174,6 @@ pub struct HeathCheckMicroservice {
 }
 
 impl DataContext for HttpDataContextImpl {
-    fn graphql_url(&self) -> String {
-        self.graphql_url.to_string()
-    }
-
     fn verify_user_email(&self, email: &str) -> Result<(), FailureError> {
         let payload = VerifyUserEmail {
             email: email.to_string(),
@@ -238,53 +191,8 @@ impl DataContext for HttpDataContextImpl {
         Ok(())
     }
 
-    fn users_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_heath_check_microservice(Microservice::Users)
-            .map_err(|e| e.into())
-            .map(|_| ())
-    }
-
-    fn stores_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_heath_check_microservice(Microservice::Stores)
-            .map_err(|e| e.into())
-            .map(|_| ())
-    }
-
-    fn orders_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_heath_check_microservice(Microservice::Orders)
-            .map_err(|e| e.into())
-            .map(|_| ())
-    }
-
-    fn warehouses_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_heath_check_microservice(Microservice::Warehouses)
-            .map_err(|e| e.into())
-            .map(|_| ())
-    }
-
-    fn billing_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_heath_check_microservice(Microservice::Billing)
-            .map_err(|e| e.into())
-            .map(|_| ())
-    }
-    fn notifications_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_heath_check_microservice(Microservice::Notifications)
-            .map_err(|e| e.into())
-            .map(|_| ())
-    }
-    fn delivery_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_heath_check_microservice(Microservice::Delivery)
-            .map_err(|e| e.into())
-            .map(|_| ())
-    }
-    fn saga_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_heath_check_microservice(Microservice::Saga)
-            .map_err(|e| e.into())
-            .map(|_| ())
-    }
-
-    fn gateway_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.send_heath_check_microservice(Microservice::Gateway)
+    fn microservice_healthcheck(&self, microservice: Microservice) -> Result<(), FailureError> {
+        self.send_heath_check_microservice(microservice)
             .map_err(|e| e.into())
             .map(|_| ())
     }
@@ -297,32 +205,36 @@ pub struct TestContext {
     fiat_currency: String,
     client: Client,
     config: Config,
-    data_context: Arc<dyn DataContext + 'static + Send + Sync>,
+    graphql_url: String,
+    data_context: Arc<dyn DataContext>,
 }
 
 impl TestContext {
     pub fn with_config(config: Config) -> TestContext {
         let client = Client::new();
 
-        let data_context = match config
+        let (data_context, graphql_url) = match config
             .test_environment
             .clone()
             .expect("Cannot get test environment")
         {
-            RunMode::Local { graphql_url } => Arc::new(MicroserviceDataContextImpl::new(
-                config.clone(),
-                client.clone(),
-                graphql_url,
-            ))
-                as Arc<dyn DataContext + 'static + Send + Sync>,
+            RunMode::Local { graphql_url } => {
+                let context = Arc::new(MicroserviceDataContextImpl::new(
+                    config.clone(),
+                    client.clone(),
+                )) as Arc<dyn DataContext>;
+
+                (context, graphql_url)
+            }
             RunMode::Cluster {
                 graphql_url,
                 test_tools_url,
-            } => Arc::new(HttpDataContextImpl::new(
-                client.clone(),
-                graphql_url,
-                test_tools_url,
-            )) as Arc<dyn DataContext + 'static + Send + Sync>,
+            } => {
+                let context = Arc::new(HttpDataContextImpl::new(client.clone(), test_tools_url))
+                    as Arc<dyn DataContext>;
+
+                (context, graphql_url)
+            }
         };
 
         Self {
@@ -332,6 +244,7 @@ impl TestContext {
             fiat_currency: "EUR".to_string(),
             client: client.clone(),
             data_context,
+            graphql_url,
         }
     }
 
@@ -463,49 +376,8 @@ impl TestContext {
         }
     }
 
-    pub fn users_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.data_context.users_microservice_healthcheck()?;
-        Ok(())
-    }
-
-    pub fn stores_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.data_context.stores_microservice_healthcheck()?;
-        Ok(())
-    }
-
-    pub fn orders_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.data_context.orders_microservice_healthcheck()?;
-        Ok(())
-    }
-
-    pub fn warehouses_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.data_context.warehouses_microservice_healthcheck()?;
-        Ok(())
-    }
-
-    pub fn billing_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.data_context.billing_microservice_healthcheck()?;
-        Ok(())
-    }
-
-    pub fn notifications_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.data_context.notifications_microservice_healthcheck()?;
-        Ok(())
-    }
-
-    pub fn delivery_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.data_context.delivery_microservice_healthcheck()?;
-        Ok(())
-    }
-
-    pub fn saga_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.data_context.saga_microservice_healthcheck()?;
-        Ok(())
-    }
-
-    pub fn gateway_microservice_healthcheck(&self) -> Result<(), FailureError> {
-        self.data_context.gateway_microservice_healthcheck()?;
-        Ok(())
+    pub fn microservice_healthcheck(&self, microservice: Microservice) -> Result<(), FailureError> {
+        self.data_context.microservice_healthcheck(microservice)
     }
 
     pub fn request<T: GraphqlRequest>(&self, input: T) -> Result<T::Output, FailureError> {
@@ -563,7 +435,7 @@ impl TestContext {
     ) -> Result<S, FailureError> {
         let mut request = self
             .client
-            .post(&self.data_context.graphql_url())
+            .post(&self.graphql_url)
             .header("Currency", self.currency.as_str())
             .header("FiatCurrency", self.fiat_currency.as_str());
         if let Some(ref bearer) = self.bearer {
