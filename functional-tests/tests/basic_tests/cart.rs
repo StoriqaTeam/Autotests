@@ -141,7 +141,7 @@ fn increment_in_cart() {
             .get_product(created_product.raw_id)
             .expect("Could not found target product")
             .quantity,
-        999,
+        1000,
         "Wrong quantity"
     );
 }
