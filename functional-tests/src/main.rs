@@ -9,7 +9,7 @@ extern crate serde_json;
 extern crate serde_derive;
 
 use actix_web::http::Method;
-use actix_web::{pred, server, App, HttpResponse};
+use actix_web::{middleware, pred, server, App, HttpResponse};
 
 use functional_tests::config::Config;
 
@@ -148,12 +148,17 @@ mod routes {
 }
 
 fn main() {
+    ::std::env::set_var("RUST_LOG", "actix_web=info");
+    env_logger::init();
+
     let sys = actix::System::new("main");
-    let config = Config::with_env("base").expect("Cannot read config 'base'");
+    let config = Config::new().expect("Cannot read config.");
     let _ = server::new(move || {
         App::with_state(routes::AppState {
             config: config.clone(),
         })
+        // enable logger
+        .middleware(middleware::Logger::default())
         .resource("/testtools/clear_all_data", |r| {
             r.method(Method::POST).f(routes::clear_all_data)
         })
