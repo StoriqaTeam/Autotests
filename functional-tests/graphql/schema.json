@@ -12573,6 +12573,22 @@
                   "ofType": null
                 }
               }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Package currency.",
+              "isDeprecated": false,
+              "name": "currency",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "Currency",
+                  "ofType": null
+                }
+              }
             }
           ],
           "inputFields": null,
@@ -21940,6 +21956,18 @@
                 "name": "Fee",
                 "ofType": null
               }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Order billing",
+              "isDeprecated": false,
+              "name": "orderBilling",
+              "type": {
+                "kind": "OBJECT",
+                "name": "OrderBilling",
+                "ofType": null
+              }
             }
           ],
           "inputFields": null,
@@ -22500,49 +22528,6 @@
           "possibleTypes": null
         },
         {
-          "description": "Stores Edge",
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cursor",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "node",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Store",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "StoresEdge",
-          "possibleTypes": null
-        },
-        {
           "description": "Payment state",
           "enumValues": [
             {
@@ -22593,6 +22578,49 @@
           "interfaces": null,
           "kind": "ENUM",
           "name": "PaymentState",
+          "possibleTypes": null
+        },
+        {
+          "description": "Stores Edge",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cursor",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "node",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Store",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "StoresEdge",
           "possibleTypes": null
         },
         {
@@ -24592,6 +24620,18 @@
               "type": {
                 "kind": "OBJECT",
                 "name": "Fee",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Stripe fee",
+              "isDeprecated": false,
+              "name": "stripeFee",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Float",
                 "ofType": null
               }
             }
