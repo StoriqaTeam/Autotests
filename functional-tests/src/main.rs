@@ -22,7 +22,7 @@ mod routes {
 
     use functional_tests::config::Config;
     use functional_tests::context::{
-        HeathCheckMicroservice, Microservice, TestContext, VerifyUserEmail,
+        DataContext, HeathCheckMicroservice, MicroserviceDataContextImpl, VerifyUserEmail,
     };
 
     #[derive(Serialize)]
@@ -93,7 +93,7 @@ mod routes {
 
     pub fn clear_all_data(req: &HttpRequest<AppState>) -> Result<HttpResponse> {
         let config = req.state().config.clone();
-        let context = TestContext::with_config(config);
+        let context = MicroserviceDataContextImpl::new(config, reqwest::Client::new());
 
         match context.clear_all_data() {
             Ok(_) => Response::ok(),
@@ -106,7 +106,7 @@ mod routes {
         req: &HttpRequest<AppState>,
     ) -> Box<Future<Item = HttpResponse, Error = ActixError>> {
         let config = req.state().config.clone();
-        let context = TestContext::with_config(config);
+        let context = MicroserviceDataContextImpl::new(config, reqwest::Client::new());
 
         req.json()
             .from_err()
@@ -124,24 +124,12 @@ mod routes {
         req: &HttpRequest<AppState>,
     ) -> Box<Future<Item = HttpResponse, Error = ActixError>> {
         let config = req.state().config.clone();
-        let context = TestContext::with_config(config);
+        let context = MicroserviceDataContextImpl::new(config, reqwest::Client::new());
 
         req.json()
             .from_err()
             .and_then(move |data: HeathCheckMicroservice| {
-                let res = match data.microservice {
-                    Microservice::Users => context.users_microservice_healthcheck(),
-                    Microservice::Stores => context.stores_microservice_healthcheck(),
-                    Microservice::Saga => context.saga_microservice_healthcheck(),
-                    Microservice::Warehouses => context.warehouses_microservice_healthcheck(),
-                    Microservice::Billing => context.billing_microservice_healthcheck(),
-                    Microservice::Delivery => context.delivery_microservice_healthcheck(),
-                    Microservice::Gateway => context.gateway_microservice_healthcheck(),
-                    Microservice::Notifications => context.notifications_microservice_healthcheck(),
-                    Microservice::Orders => context.orders_microservice_healthcheck(),
-                };
-
-                match res {
+                match context.microservice_healthcheck(data.microservice) {
                     Ok(_) => Response::ok(),
                     Err(_) => Response::new(StatusCode::INTERNAL_SERVER_ERROR),
                 }
