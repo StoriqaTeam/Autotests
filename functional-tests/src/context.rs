@@ -152,7 +152,7 @@ impl HttpDataContextImpl {
             })
     }
 
-    pub fn send_heath_check_microservice(
+    pub fn send_health_check_microservice(
         &self,
         microservice: Microservice,
     ) -> Result<(), FailureError> {
@@ -214,7 +214,7 @@ impl DataContext for HttpDataContextImpl {
     }
 
     fn microservice_healthcheck(&self, microservice: Microservice) -> Result<(), FailureError> {
-        self.send_heath_check_microservice(microservice)
+        self.send_health_check_microservice(microservice)
             .map_err(|e| e.into())
             .map(|_| ())
     }
