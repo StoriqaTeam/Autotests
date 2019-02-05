@@ -415,6 +415,55 @@
           "possibleTypes": null
         },
         {
+          "description": "Create dispute input object.",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Client mutation id.",
+              "name": "clientMutationId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Slug of order.",
+              "name": "orderSlug",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Comment",
+              "name": "comment",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "CreateDisputeInput",
+          "possibleTypes": null
+        },
+        {
           "description": "Create coupon input object",
           "enumValues": null,
           "fields": null,
@@ -6011,6 +6060,37 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "PaymentIntent",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "Open dispute by order.",
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "CreateDisputeInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "",
+              "isDeprecated": false,
+              "name": "createDispute",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Mock",
                   "ofType": null
                 }
               }
@@ -22534,7 +22614,7 @@
             },
             {
               "defaultValue": null,
-              "description": "Slug of order.",
+              "description": "Order id.",
               "name": "orderId",
               "type": {
                 "kind": "NON_NULL",

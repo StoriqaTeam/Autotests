@@ -9,7 +9,7 @@ extern crate serde_json;
 extern crate serde_derive;
 
 use actix_web::http::Method;
-use actix_web::{middleware, pred, server, App, HttpResponse};
+use actix_web::{middleware, server, App};
 
 use functional_tests::config::Config;
 

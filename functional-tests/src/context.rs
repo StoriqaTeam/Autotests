@@ -408,49 +408,6 @@ impl TestContext {
         T::response(response_body)
     }
 
-    pub fn delete_user(&self, user_id: i64) -> Result<delete_user::ResponseData, FailureError> {
-        let request_body =
-            delete_user::DeleteUserMutation::build_query(delete_user::Variables { user_id });
-        let response_body: Response<delete_user::ResponseData> =
-            self.graphql_request(request_body)?;
-
-        match (response_body.data, response_body.errors) {
-            (Some(data), None) => Ok(data),
-            (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
-            _ => unreachable!(),
-        }
-    }
-
-    pub fn delete_store(&self, store_id: i64) -> Result<delete_store::ResponseData, FailureError> {
-        let request_body =
-            delete_store::DeleteStoreMutation::build_query(delete_store::Variables { store_id });
-        let response_body: Response<delete_store::ResponseData> =
-            self.graphql_request(request_body)?;
-
-        match (response_body.data, response_body.errors) {
-            (Some(data), None) => Ok(data),
-            (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
-            _ => unreachable!(),
-        }
-    }
-
-    pub fn delete_delivery_company(
-        &self,
-        id: i64,
-    ) -> Result<delete_delivery_company::ResponseData, FailureError> {
-        let request_body = delete_delivery_company::DeleteCompanyMutation::build_query(
-            delete_delivery_company::Variables { id },
-        );
-        let response_body: Response<delete_delivery_company::ResponseData> =
-            self.graphql_request(request_body)?;
-
-        match (response_body.data, response_body.errors) {
-            (Some(data), None) => Ok(data),
-            (None, Some(errors)) => Err(::failure::format_err!("{:?}", errors)),
-            _ => unreachable!(),
-        }
-    }
-
     fn graphql_request<T: Serialize, S: DeserializeOwned>(
         &self,
         data: T,
