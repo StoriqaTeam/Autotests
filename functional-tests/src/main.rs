@@ -171,15 +171,6 @@ fn main() {
         .resource("/healthcheck", |r| {
             r.method(Method::GET).f(routes::healthcheck)
         })
-        .default_resource(|r| {
-            // 404 for GET request
-            r.method(Method::GET).f(routes::not_found);
-
-            // all requests that are not `GET`
-            r.route()
-                .filter(pred::Not(pred::Get()))
-                .f(|_| HttpResponse::MethodNotAllowed());
-        })
     })
     .bind("0.0.0.0:8000")
     .expect("Can not bind to 0.0.0.0:8000")
