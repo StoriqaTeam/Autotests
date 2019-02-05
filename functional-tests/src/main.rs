@@ -159,17 +159,24 @@ fn main() {
         })
         // enable logger
         .middleware(middleware::Logger::default())
-        .resource("/testtools/clear_all_data", |r| {
-            r.method(Method::POST).f(routes::clear_all_data)
-        })
-        .resource("/testtools/verify_user_email", |r| {
-            r.method(Method::POST).f(routes::verify_user_email)
-        })
-        .resource("/testtools/microservice_healthcheck", |r| {
-            r.method(Method::POST).f(routes::microservice_healthcheck)
+        .scope("/testtools", |testtools| {
+            testtools
+                .resource("/clear_all_data", |r| {
+                    r.method(Method::POST).f(routes::clear_all_data)
+                })
+                .resource("/verify_user_email", |r| {
+                    r.method(Method::POST).f(routes::verify_user_email)
+                })
+                .resource("/microservice_healthcheck", |r| {
+                    r.method(Method::POST).f(routes::microservice_healthcheck)
+                })
         })
         .resource("/healthcheck", |r| {
             r.method(Method::GET).f(routes::healthcheck)
+        })
+        .default_resource(|r| {
+            // 404 for GET request
+            r.method(Method::GET).f(routes::not_found);
         })
     })
     .bind("0.0.0.0:8000")
