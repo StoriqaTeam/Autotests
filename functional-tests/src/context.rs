@@ -130,23 +130,45 @@ impl HttpDataContextImpl {
         }
     }
 
-    pub fn build_request(&self, request_path: &str) -> reqwest::RequestBuilder {
-        let path = format!("{}/{}", self.test_tools_url, request_path);
-        self.client.post(&path).header("cookie", "holyshit=iamcool")
+    pub fn credentials(&self, req: reqwest::RequestBuilder) -> reqwest::RequestBuilder {
+        req.header("cookie", "holyshit=iamcool")
     }
 
-    pub fn send_request(&self, request_path: &str) -> reqwest::Result<reqwest::Response> {
-        self.build_request(request_path).send()
+    pub fn build_post_request(&self, request_path: &str) -> reqwest::RequestBuilder {
+        let path = format!("{}/{}", self.test_tools_url, request_path);
+        self.credentials(self.client.post(&path))
+    }
+
+    pub fn send_post_request(&self, request_path: &str) -> Result<(), FailureError> {
+        self.build_post_request(request_path)
+            .send()
+            .map_err(|e| e.into())
+            .and_then(|response| {
+                if response.status().is_success() {
+                    Ok(())
+                } else {
+                    Err(format_err!("Request fail with code: {}", response.status()))
+                }
+            })
     }
 
     pub fn send_heath_check_microservice(
         &self,
         microservice: Microservice,
-    ) -> reqwest::Result<reqwest::Response> {
+    ) -> Result<(), FailureError> {
         let payload = HeathCheckMicroservice { microservice };
-        self.build_request("microservice_healthcheck")
+
+        self.build_post_request("microservice_healthcheck")
             .json(&payload)
             .send()
+            .map_err(|e| e.into())
+            .and_then(|response| {
+                if response.status().is_success() {
+                    Ok(())
+                } else {
+                    Err(format_err!("Request fail with code: {}", response.status()))
+                }
+            })
     }
 }
 
@@ -179,7 +201,7 @@ impl DataContext for HttpDataContextImpl {
             email: email.to_string(),
         };
 
-        self.build_request("verify_user_email")
+        self.build_post_request("verify_user_email")
             .json(&payload)
             .send()?;
 
@@ -187,7 +209,7 @@ impl DataContext for HttpDataContextImpl {
     }
 
     fn clear_all_data(&self) -> Result<(), FailureError> {
-        self.send_request("clear_all_data")?;
+        self.send_post_request("clear_all_data")?;
         Ok(())
     }
 
