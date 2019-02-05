@@ -1047,7 +1047,9 @@ pub fn delete_user() {
     let user = context.request(new_user).expect("createUser failed");
     //when
     context.as_superadmin();
-    let delete_result = context.delete_user(user.raw_id);
+    let delete_result = context.request(delete_user::DeleteUserInput {
+        user_id: user.raw_id,
+    });
     //then
     assert!(delete_result.is_ok())
 }
@@ -1235,7 +1237,9 @@ pub fn delete_store() {
     context.set_bearer(token);
     //when
     context.as_superadmin();
-    let delete_result = context.delete_store(store.raw_id);
+    let delete_result = context.request(delete_store::DeleteStoreInput {
+        store_id: store.raw_id,
+    });
     //then
     assert!(delete_result.is_ok())
 }
@@ -1813,9 +1817,10 @@ pub fn delete_delivery_company() {
         .expect("Cannot get data from create_delivery_company");
     //when
     let delete_company = context
-        .delete_delivery_company(create_company.raw_id)
-        .expect("Cannot get data from delete_delivery_company")
-        .delete_company;
+        .request(delete_delivery_company::DeleteCompanyInput {
+            company_id: create_company.raw_id,
+        })
+        .expect("Cannot get data from delete_delivery_company");
     //then
     assert_eq!(create_company.raw_id, delete_company.raw_id);
 }
