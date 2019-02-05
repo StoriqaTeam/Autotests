@@ -1,3 +1,4 @@
 [test_environment]
-type = "local"
-graphql_url = "http://gateway:8000/graphql"
+type = "cluster"
+graphql_url = "https://nightly.stq.cloud/graphql"
+test_tools_url = "https://nightly.stq.cloud/testtools"
