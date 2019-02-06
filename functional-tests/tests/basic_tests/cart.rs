@@ -579,23 +579,23 @@ pub fn set_delivery_method_in_cart() {
         &store_1,
         available_shipping_package.shipping_id,
     );
-    let btc_rate = exchange_data.0["BTC"]["STQ"];
-    let eth_rate = exchange_data.0["ETH"]["STQ"];
+    let btc_rate = exchange_data.0["STQ"]["BTC"];
+    let eth_rate = exchange_data.0["STQ"]["ETH"];
 
     assert_eq_f64!(product_stq.delivery_cost, 10000.0);
     assert_eq_f64!(product_stq.price, 50000.0);
 
+    assert_eq_f64!(product_stq.price / eth_rate, product_eth.price);
+    assert_eq_f64!(product_stq.price / btc_rate, product_btc.price);
+
     assert_eq_f64!(
-        product_stq.delivery_cost * eth_rate,
+        product_stq.delivery_cost / eth_rate,
         product_eth.delivery_cost
     );
     assert_eq_f64!(
-        product_stq.delivery_cost * btc_rate,
+        product_stq.delivery_cost / btc_rate,
         product_btc.delivery_cost
     );
-
-    assert_eq_f64!(product_stq.price * eth_rate, product_eth.price);
-    assert_eq_f64!(product_stq.price * btc_rate, product_btc.price);
 }
 
 #[test]
