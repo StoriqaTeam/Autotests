@@ -135,9 +135,11 @@ pub fn deactivate_store() {
         .expect("deactivate_store failed");
     //then
     let store = context
-        .get_store(store.raw_id)
-        .expect("get_store failed")
-        .store;
+        .request(get_store::GetStoreInput {
+            store_id: store.raw_id,
+            ..Default::default()
+        })
+        .expect("get_store failed");
     assert!(store.is_none(), "store should be deactivated")
 }
 
@@ -173,10 +175,12 @@ pub fn publish_base_product() {
         .expect("set_moderation_status_base_product failed");
     //then
     let updated_base_product = context
-        .get_base_product(base_product.raw_id)
-        .unwrap()
-        .base_product
-        .unwrap();
+        .request(get_base_product::GetBaseProductInput {
+            base_product_id: base_product.raw_id,
+            ..Default::default()
+        })
+        .expect("Cannot get response data from get_base_product.")
+        .expect("Cannot get value from get_base_product.");
     assert_eq!(
         updated_base_product.status,
         get_base_product::Status::PUBLISHED,
@@ -207,10 +211,12 @@ pub fn send_base_product_to_moderation() {
         .expect("send_base_product_to_moderation failed to send to moderation");
     //then
     let updated_base_product = context
-        .get_base_product(base_product.raw_id)
-        .unwrap()
-        .base_product
-        .unwrap();
+        .request(get_base_product::GetBaseProductInput {
+            base_product_id: base_product.raw_id,
+            ..Default::default()
+        })
+        .expect("Cannot get response data from get_base_product.")
+        .expect("Cannot get value from get_base_product.");
     assert_eq!(
         updated_base_product.status,
         get_base_product::Status::MODERATION,
@@ -244,7 +250,13 @@ pub fn publish_store() {
         })
         .expect("set_moderation_status_store failed");
     //then
-    let updated_store = context.get_store(store.raw_id).unwrap().store.unwrap();
+    let updated_store = context
+        .request(get_store::GetStoreInput {
+            store_id: store.raw_id,
+            ..Default::default()
+        })
+        .expect("get_store failed")
+        .expect("Empty value in get_store");
     assert_eq!(
         updated_store.status,
         get_store::Status::PUBLISHED,
@@ -271,7 +283,13 @@ pub fn send_store_to_moderation() {
         })
         .expect("send_store_to_moderation failed to send to moderation");
     //then
-    let updated_store = context.get_store(store.raw_id).unwrap().store.unwrap();
+    let updated_store = context
+        .request(get_store::GetStoreInput {
+            store_id: store.raw_id,
+            ..Default::default()
+        })
+        .expect("get_store failed")
+        .expect("Empty value in get_store");
     assert_eq!(
         updated_store.status,
         get_store::Status::MODERATION,
@@ -420,9 +438,11 @@ pub fn deactivate_base_product() {
         .expect("deactivate_base_product failed");
     //then
     let deactivated_base_product = context
-        .get_base_product(base_product.raw_id)
-        .unwrap()
-        .base_product;
+        .request(get_base_product::GetBaseProductInput {
+            base_product_id: base_product.raw_id,
+            ..Default::default()
+        })
+        .expect("Cannot get response data from get_base_product.");
     assert!(deactivated_base_product.is_none());
 }
 
@@ -448,10 +468,13 @@ pub fn update_base_product() {
         .expect("update_base_product failed");
     //then
     let updated_base_product = context
-        .get_base_product(updated_base_product.raw_id)
-        .unwrap()
-        .base_product
-        .unwrap();
+        .request(get_base_product::GetBaseProductInput {
+            base_product_id: updated_base_product.raw_id,
+            ..Default::default()
+        })
+        .expect("Cannot get response data from get_base_product.")
+        .expect("Cannot get value from get_base_product.");
+
     let expected_values = update_base_product::default_update_base_product_input();
     assert!((updated_base_product.rating - initial_rating).abs() < 0.001);
     assert_eq!(updated_base_product.slug, expected_values.slug.unwrap());
@@ -508,10 +531,12 @@ pub fn update_base_product_does_not_update_rating() {
         .expect("update_base_product failed");
     //then
     let updated_base_product = context
-        .get_base_product(updated_base_product.raw_id)
-        .unwrap()
-        .base_product
-        .unwrap();
+        .request(get_base_product::GetBaseProductInput {
+            base_product_id: updated_base_product.raw_id,
+            ..Default::default()
+        })
+        .expect("Cannot get response data from get_base_product.")
+        .expect("Cannot get value from get_base_product.");
     assert!((updated_base_product.rating - initial_rating).abs() < 0.001);
 }
 
@@ -530,10 +555,13 @@ pub fn create_base_product_with_variants() {
     }).expect("create_base_product_with_variants failed");
     //then
     let base_product = context
-        .get_base_product(base_product.raw_id)
-        .unwrap()
-        .base_product
-        .unwrap();
+        .request(get_base_product::GetBaseProductInput {
+            base_product_id: base_product.raw_id,
+            ..Default::default()
+        })
+        .expect("Cannot get response data from get_base_product.")
+        .expect("Cannot get value from get_base_product.");
+
     assert_eq!(
         base_product
             .products
@@ -591,10 +619,12 @@ pub fn update_store() {
         .expect("update_store failed");
     //then
     let updated_store = context
-        .get_store(updated_store.raw_id)
-        .unwrap()
-        .store
-        .unwrap();
+        .request(get_store::GetStoreInput {
+            store_id: updated_store.raw_id,
+            ..Default::default()
+        })
+        .expect("get_store failed")
+        .expect("Empty value in get_store");
     let expected_values = update_store::default_update_store_input();
     verify_update_store_values(updated_store, expected_values);
 }
@@ -616,10 +646,12 @@ pub fn update_store_does_not_update_rating() {
         .expect("update_store failed");
     //then
     let updated_store = context
-        .get_store(updated_store.raw_id)
-        .unwrap()
-        .store
-        .unwrap();
+        .request(get_store::GetStoreInput {
+            store_id: updated_store.raw_id,
+            ..Default::default()
+        })
+        .expect("get_store failed")
+        .expect("Empty value in get_store");
     assert!((updated_store.rating - initial_rating).abs() < 0.001);
 }
 
@@ -640,7 +672,10 @@ pub fn delete_attribute() {
         })
         .expect("delete_attribute failed");
     //then
-    let all_attribute = context.get_attributes().unwrap().attributes.unwrap();
+    let all_attribute = context
+        .request(get_attributes::GetAttributesInput)
+        .expect("Cannot get data from get_attributes")
+        .expect("Empty data from get_attributes");
     assert!(all_attribute.is_empty());
 }
 
@@ -695,10 +730,9 @@ pub fn delete_attribute_from_category() {
         .expect("delete_attribute_from_category failed");
     //then
     let changed_category_attributes = context
-        .get_categories()
-        .unwrap()
-        .all_categories
-        .unwrap()
+        .request(get_categories::GetCategoriesInput)
+        .expect("Cannot get response from get_categories")
+        .expect("Cannot get values from get_categories")
         .children
         .into_iter()
         .filter(|cat| cat.id == category.id)
@@ -730,10 +764,9 @@ pub fn add_attribute_to_category() {
         .expect("add_attribute_to_category failed");
     //then
     let changed_category_attributes = context
-        .get_categories()
-        .unwrap()
-        .all_categories
-        .unwrap()
+        .request(get_categories::GetCategoriesInput)
+        .expect("Cannot get response from get_categories")
+        .expect("Cannot get values from get_categories")
         .children
         .into_iter()
         .filter(|cat| cat.id == category.id)
@@ -766,10 +799,9 @@ pub fn delete_category() {
         .expect("delete_category failed");
     //then
     let existing_categories = context
-        .get_categories()
-        .unwrap()
-        .all_categories
-        .unwrap()
+        .request(get_categories::GetCategoriesInput)
+        .expect("Cannot get response from get_categories")
+        .expect("Cannot get values from get_categories")
         .children;
     assert!(existing_categories.is_empty());
 }
@@ -853,9 +885,8 @@ pub fn delete_attribute_value() {
         .expect("delete_attribute_value failed");
     //then
     let changed_attribute = context
-        .get_attributes()
-        .unwrap()
-        .attributes
+        .request(get_attributes::GetAttributesInput)
+        .expect("Cannot get data from get_attributes")
         .into_iter()
         .flatten()
         .filter(|a| a.raw_id == attribute.raw_id)
@@ -993,10 +1024,9 @@ pub fn create_category() {
         create_category::default_create_category_input().slug
     );
     let existing_categories = context
-        .get_categories()
-        .unwrap()
-        .all_categories
-        .unwrap()
+        .request(get_categories::GetCategoriesInput)
+        .expect("Cannot get response from get_categories")
+        .expect("Cannot get values from get_categories")
         .children;
     assert_eq!(existing_categories.len(), 1);
 }
@@ -1349,9 +1379,11 @@ pub fn create_product_with_stq_currency() {
         .expect("Cannot get data from create_product");
     context.set_currency("STQ");
     let product_stq = context
-        .get_base_product(base_product.raw_id)
-        .expect("Cannot get data from get_base_product")
-        .base_product
+        .request(get_base_product::GetBaseProductInput {
+            base_product_id: base_product.raw_id,
+            ..Default::default()
+        })
+        .expect("Cannot get response data from get_base_product.")
         .expect("Empty data from get_base_product")
         .products
         .expect("Empty products data from get_base_product")
@@ -1362,9 +1394,11 @@ pub fn create_product_with_stq_currency() {
         .clone();
     context.set_currency("BTC");
     let product_btc = context
-        .get_base_product(base_product.raw_id)
-        .expect("Cannot get data from get_base_product")
-        .base_product
+        .request(get_base_product::GetBaseProductInput {
+            base_product_id: base_product.raw_id,
+            ..Default::default()
+        })
+        .expect("Cannot get response data from get_base_product.")
         .expect("Empty data from get_base_product")
         .products
         .expect("Empty products data from get_base_product")
@@ -1413,9 +1447,11 @@ pub fn create_product_with_usd_currency() {
         .expect("Cannot get data from create_product");
     context.set_fiat_currency("USD");
     let product_usd = context
-        .get_base_product(base_product.raw_id)
-        .expect("Cannot get data from get_base_product")
-        .base_product
+        .request(get_base_product::GetBaseProductInput {
+            base_product_id: base_product.raw_id,
+            ..Default::default()
+        })
+        .expect("Cannot get response data from get_base_product.")
         .expect("Empty data from get_base_product")
         .products
         .expect("Empty products data from get_base_product")
@@ -1426,9 +1462,11 @@ pub fn create_product_with_usd_currency() {
         .clone();
     context.set_fiat_currency("RUB");
     let product_rub = context
-        .get_base_product(base_product.raw_id)
-        .expect("Cannot get data from get_base_product")
-        .base_product
+        .request(get_base_product::GetBaseProductInput {
+            base_product_id: base_product.raw_id,
+            ..Default::default()
+        })
+        .expect("Cannot get response data from get_base_product.")
         .expect("Empty data from get_base_product")
         .products
         .expect("Empty products data from get_base_product")
@@ -1536,9 +1574,11 @@ pub fn delete_custom_attribute() {
 
     // then
     let base_product = context
-        .get_base_product(base_product.raw_id)
-        .expect("Cannot get data from get_base_product")
-        .base_product
+        .request(get_base_product::GetBaseProductInput {
+            base_product_id: base_product.raw_id,
+            ..Default::default()
+        })
+        .expect("Cannot get response data from get_base_product.")
         .expect("Empty data from get_base_product");
     assert_eq!(base_product.custom_attributes.len(), 0);
 
@@ -1626,9 +1666,11 @@ pub fn delete_attribute_with_values() {
 
     // then
     let base_product = context
-        .get_base_product(base_product.raw_id)
-        .expect("Cannot get data from get_base_product")
-        .base_product
+        .request(get_base_product::GetBaseProductInput {
+            base_product_id: base_product.raw_id,
+            ..Default::default()
+        })
+        .expect("Cannot get response data from get_base_product.")
         .expect("Empty data from get_base_product");
 
     assert_eq!(base_product.custom_attributes.len(), 0);
@@ -1859,9 +1901,8 @@ pub fn get_categories_with_products() {
 
     //when
     let mut categories = context
-        .get_categories_with_products()
-        .unwrap()
-        .categories
+        .request(get_categories_with_products::GetCategoriesWithProductsInput)
+        .expect("Cannot get data from get_categories_with_products")
         .into_iter()
         .flat_map(|root| {
             root.children.into_iter().flat_map(|category1| {
@@ -2078,10 +2119,12 @@ fn update_warehouse() {
         .expect("Cannot get data from update_warehouse");
 
     let store = context
-        .get_store(warehouse.store_id)
-        .expect("Cannot get data from get_store")
-        .store
-        .expect("Empty store data from get_store");
+        .request(get_store::GetStoreInput {
+            store_id: warehouse.store_id,
+            ..Default::default()
+        })
+        .expect("get_store failed")
+        .expect("Empty value in get_store");
 
     let warehouse = store
         .warehouses
@@ -2127,10 +2170,12 @@ fn delete_warehouse() {
         })
         .expect("Cannot get data from delete_warehouse");
     let store = context
-        .get_store(warehouse.store_id)
-        .expect("Cannot get data from get_store")
-        .store
-        .expect("Empty store data from get_store");
+        .request(get_store::GetStoreInput {
+            store_id: warehouse.store_id,
+            ..Default::default()
+        })
+        .expect("get_store failed")
+        .expect("Empty value in get_store");
     let deleted_warehouse = store.warehouses.into_iter().find(|x| x.id == warehouse.id);
     let delete_warehouse_twice = context.request(delete_warehouse::DeleteWarehouseInput {
         id: warehouse.id.clone(),
@@ -2576,10 +2621,12 @@ fn update_coupon() {
         .request(update_coupon_payload)
         .expect("Cannot get data from update_coupon");
     let store = context
-        .get_store(store.raw_id)
-        .expect("Cannot get data from get_store")
-        .store
-        .expect("Empty data from get_store");
+        .request(get_store::GetStoreInput {
+            store_id: store.raw_id,
+            ..Default::default()
+        })
+        .expect("get_store failed")
+        .expect("Empty value in get_store");
     let update_coupon = store
         .coupons
         .into_iter()
@@ -2609,10 +2656,12 @@ fn delete_coupon() {
         .request(delete_coupon::DeleteCouponInput { id: coupon.raw_id })
         .expect("Cannot get data from delete_coupon");
     let store = context
-        .get_store(store.raw_id)
-        .expect("Cannot get data from get_store")
-        .store
-        .expect("Empty data from get_store");
+        .request(get_store::GetStoreInput {
+            store_id: store.raw_id,
+            ..Default::default()
+        })
+        .expect("get_store failed")
+        .expect("Empty value in get_store");
     let deleted_coupon = store.coupons.into_iter().find(|c| c.id == coupon.id);
     let delete_coupon_twice =
         context.request(delete_coupon::DeleteCouponInput { id: coupon.raw_id });
@@ -2781,9 +2830,12 @@ fn set_up_warehouse(
     let (user, token, store, _) = set_up_store(context)?;
     context.set_bearer(token.clone());
     let store = context
-        .get_store(store.raw_id)?
-        .store
-        .expect("Cannot get data from get_store");
+        .request(get_store::GetStoreInput {
+            store_id: store.raw_id,
+            ..Default::default()
+        })
+        .expect("get_store failed")
+        .expect("Empty value in get_store");
     let warehouse_payload = create_warehouse::CreateWarehouseInput {
         name: Some("Initial name".to_string()),
         store_id: store.raw_id,
