@@ -155,7 +155,9 @@ impl BillingMicroservice {
         order_exchange_rates,
         orders,
         orders_info,
-        roles;",
+        roles,
+        payouts,
+        user_wallets;",
         )
         .execute(&conn)?;
         let _ = diesel::sql_query("INSERT INTO roles (user_id, name) VALUES (1, 'superuser')")
