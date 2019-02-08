@@ -812,6 +812,9 @@ pub fn update_category() {
     let mut context = TestContext::new();
     context.as_superadmin();
     //given
+    let parent_category = context
+        .request(create_category::default_create_category_input())
+        .expect("create_category failed");
     let category = context
         .request(create_category::default_create_category_input())
         .expect("create_category failed");
@@ -819,6 +822,7 @@ pub fn update_category() {
     let updated_category = context
         .request(update_category::UpdateCategoryInput {
             id: category.id,
+            parent_id: Some(parent_category.raw_id),
             ..update_category::default_update_category_input()
         })
         .expect("update_category failed");
@@ -829,11 +833,8 @@ pub fn update_category() {
         updated_category.meta_field.unwrap(),
         expected_values.meta_field.unwrap()
     );
-    assert_eq!(
-        updated_category.parent_id.unwrap(),
-        expected_values.parent_id.unwrap()
-    );
-    assert_eq!(updated_category.level, expected_values.level.unwrap());
+    assert_eq!(updated_category.parent_id.unwrap(), parent_category.raw_id);
+    assert_eq!(updated_category.level, parent_category.level + 1);
 }
 
 #[test]

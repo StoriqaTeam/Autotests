@@ -2,6 +2,7 @@ extern crate chrono;
 #[macro_use]
 extern crate failure;
 extern crate graphql_client;
+extern crate rand;
 extern crate reqwest;
 #[macro_use]
 extern crate serde_derive;
