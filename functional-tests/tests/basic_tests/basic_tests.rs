@@ -824,16 +824,26 @@ pub fn update_category() {
         .expect("update_category failed");
     //then
     let expected_values = update_category::default_update_category_input();
-    assert_eq!(updated_category.slug, expected_values.slug.unwrap());
+    assert_eq!(
+        updated_category.slug,
+        expected_values.slug.unwrap(),
+        "Category slug not equal"
+    );
     assert_eq!(
         updated_category.meta_field.unwrap(),
-        expected_values.meta_field.unwrap()
+        expected_values.meta_field.unwrap(),
+        "Category meta field not equal"
     );
     assert_eq!(
         updated_category.parent_id.unwrap(),
-        expected_values.parent_id.unwrap()
+        expected_values.parent_id.unwrap(),
+        "Category parent id not equal"
     );
-    assert_eq!(updated_category.level, expected_values.level.unwrap());
+    assert_eq!(
+        updated_category.level,
+        expected_values.level.unwrap(),
+        "Categories levels are not equal"
+    );
 }
 
 #[test]
