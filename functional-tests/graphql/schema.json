@@ -6037,6 +6037,45 @@
               "args": [
                 {
                   "defaultValue": null,
+                  "description": "Creates Charge object in Stripe for pay fee-for-service platform.",
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "ChargeFeesInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "Creates Charge object",
+              "isDeprecated": false,
+              "name": "ChargeFees",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "Fee",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
                   "description": "Create payment intent for fee input",
                   "name": "input",
                   "type": {
@@ -10387,6 +10426,53 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "AttributeFilter",
+          "possibleTypes": null
+        },
+        {
+          "description": "The removal of fee-for-service platform.",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Client mutation id.",
+              "name": "clientMutationId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Order id for pay fee.",
+              "name": "orderIds",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "ChargeFeesInput",
           "possibleTypes": null
         },
         {
@@ -17735,13 +17821,9 @@
               "isDeprecated": false,
               "name": "store",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Store",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "Store",
+                "ofType": null
               }
             },
             {
@@ -24533,13 +24615,9 @@
               "isDeprecated": false,
               "name": "store",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Store",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "Store",
+                "ofType": null
               }
             },
             {
