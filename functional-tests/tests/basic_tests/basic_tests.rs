@@ -813,10 +813,16 @@ pub fn update_category() {
     context.as_superadmin();
     //given
     let parent_category = context
-        .request(create_category::default_create_category_input())
+        .request(create_category::CreateCategoryInput {
+            slug: Some("category-slug1".to_string()),
+            ..create_category::default_create_category_input()
+        })
         .expect("create_category failed");
     let category = context
-        .request(create_category::default_create_category_input())
+        .request(create_category::CreateCategoryInput {
+            slug: Some("category-slug2".to_string()),
+            ..create_category::default_create_category_input()
+        })
         .expect("create_category failed");
     //when
     let updated_category = context

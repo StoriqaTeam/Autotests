@@ -1,8 +1,6 @@
 use failure::Error as FailureError;
 use graphql_client::GraphQLQuery;
 use graphql_client::Response;
-use rand::distributions::Alphanumeric;
-use rand::{thread_rng, Rng};
 
 use request::GraphqlRequest;
 
@@ -17,9 +15,6 @@ pub struct CreateCategoryMutation;
 pub use self::create_category_mutation::*;
 
 pub fn default_create_category_input() -> CreateCategoryInput {
-    let slug: String = thread_rng().sample_iter(&Alphanumeric).take(10).collect();
-    let slug = slug.to_ascii_lowercase();
-
     CreateCategoryInput {
         client_mutation_id: "".to_string(),
         name: vec![TranslationInput {
@@ -28,7 +23,7 @@ pub fn default_create_category_input() -> CreateCategoryInput {
         }],
         meta_field: Some(r#"{"ui_element": "Combobox"}"#.to_string()),
         parent_id: 0,
-        slug: Some(slug),
+        slug: Some("category-slug".to_string()),
     }
 }
 
