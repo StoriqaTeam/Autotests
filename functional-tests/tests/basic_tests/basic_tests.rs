@@ -1749,7 +1749,6 @@ pub fn create_product_without_base_product() {
 }
 
 #[test]
-#[ignore]
 pub fn update_product_without_attributes() {
     //setup
     let mut context = TestContext::new();
