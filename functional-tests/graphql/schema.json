@@ -394,6 +394,39 @@
           "possibleTypes": null
         },
         {
+          "description": "Get several base products",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Int Id Array of base products.",
+              "name": "ids",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "GetBaseProductsInput",
+          "possibleTypes": null
+        },
+        {
           "description": "Search product input object",
           "enumValues": null,
           "fields": null,
@@ -786,6 +819,39 @@
           "possibleTypes": null
         },
         {
+          "description": "Equality Filter input",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Values to be equal",
+              "name": "values",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "EqualFilterInput",
+          "possibleTypes": null
+        },
+        {
           "description": "Create Category input object",
           "enumValues": null,
           "fields": null,
@@ -864,39 +930,6 @@
           "interfaces": null,
           "kind": "INPUT_OBJECT",
           "name": "CreateCategoryInput",
-          "possibleTypes": null
-        },
-        {
-          "description": "Equality Filter input",
-          "enumValues": null,
-          "fields": null,
-          "inputFields": [
-            {
-              "defaultValue": null,
-              "description": "Values to be equal",
-              "name": "values",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              }
-            }
-          ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "EqualFilterInput",
           "possibleTypes": null
         },
         {
@@ -1148,35 +1181,6 @@
           "possibleTypes": null
         },
         {
-          "description": "Coupon application scope",
-          "enumValues": [
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "STORE"
-            },
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "CATEGORIES"
-            },
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "BASE_PRODUCTS"
-            }
-          ],
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "kind": "ENUM",
-          "name": "CouponScope",
-          "possibleTypes": null
-        },
-        {
           "description": "Available Packages info.",
           "enumValues": null,
           "fields": [
@@ -1289,6 +1293,35 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "AvailablePackages",
+          "possibleTypes": null
+        },
+        {
+          "description": "Coupon application scope",
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "STORE"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "CATEGORIES"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "BASE_PRODUCTS"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "CouponScope",
           "possibleTypes": null
         },
         {
@@ -8543,6 +8576,29 @@
             {
               "args": [
                 {
+                  "defaultValue": null,
+                  "description": "Desired variant id",
+                  "name": "productRawId",
+                  "type": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "product",
+              "type": {
+                "kind": "OBJECT",
+                "name": "Product",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
                   "defaultValue": "null",
                   "description": "First edges",
                   "name": "first",
@@ -10110,41 +10166,6 @@
           "possibleTypes": null
         },
         {
-          "description": "Billing microservice role",
-          "enumValues": [
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "SUPERUSER"
-            },
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "USER"
-            },
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "STORE_MANAGER"
-            },
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "FINANCIAL_MANAGER"
-            }
-          ],
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "kind": "ENUM",
-          "name": "BillingMicroserviceRole",
-          "possibleTypes": null
-        },
-        {
           "description": "Page Info order.",
           "enumValues": null,
           "fields": [
@@ -10220,6 +10241,80 @@
           "possibleTypes": null
         },
         {
+          "description": "Billing microservice role",
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "SUPERUSER"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "USER"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "STORE_MANAGER"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "FINANCIAL_MANAGER"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "BillingMicroserviceRole",
+          "possibleTypes": null
+        },
+        {
+          "description": "Get existing reset token request input object",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "user",
+              "name": "userId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "token type",
+              "name": "tokenType",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "TokenTypeInput",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "ExistingResetTokenInput",
+          "possibleTypes": null
+        },
+        {
           "description": "Set coupon in cart input object",
           "enumValues": null,
           "fields": null,
@@ -10270,45 +10365,6 @@
           "interfaces": null,
           "kind": "INPUT_OBJECT",
           "name": "SetCouponInCartInput",
-          "possibleTypes": null
-        },
-        {
-          "description": "Get existing reset token request input object",
-          "enumValues": null,
-          "fields": null,
-          "inputFields": [
-            {
-              "defaultValue": null,
-              "description": "user",
-              "name": "userId",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": "token type",
-              "name": "tokenType",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "TokenTypeInput",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "ExistingResetTokenInput",
           "possibleTypes": null
         },
         {
@@ -15649,61 +15705,6 @@
           "possibleTypes": null
         },
         {
-          "description": "Products Search Filters options endpoint.",
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Price filter.",
-              "isDeprecated": false,
-              "name": "priceRange",
-              "type": {
-                "kind": "OBJECT",
-                "name": "RangeFilter",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Category.",
-              "isDeprecated": false,
-              "name": "categories",
-              "type": {
-                "kind": "OBJECT",
-                "name": "SearchCategory",
-                "ofType": null
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Attribute filters for whole category.",
-              "isDeprecated": false,
-              "name": "attrFilters",
-              "type": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "AttributeFilter",
-                    "ofType": null
-                  }
-                }
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "ProductsSearchFilters",
-          "possibleTypes": null
-        },
-        {
           "description": "Value with translation",
           "enumValues": null,
           "fields": [
@@ -15775,6 +15776,61 @@
           "interfaces": null,
           "kind": "INPUT_OBJECT",
           "name": "TranslationInput",
+          "possibleTypes": null
+        },
+        {
+          "description": "Products Search Filters options endpoint.",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Price filter.",
+              "isDeprecated": false,
+              "name": "priceRange",
+              "type": {
+                "kind": "OBJECT",
+                "name": "RangeFilter",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Category.",
+              "isDeprecated": false,
+              "name": "categories",
+              "type": {
+                "kind": "OBJECT",
+                "name": "SearchCategory",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Attribute filters for whole category.",
+              "isDeprecated": false,
+              "name": "attrFilters",
+              "type": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "AttributeFilter",
+                    "ofType": null
+                  }
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "ProductsSearchFilters",
           "possibleTypes": null
         },
         {
@@ -16259,6 +16315,103 @@
           "possibleTypes": null
         },
         {
+          "description": "Moderator Product Comments info.",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Base64 Unique id",
+              "isDeprecated": false,
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Unique int id",
+              "isDeprecated": false,
+              "name": "rawId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Moderator raw id",
+              "isDeprecated": false,
+              "name": "moderatorId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Base product raw id",
+              "isDeprecated": false,
+              "name": "baseProductId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Comments",
+              "isDeprecated": false,
+              "name": "comments",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "kind": "OBJECT",
+          "name": "ModeratorProductComments",
+          "possibleTypes": null
+        },
+        {
           "description": "Category info.",
           "enumValues": null,
           "fields": [
@@ -16445,103 +16598,6 @@
           ],
           "kind": "OBJECT",
           "name": "CategoryWithProducts",
-          "possibleTypes": null
-        },
-        {
-          "description": "Moderator Product Comments info.",
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Base64 Unique id",
-              "isDeprecated": false,
-              "name": "id",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Unique int id",
-              "isDeprecated": false,
-              "name": "rawId",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Moderator raw id",
-              "isDeprecated": false,
-              "name": "moderatorId",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Base product raw id",
-              "isDeprecated": false,
-              "name": "baseProductId",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Comments",
-              "isDeprecated": false,
-              "name": "comments",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [
-            {
-              "kind": "INTERFACE",
-              "name": "Node",
-              "ofType": null
-            }
-          ],
-          "kind": "OBJECT",
-          "name": "ModeratorProductComments",
           "possibleTypes": null
         },
         {
@@ -17028,33 +17084,6 @@
           "possibleTypes": null
         },
         {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "ISO 639-1 code",
-              "isDeprecated": false,
-              "name": "isoCode",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "LanguageGraphQl",
-          "possibleTypes": null
-        },
-        {
           "description": "Product's info.",
           "enumValues": null,
           "fields": [
@@ -17378,14 +17407,15 @@
           "possibleTypes": null
         },
         {
-          "description": "Increment product quantity in cart input object",
+          "description": null,
           "enumValues": null,
-          "fields": null,
-          "inputFields": [
+          "fields": [
             {
-              "defaultValue": null,
-              "description": "Client mutation id.",
-              "name": "clientMutationId",
+              "args": [],
+              "deprecationReason": null,
+              "description": "ISO 639-1 code",
+              "isDeprecated": false,
+              "name": "isoCode",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -17395,35 +17425,12 @@
                   "ofType": null
                 }
               }
-            },
-            {
-              "defaultValue": null,
-              "description": "Product id.",
-              "name": "productId",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": "Product quantity.",
-              "name": "value",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
             }
           ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "IncrementInCartInput",
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "LanguageGraphQl",
           "possibleTypes": null
         },
         {
@@ -17551,6 +17558,55 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "Country",
+          "possibleTypes": null
+        },
+        {
+          "description": "Increment product quantity in cart input object",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Client mutation id.",
+              "name": "clientMutationId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Product id.",
+              "name": "productId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Product quantity.",
+              "name": "value",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "IncrementInCartInput",
           "possibleTypes": null
         },
         {
@@ -24815,12 +24871,12 @@
             },
             {
               "kind": "OBJECT",
-              "name": "CategoryWithProducts",
+              "name": "ModeratorProductComments",
               "ofType": null
             },
             {
               "kind": "OBJECT",
-              "name": "ModeratorProductComments",
+              "name": "CategoryWithProducts",
               "ofType": null
             },
             {
@@ -26702,6 +26758,45 @@
                 "kind": "OBJECT",
                 "name": "BaseProduct",
                 "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "get base input",
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "GetBaseProductsInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": "Fetches base products by ids.",
+              "isDeprecated": false,
+              "name": "baseProducts",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "BaseProduct",
+                      "ofType": null
+                    }
+                  }
+                }
               }
             },
             {
