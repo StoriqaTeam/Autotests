@@ -546,11 +546,51 @@ pub fn create_base_product_with_variants() {
     let mut context = TestContext::new();
     //given
     let (_user, token, store, category) = set_up_store(&mut context).unwrap();
+    context.as_superadmin();
+    let attribute = context
+        .request(create_attribute::CreateAttributeInput {
+            values: Some(vec![
+                create_attribute::CreateAttributeValueWithAttributeInput {
+                    code: "attibute_value_code".to_string(),
+                    translations: Some(vec![create_attribute::TranslationInput {
+                        lang: create_attribute::Language::EN,
+                        text: "attibute value code".to_string(),
+                    }]),
+                },
+            ]),
+            ..create_attribute::default_create_attribute_input()
+        })
+        .expect("create_attribute failed");
+    let _ = context
+        .request(add_attribute_to_category::AddAttributeToCategoryInput {
+            cat_id: category.raw_id,
+            attr_id: attribute.raw_id,
+            ..add_attribute_to_category::default_add_attribute_to_category_input()
+        })
+        .expect("add_attribute_to_category failed");
     context.set_bearer(token);
     //when
+    let attribute = create_base_product_with_variants::ProdAttrValueInput {
+        attr_id: attribute.raw_id,
+        value: attribute
+            .values
+            .expect("attributes has no values")
+            .get(0)
+            .expect("attributes has zero values")
+            .code
+            .to_string(),
+        meta_field: None,
+    };
     let base_product = context.request(create_base_product_with_variants::NewBaseProductWithVariantsInput {
         store_id: store.raw_id,
         category_id: category.raw_id,
+        selected_attributes: vec![attribute.attr_id],
+        variants: vec![
+            create_base_product_with_variants::CreateProductWithAttributesInput {
+                attributes: vec![attribute],
+                ..create_base_product_with_variants::default_create_product_with_attributes_input()
+            }
+        ],
         ..create_base_product_with_variants::default_create_base_product_with_variants_input()
     }).expect("create_base_product_with_variants failed");
     //then

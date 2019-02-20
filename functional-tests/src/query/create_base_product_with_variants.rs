@@ -13,6 +13,29 @@ pub struct CreateBaseProductWithVariantsMutation;
 
 pub use self::create_base_product_with_variants_mutation::*;
 
+pub fn default_create_product_with_attributes_input() -> CreateProductWithAttributesInput {
+    CreateProductWithAttributesInput {
+        client_mutation_id: "".to_string(),
+        product: NewProduct {
+            client_mutation_id: None,
+            base_product_id: None,
+            discount: Some(0.3),
+            photo_main: Some("photo".to_string()),
+            additional_photos: Some(vec![
+                "additional_photo_1".to_string(),
+                "additional_photo_2".to_string(),
+            ]),
+            vendor_code: "vendor_code".to_string(),
+            cashback: Some(0.1),
+            price: 100.0,
+            pre_order: Some(false),
+            pre_order_days: Some(100),
+        },
+        attributes: vec![],
+        quantity: Some(999),
+    }
+}
+
 pub fn default_create_base_product_with_variants_input() -> NewBaseProductWithVariantsInput {
     NewBaseProductWithVariantsInput {
         client_mutation_id: "".to_string(),
@@ -41,26 +64,7 @@ pub fn default_create_base_product_with_variants_input() -> NewBaseProductWithVa
         category_id: 0,
         slug: Some("base-product-slug".to_string()),
         selected_attributes: vec![],
-        variants: vec![CreateProductWithAttributesInput {
-            client_mutation_id: "".to_string(),
-            product: NewProduct {
-                client_mutation_id: None,
-                base_product_id: None,
-                discount: Some(0.3),
-                photo_main: Some("photo".to_string()),
-                additional_photos: Some(vec![
-                    "additional_photo_1".to_string(),
-                    "additional_photo_2".to_string(),
-                ]),
-                vendor_code: "vendor_code".to_string(),
-                cashback: Some(0.1),
-                price: 100.0,
-                pre_order: Some(false),
-                pre_order_days: Some(100),
-            },
-            attributes: vec![],
-            quantity: Some(999),
-        }],
+        variants: vec![default_create_product_with_attributes_input()],
         length_cm: Some(10),
         width_cm: Some(10),
         height_cm: Some(10),
