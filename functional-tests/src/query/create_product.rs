@@ -19,6 +19,7 @@ pub fn default_create_product_input() -> CreateProductWithAttributesInput {
         client_mutation_id: "".to_string(),
         product: default_new_product(),
         attributes: vec![],
+        quantity: None,
     }
 }
 

@@ -59,6 +59,7 @@ pub fn default_create_base_product_with_variants_input() -> NewBaseProductWithVa
                 pre_order_days: Some(100),
             },
             attributes: vec![],
+            quantity: Some(999),
         }],
         length_cm: Some(10),
         width_cm: Some(10),
