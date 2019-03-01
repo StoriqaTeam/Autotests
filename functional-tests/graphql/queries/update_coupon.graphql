@@ -1,0 +1,21 @@
+mutation UpdateCoupon($input: UpdateCouponInput!) {
+  updateCoupon(input: $input) {
+    id
+    rawId
+    code
+    title
+    storeRawId
+    scope
+    percent
+    quantity
+    usedQuantity
+    expiredAt
+    isActive
+    createdAt
+    updatedAt
+    baseProducts {
+      id
+      rawId
+    }
+  }
+}

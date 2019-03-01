@@ -1,0 +1,21 @@
+mutation CreateUserDeliveryAddressFull($input: NewUserDeliveryAddressFullInput!) {
+  createUserDeliveryAddressFull(input: $input) {
+    id
+    rawId
+    userId
+    address {
+      value
+      country
+      countryCode
+      administrativeAreaLevel1
+      administrativeAreaLevel2
+      locality
+      political
+      postalCode
+      route
+      streetNumber
+      placeId
+    }
+    isPriority
+  }
+}

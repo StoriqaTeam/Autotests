@@ -1,0 +1,6 @@
+mutation DeleteCompanyPackage($companyId: Int!, $packageId: Int!) {
+  deleteCompanyPackage(companyId: $companyId, packageId: $packageId) {
+    companyId
+    packageId
+  }
+}

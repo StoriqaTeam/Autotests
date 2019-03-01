@@ -1,0 +1,21 @@
+mutation DeleteUserDeliveryAddressFull($id: Int!) {
+  deleteUserDeliveryAddressFull(id: $id) {
+    id
+    rawId
+    userId
+    address {
+      value
+      country
+      countryCode
+      administrativeAreaLevel1
+      administrativeAreaLevel2
+      locality
+      political
+      postalCode
+      route
+      streetNumber
+      placeId
+    }
+    isPriority
+  }
+}

@@ -1,0 +1,39 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: functional-tests
+  labels:
+    stack: storiqa
+    app: functional-tests
+spec:
+  selector:
+    matchLabels:
+      app: functional-tests
+  replicas: 1
+  template:
+    metadata:
+      name: functional-tests
+      labels:
+        app: functional-tests
+        stack: storiqa
+    spec:
+      imagePullSecrets:
+      - name: stq
+      containers:
+      - name: functional-tests
+        image: storiqateam/stq-functional-tests
+        env:
+        - name: RUN_MODE
+          value: k8s
+        - name: RUST_BACKTRACE
+          value: "1"
+        - name: RUST_LOG
+          value: functional-tests=debug
+        volumeMounts:
+        - name: conf
+          mountPath: /app/config/
+      volumes:
+      - name: conf
+        configMap:
+          name: functional-tests
+

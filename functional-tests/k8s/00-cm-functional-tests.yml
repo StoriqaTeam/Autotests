@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: functional-tests
+  labels:
+    app: functional-tests
+data:
+  base.toml: |
+    [gateway_microservice]
+    graphql_url="http://gateway:8000/graphql"
+    url="http://gateway:8000"
+
+    [users_microservice]
+    url="http://users:8000"
+    database_url="postgresql://users:users@db-postgresql:5432/users"
+
+    [stores_microservice]
+    url="http://stores:8000"
+    database_url="postgresql://stores:stores@db-postgresql:5432/stores"
+
+    [orders_microservice]
+    url="http://orders:8000"
+    database_url="postgresql://orders:orders@db-postgresql:5432/orders"
+
+    [billing_microservice]
+    url="http://billing:8000"
+    database_url="postgresql://billing:billing@db-postgresql:5432/billing"
+
+    [saga_microservice]
+    url="http://saga:8000"
+    database_url=""
+
+    [warehouses_microservice]
+    url="http://warehouses:8000"
+    database_url="postgresql://warehouses:warehouses@db-postgresql:5432/warehouses"
+
+    [notifications_microservice]
+    url="http://notifications:8000"
+    database_url="postgresql://notifications:notifications@db-postgresql:5432/notifications"
+
+    [delivery_microservice]
+    url="http://delivery:8000"
+    database_url="postgresql://delivery:delivery@db-postgresql:5432/delivery"
+  k8s.toml: |
+    [environment]
+    type = "cluster"
+    url = "http://functional-tests:8000"

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import typing
 import requests
 import json
 import os
@@ -14,7 +15,7 @@ else: url = 'https://nightly.stq.cloud/graphql'
 class TestFailException(Exception):
     pass
 
-errors:dict = {}
+errors = {}
 
 # Создает список из ключей словаря
 def keys2list(anydict:dict):
@@ -42,7 +43,7 @@ def request(json_query, headers, cookies):
     return r
 
 # Словарь с переменными использующимися в запросах
-context:dict = {
+context = {
     'n': datetime.strftime(datetime.now(), "%m%d%H%M%S"),
     'adm' : 'admin@storiqa.com',
     'admpwd' : 'bqF5BkdsCS',
@@ -80,10 +81,9 @@ context:dict = {
 }
 # Действие со списком запросов. Основная логика теста.
 def action(dictq:dict):
-    token_headers:dict = {"currency" : "STQ"}
-    cookie:dict = {"holyshit": "iamcool"}
-    answer:json
-    count:int = 0
+    token_headers = {"currency" : "STQ", "fiatcurrency" : "EUR"}
+    cookie = {"holyshit": "iamcool"}
+    count = 0
     context['regmail'] = 'test' + context['n'] + '@test.test'
     for i in dictq:
         try:
@@ -149,8 +149,6 @@ def action(dictq:dict):
                 context['order_slug'] = answer.json()['data']['createOrders']['invoice']['orders'][0]['slug']
             elif dictq[i] == q.queries['buyNow']:
                 context['invoice_id'] = answer.json()['data']['buyNow']['invoice']['id']
-            elif dictq[i] == q.queries['deleteFromCart']:
-                token_headers['Authorization'] = ad_token
             print(answer.json())
             if 'errors' in answer.text:
                 error_message = 'ERROR IN QUERY: ' + str(i) + answer.text
@@ -171,8 +169,8 @@ def action(dictq:dict):
 чтобы вывести индексы ключей к запросам нужно установить значение print_keylist=1.
 Чтобы задать необходимые переменные нужно написать их значение в словарь context в строке 44
 '''
-test_all:bool = 1
-print_keylist:bool = 0
+test_all = 1
+print_keylist = 0
 
 if test_all == 1:
     action(q.queries)
@@ -184,7 +182,7 @@ else:
         a = 5
         list_indexes = [a, 6, 7, 8, 10, u, 24, 32, 34, 36, 39, 44, 45, 46, 47, 48] # Указать нужные ключи
         keylist = keys2list(q.queries)
-        actual_keys:list = []
+        actual_keys = []
         for n in list_indexes:
             actual_keys.append(keylist[n])
         querypart = select_query_part(actual_keys, q.queries)

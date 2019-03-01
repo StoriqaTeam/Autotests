@@ -12,5 +12,19 @@ mutation createProduct($input: CreateProductWithAttributesInput!) {
     price
     preOrder
     preOrderDays
+    attributes {
+      attrId
+      attribute {
+        id
+        rawId
+      }
+      attributeValueId
+      attributeValue {
+        rawId
+        attrRawId
+        code
+      }
+      metaField
+    }
   }
 }

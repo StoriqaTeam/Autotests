@@ -1,0 +1,12 @@
+mutation ClearCart {
+  clearCart {
+    id
+    productsCost
+    productsCostWithoutDiscounts
+    couponsDiscounts
+    deliveryCost
+    totalCost
+    totalCostWithoutDiscounts
+    totalCount
+  }
+}

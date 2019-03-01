@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: functional-tests
+  labels:
+    stack: storiqa
+spec:
+  selector:
+    stack: storiqa
+    app: functional-tests
+  ports:
+  - name: connect
+    protocol: TCP
+    port: 8000

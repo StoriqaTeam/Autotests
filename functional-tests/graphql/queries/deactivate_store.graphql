@@ -1,0 +1,34 @@
+mutation DeactivateStore($input: DeactivateStoreInput!) {
+  deactivateStore(input: $input) {
+    id
+    rawId
+    userId
+    name {
+      lang
+      text
+    }
+    isActive
+    shortDescription {
+      lang
+      text
+    }
+    longDescription {
+      lang
+      text
+    }
+    slug
+    createdAt
+    updatedAt
+    cover
+    logo
+    phone
+    email
+    facebookUrl
+    twitterUrl
+    instagramUrl
+    defaultLanguage
+    slogan
+    rating
+    status
+  }
+}

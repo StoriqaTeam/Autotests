@@ -1,0 +1,67 @@
+mutation UpsertShipping($input: NewShippingInput!) {
+  upsertShipping(input: $input) {
+    local {
+      companyPackageId
+      price
+      isFixedPrice
+      deliveriesTo {
+        label
+        parent
+        level
+        alpha2
+        alpha3
+        numeric
+        children {
+          label
+          level
+          parent
+          alpha2
+          alpha3
+          numeric
+          children {
+            label
+            level
+            parent
+            alpha2
+            alpha3
+            numeric
+          }
+        }
+      }
+    }
+
+    international {
+      companyPackageId
+      price
+      deliveriesTo {
+        label
+        parent
+        level
+        alpha2
+        alpha3
+        numeric
+        children {
+          label
+          level
+          parent
+          alpha2
+          alpha3
+          numeric
+          children {
+            label
+            level
+            parent
+            alpha2
+            alpha3
+            numeric
+          }
+        }
+      }
+    }
+
+    pickup {
+      price
+      pickup
+    }
+  }
+}

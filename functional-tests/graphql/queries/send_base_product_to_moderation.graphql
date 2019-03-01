@@ -1,0 +1,6 @@
+mutation sendBaseProductToModeration($id: Int!) {
+  sendBaseProductToModeration(id: $id) {
+    id
+    rawId
+  }
+}

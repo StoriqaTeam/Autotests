@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 #Это словарь со всеми запросами для GaphQL
-from typing import Dict, Any, Union
+#from typing import Dict, Any, Union
 
-queries: Dict[Union[str, Any], Union[str, Any]] = {
+queries = {
 
 'version' : '''{"query":
                 "query {apiVersion}"}''',
@@ -736,28 +736,28 @@ queries: Dict[Union[str, Any], Union[str, Any]] = {
  }}
 ''',
 
-'setOrderStatusComplete' : '''
-{"query":
-    "mutation setOrderStatusComplete($input: OrderStatusCompleteInput!) {setOrderStatusComplete (input: $input) {state, trackId}}",
-"variables": {
-    "input": {
-        "clientMutationId": "",
-        "orderSlug": %(order_slug)i,
-        "comment": "test"
-    }
- }}
-''',
+#'setOrderStatusComplete' : '''
+#{"query":
+#    "mutation setOrderStatusComplete($input: OrderStatusCompleteInput!) {setOrderStatusComplete (input: $input) {state, trackId}}",
+#"variables": {
+#    "input": {
+#        "clientMutationId": "",
+#        "orderSlug": %(order_slug)i,
+#        "comment": "test"
+#    }
+# }}
+#''',
 
-'deleteFromCart' : '''
-{"query":
-    "mutation deleteFromCart($input: DeleteFromCartInput!) {deleteFromCart(input: $input) {id, totalCost}}",
-"variables": {
-    "input": {
-        "clientMutationId": "",
-        "productId": %(prod_rawid)i
-    }
- }}
-''',
+#'deleteFromCart' : '''
+#{"query":
+#    "mutation deleteFromCart($input: DeleteFromCartInput!) {deleteFromCart(input: $input) {id, totalCost}}",
+#"variables": {
+#    "input": {
+#        "clientMutationId": "",
+#        "productId": %(prod_rawid)i
+#    }
+# }}
+#''',
 
 'buyNow' : '''
 {"query":
@@ -770,7 +770,7 @@ queries: Dict[Union[str, Any], Union[str, Any]] = {
         "addressFull": {"value": "gdeto", "country": "Russian Federation", "postalCode": "111111", "countryCode": "RUS"},
         "receiverName": "apitester",
         "receiverPhone": "+79034569874",
-        "currency": "RUB",
+        "currency": "STQ",
         "shippingId": %(shipping_id)i
     }
  }
@@ -795,36 +795,36 @@ queries: Dict[Union[str, Any], Union[str, Any]] = {
 }
 ''',
 
-'deleteCompanyPackage' : '''
-{"query":
-    "mutation deleteCompanyPackage {deleteCompanyPackage(companyId: %(company_rawid)i, packageId: %(package_rawid)i) {id}}"
-}
-''',
+#'deleteCompanyPackage' : '''
+#{"query":
+#    "mutation deleteCompanyPackage {deleteCompanyPackage(companyId: %(company_rawid)i, packageId: %(package_rawid)i) {id}}"
+#}
+#''',
 
-'deletePackage' : '''
-{"query":
-    "mutation deletePackage {deletePackage(id: %(package_rawid)i) {id}}"
-}
-''',
+#'deletePackage' : '''
+#{"query":
+#    "mutation deletePackage {deletePackage(id: %(package_rawid)i) {id}}"
+#}
+#''',
 
-'deleteCompany' : '''
-{"query":
-    "mutation deleteCompany {deleteCompany(id: %(company_rawid)i) {id}}"
-}
-''',
+#'deleteCompany' : '''
+#{"query":
+#    "mutation deleteCompany {deleteCompany(id: %(company_rawid)i) {id}}"
+#}
+#''',
 
-'deleteAttributeFromCategory' : '''
-{"query":
-    "mutation deleteAttributeFromCategory($input: DeleteAttributeFromCategory!) {deleteAttributeFromCategory(input: $input) {mock}}",
-    "variables": {
-        "input": {
-            "clientMutationId": "",
-            "catId": %(cat_rawid_3)i,
-            "attrId": %(attr_rawid)i
-        }
-    }
-}
-''',
+#'deleteAttributeFromCategory' : '''
+#{"query":
+#    "mutation deleteAttributeFromCategory($input: DeleteAttributeFromCategory!) {deleteAttributeFromCategory(input: $input) {mock}}",
+#    "variables": {
+#        "input": {
+#            "clientMutationId": "",
+#            "catId": %(cat_rawid_3)i,
+#            "attrId": %(attr_rawid)i
+#        }
+#    }
+#}
+#''',
 
 'deactivateProduct' : '''
 {"query":

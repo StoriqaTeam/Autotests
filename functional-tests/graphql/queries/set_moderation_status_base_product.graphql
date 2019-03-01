@@ -1,0 +1,6 @@
+mutation setModerationStatusBaseProduct($input: BaseProductModerateInput!) {
+  setModerationStatusBaseProduct(input: $input) {
+    id
+    rawId
+  }
+}

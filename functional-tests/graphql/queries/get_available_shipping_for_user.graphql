@@ -1,0 +1,12 @@
+query availableShippingForUser($userCountry: String!, $baseProductId: Int!) {
+  availableShippingForUser(userCountry: $userCountry, baseProductId: $baseProductId) {
+    packages {
+      id
+      companyPackageRawId
+      shippingId
+      name
+      logo
+      price
+    }
+  }
+}

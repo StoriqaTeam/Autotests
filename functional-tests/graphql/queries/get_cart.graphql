@@ -1,0 +1,75 @@
+query GetCart($currencyType: CurrencyType) {
+  cart(currencyType: $currencyType) {
+    id
+    stores {
+      edges {
+        node {
+          id
+          rawId
+          name {
+            lang
+            text
+          }
+          rating
+          logo
+          cover
+          productsCost
+          productsCostWithoutDiscounts
+          coupons {
+            id
+            rawId
+            code
+            title
+            storeRawId
+            scope
+            percent
+            quantity
+            usedQuantity
+            expiredAt
+            isActive
+            createdAt
+            updatedAt
+            baseProducts {
+              id
+              rawId
+            }
+          }
+          couponsDiscount
+          deliveryCost
+          totalCost
+          totalCostWithoutDiscounts
+          totalCount
+          products {
+            id
+            rawId
+            quantity
+            selected
+            comment
+            deliveryCost
+            price
+            baseProduct {
+              id
+              rawId
+              currency
+            }
+            selectPackage {
+              id
+              companyPackageRawId
+              shippingId
+              name
+              logo
+              price
+            }
+          }
+        }
+      }
+    }
+    productsCost
+    productsCostWithoutDiscounts
+    couponsDiscounts
+    deliveryCost
+    totalCost
+    totalCostWithoutDiscounts
+    totalCount
+  }
+}

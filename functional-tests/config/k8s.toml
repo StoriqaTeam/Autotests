@@ -1,0 +1,4 @@
+[test_environment]
+type = "cluster"
+graphql_url = "https://nightly.stq.cloud/graphql"
+test_tools_url = "https://nightly.stq.cloud/testtools"

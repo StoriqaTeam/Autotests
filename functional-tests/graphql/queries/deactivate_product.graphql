@@ -13,9 +13,5 @@ mutation deactivateProduct($input: DeactivateProductInput!) {
     price
     preOrder
     preOrderDays
-    customerPrice {
-      price
-      currency
-    }
   }
 }

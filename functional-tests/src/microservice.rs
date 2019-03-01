@@ -4,54 +4,64 @@ use diesel::query_dsl::RunQueryDsl;
 use failure::Error as FailureError;
 use reqwest::Client;
 
+use fixtures::currency_exchange::CURRENCY_EXCHANGE_DATA;
+
+#[derive(Clone)]
 pub struct UsersMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct StoresMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct OrdersMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct BillingMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct DeliveryMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct WarehousesMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct SagaMicroservice {
-    pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct NotificationsMicroservice {
     pub database_url: String,
     pub url: String,
     pub client: Client,
 }
 
+#[derive(Clone)]
 pub struct GatewayMicroservice {
     pub url: String,
     pub client: Client,
@@ -67,6 +77,20 @@ impl GatewayMicroservice {
 }
 
 impl OrdersMicroservice {
+    pub fn clear_all_data(&self) -> Result<(), FailureError> {
+        let conn = PgConnection::establish(self.database_url.as_ref())?;
+        let _ = diesel::sql_query(
+            "TRUNCATE TABLE cart_items_session, cart_items_user, order_diffs, orders, roles;",
+        )
+        .execute(&conn)?;
+        let _ = diesel::sql_query(
+            "INSERT INTO roles (user_id, name, data) VALUES (1, 'superadmin', 'null')",
+        )
+        .execute(&conn)?;
+
+        Ok(())
+    }
+
     pub fn healthcheck(&self) -> Result<(), FailureError> {
         healthcheck(&self.client, &self.url).map_err(|e| {
             e.context("Healthcheck in orders microservice failed")
@@ -76,6 +100,29 @@ impl OrdersMicroservice {
 }
 
 impl NotificationsMicroservice {
+    pub fn clear_all_data(&self) -> Result<(), FailureError> {
+        let ref json: serde_json::Value = serde_json::from_str(
+            r#"
+            {
+                "user_id": 1,
+                "email": "user@mail.com"
+            }"#,
+        )
+        .unwrap();
+
+        self.client
+            .delete(&format!("{}/emarsys/contact", self.url))
+            .json(json)
+            .send()?;
+
+        let conn = PgConnection::establish(self.database_url.as_ref())?;
+        let _ = diesel::sql_query("TRUNCATE TABLE user_roles;").execute(&conn)?;
+        let _ = diesel::sql_query("INSERT INTO user_roles (user_id, name) VALUES (1, 'superuser')")
+            .execute(&conn)?;
+
+        Ok(())
+    }
+
     pub fn healthcheck(&self) -> Result<(), FailureError> {
         healthcheck(&self.client, &self.url).map_err(|e| {
             e.context("Healthcheck in notifications microservice failed")
@@ -85,6 +132,40 @@ impl NotificationsMicroservice {
 }
 
 impl BillingMicroservice {
+    pub fn clear_all_data(&self) -> Result<(), FailureError> {
+        let conn = PgConnection::establish(self.database_url.as_ref())?;
+        let _ = diesel::sql_query(
+            "TRUNCATE TABLE
+        payment_intent,
+        accounts,
+        customers,
+        event_store,
+        fees,
+        international_billing_info,
+        payment_intents_fees,
+        payment_intents_invoices,
+        proxy_companies_billing_info,
+        russia_billing_info,
+        store_billing_type,
+        amounts_received,
+        event_store,
+        invoices,
+        invoices_v2,
+        merchants,
+        order_exchange_rates,
+        orders,
+        orders_info,
+        roles,
+        payouts,
+        user_wallets,
+        order_payouts;",
+        )
+        .execute(&conn)?;
+        let _ = diesel::sql_query("INSERT INTO roles (user_id, name) VALUES (1, 'superuser')")
+            .execute(&conn)?;
+        Ok(())
+    }
+
     pub fn healthcheck(&self) -> Result<(), FailureError> {
         healthcheck(&self.client, &self.url).map_err(|e| {
             e.context("Healthcheck in billing microservice failed")
@@ -94,6 +175,15 @@ impl BillingMicroservice {
 }
 
 impl DeliveryMicroservice {
+    pub fn clear_all_data(&self) -> Result<(), FailureError> {
+        let conn = PgConnection::establish(self.database_url.as_ref())?;
+        let _ = diesel::sql_query("TRUNCATE TABLE shipping_rates, companies, companies_packages, packages, pickups, products, roles, user_addresses;")
+            .execute(&conn)?;
+        let _ = diesel::sql_query("INSERT INTO roles (user_id, name) VALUES (1, 'superuser')")
+            .execute(&conn)?;
+        Ok(())
+    }
+
     pub fn healthcheck(&self) -> Result<(), FailureError> {
         healthcheck(&self.client, &self.url).map_err(|e| {
             e.context("Healthcheck in delivery microservice failed")
@@ -108,6 +198,17 @@ impl WarehousesMicroservice {
             e.context("Healthcheck in warehouses microservice failed")
                 .into()
         })
+    }
+
+    pub fn clear_all_data(&self) -> Result<(), FailureError> {
+        let conn = PgConnection::establish(self.database_url.as_ref())?;
+        let _ = diesel::sql_query("TRUNCATE TABLE roles, stocks, warehouses;").execute(&conn)?;
+
+        let _ = diesel::sql_query(
+            "INSERT INTO roles (user_id, name, data) VALUES (1, 'superadmin', 'null')",
+        )
+        .execute(&conn)?;
+        Ok(())
     }
 }
 
@@ -125,6 +226,12 @@ impl StoresMicroservice {
             .execute(&conn)?;
         let _ = diesel::sql_query("INSERT INTO user_roles (user_id, name) VALUES (1, 'superuser')")
             .execute(&conn)?;
+        // TODO: This is unsafe, rewrite using proper special characters escaping!
+        let _ = diesel::sql_query(format!(
+            "INSERT INTO currency_exchange (data) values ('{}')",
+            CURRENCY_EXCHANGE_DATA
+        ))
+        .execute(&conn)?;
         Ok(())
     }
 
@@ -160,14 +267,6 @@ impl UsersMicroservice {
         .execute(&conn)?;
 
         Ok(())
-    }
-
-    pub fn get_email_verification_token(&self, email: &str) -> Result<String, FailureError> {
-        let url = format!("{}/users/email_verify_token", self.url);
-        let payload = serde_json::json!({ "email": email });
-        let mut response = self.client.post(&url).json(&payload).send()?;
-        let token = response.json()?;
-        Ok(token)
     }
 
     pub fn healthcheck(&self) -> Result<(), FailureError> {

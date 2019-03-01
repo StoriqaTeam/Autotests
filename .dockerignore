@@ -1,0 +1,4 @@
+functional-tests/target/*/deps
+functional-tests/target/*/build
+functional-tests/target/*/incremental
+deps
