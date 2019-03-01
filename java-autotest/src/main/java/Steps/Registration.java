@@ -1,24 +1,21 @@
-package Registration;
+package Steps;
 
-import Page.autorization_page.AutorizationLoc;
-import Helper.Generator;
-import Helper.SeleniumRunner;
-import Helper.Wait;
-import org.junit.Before;
-import org.junit.Test;
+import Helper.*;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-
 
 @RunWith(SeleniumRunner.class)
 
-
-public class RegistrationTest {
-
+public class Registration {
     WebDriver driver;
+    Screenshot screenshot;
+
+    public Registration(WebDriver driver){
+        this.driver = driver;
+        screenshot = new Screenshot(driver);
+    }
 
     public WebElement signUp() {
         return driver.findElement(By.xpath("//*[@data-test='headerSignUpButton']"));
@@ -45,21 +42,7 @@ public class RegistrationTest {
         return driver.findElement(By.xpath("//*[@data-test='privacy']"));
     }
 
-    @Before
-    public void setUp(){
-        System.setProperty("webdriver.chrome.driver", "/Users/user/chromedriver");
-        driver = new ChromeDriver();
-//        System.setProperty("webdriver.opera.driver", "/Users/user/operadriver");
-//        driver = new OperaDriver();
-//        System.setProperty("webdriver.gecko.driver", "/Users/user/geckodriver");
-//        driver = new FirefoxDriver();
-    }
-    //WebDriver driver = new ChromeDriver();
-
-
-    @Test
-    public void Registration_Test() throws InterruptedException {
-
+    public void registration_user() {
         try {
             driver.get("https://storiqa:whenLambo%3F@stage.stq.cloud/auth");
             signUp().click();
@@ -73,10 +56,9 @@ public class RegistrationTest {
             upButton().click();
         }
         catch (Exception e) {
-            System.out.println("RegistrationTest");
-            Registration_Test();
-        }
-
-        driver.close();
+            System.out.println("RegistrationUser" + e.getMessage());
+            registration_user();
+            screenshot.takesScreenshot("Registration" + Getdate.Date());
         }
     }
+}

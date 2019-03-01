@@ -1,7 +1,7 @@
 package Registration;
 
 
-import helper.SeleniumRunner;
+import Helper.SeleniumRunner;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,11 +37,11 @@ public class AutorizationTest {
         Assert.assertEquals("Storiqa", driver.getTitle());
         //driver.findElement(By.xpath("//div[@class='AuthButtons__signUpButton___2jzhw']")).click();
         driver.findElement(By.xpath(AutorizationLoc.SIGNIN.getCl())).click();
-        driver.findElement(By.xpath(AutorizationLoc.LOGIN.getCl())).sendKeys("k.russkikh@storiqa.com");
-        driver.findElement(By.xpath(AutorizationLoc.PASSWORD.getCl())).sendKeys("1234567Qq");
+        driver.findElement(By.xpath(AutorizationLoc.LOGIN.getCl())).sendKeys("22684@crapmail.tld");
+        driver.findElement(By.xpath(AutorizationLoc.PASSWORD.getCl())).sendKeys("M4n3b2v1");
         driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
         driver.findElement(By.xpath(AutorizationLoc.ENTER.getCl())).click();
-        driver.findElement(By.xpath("//div[normalize-space(text())='Hi, Russkii T.']"));
+        driver.findElement(By.xpath("//div[normalize-space(text())='Hi, user22684 U.']"));
 
         driver.close();
     }

@@ -1,4 +1,4 @@
-package helper;
+package Helper;
 
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.runner.Description;
