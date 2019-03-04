@@ -26739,13 +26739,19 @@
               "description": "Currency.",
               "name": "currency",
               "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "Currency",
-                  "ofType": null
-                }
+                "kind": "ENUM",
+                "name": "Currency",
+                "ofType": null
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Status.",
+              "name": "status",
+              "type": {
+                "kind": "ENUM",
+                "name": "SubscriptionPaymentStatus",
+                "ofType": null
               }
             }
           ],
