@@ -62,49 +62,6 @@
       "subscriptionType": null,
       "types": [
         {
-          "description": "Users Roles info.",
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "User id",
-              "isDeprecated": false,
-              "name": "userId",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "User Roles",
-              "isDeprecated": false,
-              "name": "name",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "BillingMicroserviceRole",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "BillingRoles",
-          "possibleTypes": null
-        },
-        {
           "description": "Set product data in cart input object",
           "enumValues": null,
           "fields": null,
@@ -155,6 +112,35 @@
           "interfaces": null,
           "kind": "INPUT_OBJECT",
           "name": "SetQuantityInCartInput",
+          "possibleTypes": null
+        },
+        {
+          "description": null,
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "NOT_PAID"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "PAID"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "FAIL"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "FeeStatus",
           "possibleTypes": null
         },
         {
@@ -394,27 +380,6 @@
           "possibleTypes": null
         },
         {
-          "description": "Search product input object",
-          "enumValues": null,
-          "fields": null,
-          "inputFields": [
-            {
-              "defaultValue": null,
-              "description": "Searching options",
-              "name": "options",
-              "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "ProductsSearchOptionsInput",
-                "ofType": null
-              }
-            }
-          ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "MostViewedProductsInput",
-          "possibleTypes": null
-        },
-        {
           "description": "Get several base products",
           "enumValues": null,
           "fields": null,
@@ -445,6 +410,27 @@
           "interfaces": null,
           "kind": "INPUT_OBJECT",
           "name": "GetBaseProductsInput",
+          "possibleTypes": null
+        },
+        {
+          "description": "Search product input object",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Searching options",
+              "name": "options",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "ProductsSearchOptionsInput",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "MostViewedProductsInput",
           "possibleTypes": null
         },
         {
@@ -819,39 +805,6 @@
           "possibleTypes": null
         },
         {
-          "description": "Equality Filter input",
-          "enumValues": null,
-          "fields": null,
-          "inputFields": [
-            {
-              "defaultValue": null,
-              "description": "Values to be equal",
-              "name": "values",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "LIST",
-                  "name": null,
-                  "ofType": {
-                    "kind": "NON_NULL",
-                    "name": null,
-                    "ofType": {
-                      "kind": "SCALAR",
-                      "name": "String",
-                      "ofType": null
-                    }
-                  }
-                }
-              }
-            }
-          ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "EqualFilterInput",
-          "possibleTypes": null
-        },
-        {
           "description": "Create Category input object",
           "enumValues": null,
           "fields": null,
@@ -930,6 +883,39 @@
           "interfaces": null,
           "kind": "INPUT_OBJECT",
           "name": "CreateCategoryInput",
+          "possibleTypes": null
+        },
+        {
+          "description": "Equality Filter input",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Values to be equal",
+              "name": "values",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "EqualFilterInput",
           "possibleTypes": null
         },
         {
@@ -1181,6 +1167,35 @@
           "possibleTypes": null
         },
         {
+          "description": "Coupon application scope",
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "STORE"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "CATEGORIES"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "BASE_PRODUCTS"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "CouponScope",
+          "possibleTypes": null
+        },
+        {
           "description": "Available Packages info.",
           "enumValues": null,
           "fields": [
@@ -1293,35 +1308,6 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "AvailablePackages",
-          "possibleTypes": null
-        },
-        {
-          "description": "Coupon application scope",
-          "enumValues": [
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "STORE"
-            },
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "CATEGORIES"
-            },
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "BASE_PRODUCTS"
-            }
-          ],
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "kind": "ENUM",
-          "name": "CouponScope",
           "possibleTypes": null
         },
         {
@@ -1533,6 +1519,49 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "ShippingRates",
+          "possibleTypes": null
+        },
+        {
+          "description": "SubscriptionPayment Edge",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cursor",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "node",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SubscriptionPayment",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "SubscriptionPaymentEdge",
           "possibleTypes": null
         },
         {
@@ -1791,6 +1820,57 @@
           "possibleTypes": null
         },
         {
+          "description": "SubscriptionPayment Connection",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "edges",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "SubscriptionPaymentEdge",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "pageInfo",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "PageInfoSegments",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "SubscriptionPaymentConnectionPages",
+          "possibleTypes": null
+        },
+        {
           "description": "Local Shipping Products info.",
           "enumValues": null,
           "fields": [
@@ -1867,6 +1947,105 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "LocalShippingProducts",
+          "possibleTypes": null
+        },
+        {
+          "description": "Store subscription information.",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Base64 Unique id",
+              "isDeprecated": false,
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Store id",
+              "isDeprecated": false,
+              "name": "storeId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Currency",
+              "isDeprecated": false,
+              "name": "currency",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "Currency",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Amount per product per day",
+              "isDeprecated": false,
+              "name": "value",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Wallet address",
+              "isDeprecated": false,
+              "name": "walletAddress",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Trial start date",
+              "isDeprecated": false,
+              "name": "trialStartDate",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "StoreSubscription",
           "possibleTypes": null
         },
         {
@@ -5103,9 +5282,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use buyNowV2. This endpoint will return incorrect delivery price if it is not set to 'fixed price' by the store owner",
+              "deprecationReason": null,
               "description": "Creates orders.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "buyNow",
               "type": {
                 "kind": "NON_NULL",
@@ -6283,6 +6462,68 @@
                 "ofType": {
                   "kind": "OBJECT",
                   "name": "Payout",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "CreateStoreSubscriptionInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "createStoreSubscription",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "StoreSubscription",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": null,
+                  "name": "input",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "INPUT_OBJECT",
+                      "name": "UpdateStoreSubscriptionInput",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "updateStoreSubscription",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "StoreSubscription",
                   "ofType": null
                 }
               }
@@ -9626,24 +9867,90 @@
           "possibleTypes": null
         },
         {
-          "description": "Search product input object",
+          "description": "Subscription information.",
           "enumValues": null,
-          "fields": null,
-          "inputFields": [
+          "fields": [
             {
-              "defaultValue": null,
-              "description": "Searching options",
-              "name": "options",
+              "args": [],
+              "deprecationReason": null,
+              "description": "Base64 Unique id",
+              "isDeprecated": false,
+              "name": "id",
               "type": {
-                "kind": "INPUT_OBJECT",
-                "name": "ProductsSearchOptionsInput",
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Store id",
+              "isDeprecated": false,
+              "name": "storeId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Published base products quantity",
+              "isDeprecated": false,
+              "name": "publishedBaseProductsQuantity",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Subscription payment id",
+              "isDeprecated": false,
+              "name": "subscriptionPaymentId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
                 "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "createdAt",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
               }
             }
           ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "MostDiscountProductsInput",
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "Subscription",
           "possibleTypes": null
         },
         {
@@ -9695,6 +10002,27 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "UsersConnection",
+          "possibleTypes": null
+        },
+        {
+          "description": "Search product input object",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Searching options",
+              "name": "options",
+              "type": {
+                "kind": "INPUT_OBJECT",
+                "name": "ProductsSearchOptionsInput",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "MostDiscountProductsInput",
           "possibleTypes": null
         },
         {
@@ -12849,6 +13177,65 @@
           "possibleTypes": null
         },
         {
+          "description": "Page info for classic pagination",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "current page",
+              "isDeprecated": false,
+              "name": "currentPage",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "item count per page",
+              "isDeprecated": false,
+              "name": "pageItemsCount",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "total pages",
+              "isDeprecated": false,
+              "name": "totalPages",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "PageInfoSegments",
+          "possibleTypes": null
+        },
+        {
           "description": "Available Packages info.",
           "enumValues": null,
           "fields": [
@@ -12985,65 +13372,6 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "AvailablePackageForUser",
-          "possibleTypes": null
-        },
-        {
-          "description": "Page info for classic pagination",
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "current page",
-              "isDeprecated": false,
-              "name": "currentPage",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "item count per page",
-              "isDeprecated": false,
-              "name": "pageItemsCount",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "total pages",
-              "isDeprecated": false,
-              "name": "totalPages",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "PageInfoSegments",
           "possibleTypes": null
         },
         {
@@ -14272,45 +14600,6 @@
           "possibleTypes": null
         },
         {
-          "description": "Single utm key-value pair",
-          "enumValues": null,
-          "fields": null,
-          "inputFields": [
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "key",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": null,
-              "name": "value",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "UtmMarkInput",
-          "possibleTypes": null
-        },
-        {
           "description": "Attribute meta field input object",
           "enumValues": null,
           "fields": null,
@@ -14377,6 +14666,45 @@
           "interfaces": null,
           "kind": "INPUT_OBJECT",
           "name": "AttributeMetaFieldInput",
+          "possibleTypes": null
+        },
+        {
+          "description": "Single utm key-value pair",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "key",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": null,
+              "name": "value",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "UtmMarkInput",
           "possibleTypes": null
         },
         {
@@ -14606,6 +14934,81 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "PageInfoProductsSearch",
+          "possibleTypes": null
+        },
+        {
+          "description": "Store billing balance",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "STQ Balance",
+              "isDeprecated": false,
+              "name": "stq",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "BTC Balance",
+              "isDeprecated": false,
+              "name": "btc",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "ETH Balance",
+              "isDeprecated": false,
+              "name": "eth",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "EUR Balance",
+              "isDeprecated": false,
+              "name": "eur",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "StoreBalance",
           "possibleTypes": null
         },
         {
@@ -15603,41 +16006,30 @@
           "possibleTypes": null
         },
         {
-          "description": "Set coupon in cart input object",
+          "description": "Subscription payment information.",
           "enumValues": null,
-          "fields": null,
-          "inputFields": [
+          "fields": [
             {
-              "defaultValue": null,
-              "description": "Client mutation id.",
-              "name": "clientMutationId",
+              "args": [],
+              "deprecationReason": null,
+              "description": "Base64 Unique id",
+              "isDeprecated": false,
+              "name": "id",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
                   "kind": "SCALAR",
-                  "name": "String",
+                  "name": "ID",
                   "ofType": null
                 }
               }
             },
             {
-              "defaultValue": null,
-              "description": "Coupon code.",
-              "name": "couponCode",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": "Store raw id for which add coupon.",
+              "args": [],
+              "deprecationReason": null,
+              "description": "Store id",
+              "isDeprecated": false,
               "name": "storeId",
               "type": {
                 "kind": "NON_NULL",
@@ -15650,9 +16042,83 @@
               }
             },
             {
-              "defaultValue": null,
-              "description": "User country code.",
-              "name": "userCountryCode",
+              "args": [],
+              "deprecationReason": null,
+              "description": "Total amount",
+              "isDeprecated": false,
+              "name": "amount",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Currency",
+              "isDeprecated": false,
+              "name": "currency",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "Currency",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Charge id (in case of fiat payment)",
+              "isDeprecated": false,
+              "name": "chargeId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Transaction id (in case of crypto payment)",
+              "isDeprecated": false,
+              "name": "transactionId",
+              "type": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "status",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "SubscriptionPaymentStatus",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "createdAt",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -15662,11 +16128,36 @@
                   "ofType": null
                 }
               }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "subscriptions",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "OBJECT",
+                      "name": "Subscription",
+                      "ofType": null
+                    }
+                  }
+                }
+              }
             }
           ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "SetCouponInCartInputV2",
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "SubscriptionPayment",
           "possibleTypes": null
         },
         {
@@ -15758,6 +16249,73 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "AttributeValue",
+          "possibleTypes": null
+        },
+        {
+          "description": "Set coupon in cart input object",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Client mutation id.",
+              "name": "clientMutationId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Coupon code.",
+              "name": "couponCode",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Store raw id for which add coupon.",
+              "name": "storeId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "User country code.",
+              "name": "userCountryCode",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "SetCouponInCartInputV2",
           "possibleTypes": null
         },
         {
@@ -17468,33 +18026,6 @@
           "possibleTypes": null
         },
         {
-          "description": null,
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "ISO 639-1 code",
-              "isDeprecated": false,
-              "name": "isoCode",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "LanguageGraphQl",
-          "possibleTypes": null
-        },
-        {
           "description": "Product's info.",
           "enumValues": null,
           "fields": [
@@ -17818,14 +18349,15 @@
           "possibleTypes": null
         },
         {
-          "description": "Increment product quantity in cart input object",
+          "description": null,
           "enumValues": null,
-          "fields": null,
-          "inputFields": [
+          "fields": [
             {
-              "defaultValue": null,
-              "description": "Client mutation id.",
-              "name": "clientMutationId",
+              "args": [],
+              "deprecationReason": null,
+              "description": "ISO 639-1 code",
+              "isDeprecated": false,
+              "name": "isoCode",
               "type": {
                 "kind": "NON_NULL",
                 "name": null,
@@ -17835,35 +18367,12 @@
                   "ofType": null
                 }
               }
-            },
-            {
-              "defaultValue": null,
-              "description": "Product id.",
-              "name": "productId",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Int",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "defaultValue": null,
-              "description": "Product quantity.",
-              "name": "value",
-              "type": {
-                "kind": "SCALAR",
-                "name": "Int",
-                "ofType": null
-              }
             }
           ],
-          "interfaces": null,
-          "kind": "INPUT_OBJECT",
-          "name": "IncrementInCartInput",
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "LanguageGraphQl",
           "possibleTypes": null
         },
         {
@@ -17991,6 +18500,55 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "Country",
+          "possibleTypes": null
+        },
+        {
+          "description": "Increment product quantity in cart input object",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Client mutation id.",
+              "name": "clientMutationId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Product id.",
+              "name": "productId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Product quantity.",
+              "name": "value",
+              "type": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "IncrementInCartInput",
           "possibleTypes": null
         },
         {
@@ -21069,49 +21627,6 @@
           "possibleTypes": null
         },
         {
-          "description": "Transaction info",
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "id",
-              "isDeprecated": false,
-              "name": "id",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "amount captured",
-              "isDeprecated": false,
-              "name": "amount",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Float",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "Transaction",
-          "possibleTypes": null
-        },
-        {
           "description": "Fee info.",
           "enumValues": null,
           "fields": [
@@ -21212,6 +21727,49 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "Fee",
+          "possibleTypes": null
+        },
+        {
+          "description": "Transaction info",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "id",
+              "isDeprecated": false,
+              "name": "id",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "amount captured",
+              "isDeprecated": false,
+              "name": "amount",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "Transaction",
           "possibleTypes": null
         },
         {
@@ -23121,49 +23679,6 @@
           "possibleTypes": null
         },
         {
-          "description": "Stores Edge",
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cursor",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "node",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Store",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "StoresEdge",
-          "possibleTypes": null
-        },
-        {
           "description": "Payment state",
           "enumValues": [
             {
@@ -23214,6 +23729,49 @@
           "interfaces": null,
           "kind": "ENUM",
           "name": "PaymentState",
+          "possibleTypes": null
+        },
+        {
+          "description": "Stores Edge",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cursor",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "node",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Store",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "StoresEdge",
           "possibleTypes": null
         },
         {
@@ -24144,6 +24702,29 @@
           "possibleTypes": null
         },
         {
+          "description": "Subscription payment status",
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "PAID"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "FAILED"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "SubscriptionPaymentStatus",
+          "possibleTypes": null
+        },
+        {
           "description": "Warehouse info.",
           "enumValues": null,
           "fields": [
@@ -25007,49 +25588,6 @@
           "possibleTypes": null
         },
         {
-          "description": "Customer price.",
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Price",
-              "isDeprecated": false,
-              "name": "price",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "Float",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": "Currency",
-              "isDeprecated": false,
-              "name": "currency",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "ENUM",
-                  "name": "Currency",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "CustomerPrice",
-          "possibleTypes": null
-        },
-        {
           "description": null,
           "enumValues": null,
           "fields": [
@@ -25206,6 +25744,49 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "OrderBilling",
+          "possibleTypes": null
+        },
+        {
+          "description": "Customer price.",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Price",
+              "isDeprecated": false,
+              "name": "price",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Float",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Currency",
+              "isDeprecated": false,
+              "name": "currency",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "Currency",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "CustomerPrice",
           "possibleTypes": null
         },
         {
@@ -26017,6 +26598,59 @@
           "possibleTypes": null
         },
         {
+          "description": "New store subscription input object",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Client mutation id.",
+              "name": "clientMutationId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Store id.",
+              "name": "storeId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Currency.",
+              "name": "currency",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "Currency",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "CreateStoreSubscriptionInput",
+          "possibleTypes": null
+        },
+        {
           "description": "Order History Item Connection",
           "enumValues": null,
           "fields": [
@@ -26065,6 +26699,59 @@
           "interfaces": [],
           "kind": "OBJECT",
           "name": "OrderHistoryItemsConnection",
+          "possibleTypes": null
+        },
+        {
+          "description": "Update store subscripotion input object",
+          "enumValues": null,
+          "fields": null,
+          "inputFields": [
+            {
+              "defaultValue": null,
+              "description": "Client mutation id.",
+              "name": "clientMutationId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Store id.",
+              "name": "storeId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "defaultValue": null,
+              "description": "Currency.",
+              "name": "currency",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "Currency",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "interfaces": null,
+          "kind": "INPUT_OBJECT",
+          "name": "UpdateStoreSubscriptionInput",
           "possibleTypes": null
         },
         {
@@ -27014,9 +27701,9 @@
                   }
                 }
               ],
-              "deprecationReason": "use calculateBuyNowV2. This endpoint will return incorrect delivery price if it is not set to 'fixed price' by the store owner",
+              "deprecationReason": null,
               "description": "Calculate values for buy now.",
-              "isDeprecated": true,
+              "isDeprecated": false,
               "name": "calculateBuyNow",
               "type": {
                 "kind": "NON_NULL",
@@ -29623,6 +30310,79 @@
                   "ofType": null
                 }
               }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Get balances.",
+              "isDeprecated": false,
+              "name": "getBalances",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "StoreBalance",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Get store subscription",
+              "isDeprecated": false,
+              "name": "storeSubscription",
+              "type": {
+                "kind": "OBJECT",
+                "name": "StoreSubscription",
+                "ofType": null
+              }
+            },
+            {
+              "args": [
+                {
+                  "defaultValue": null,
+                  "description": "Current page",
+                  "name": "currentPage",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  }
+                },
+                {
+                  "defaultValue": null,
+                  "description": "Items count",
+                  "name": "itemsCount",
+                  "type": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "Int",
+                      "ofType": null
+                    }
+                  }
+                }
+              ],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "subscriptionPayments",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "SubscriptionPaymentConnectionPages",
+                  "ofType": null
+                }
+              }
             }
           ],
           "inputFields": null,
@@ -30918,72 +31678,6 @@
           "possibleTypes": null
         },
         {
-          "description": "Attribute Type",
-          "enumValues": [
-            {
-              "deprecationReason": null,
-              "description": "String type. Can represent enums, bool, int and strings.",
-              "isDeprecated": false,
-              "name": "STR"
-            },
-            {
-              "deprecationReason": null,
-              "description": "Float type.",
-              "isDeprecated": false,
-              "name": "FLOAT"
-            }
-          ],
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "kind": "ENUM",
-          "name": "AttributeType",
-          "possibleTypes": null
-        },
-        {
-          "description": "OrderBilling Edge",
-          "enumValues": null,
-          "fields": [
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "cursor",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            {
-              "args": [],
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "node",
-              "type": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "OrderBilling",
-                  "ofType": null
-                }
-              }
-            }
-          ],
-          "inputFields": null,
-          "interfaces": [],
-          "kind": "OBJECT",
-          "name": "OrderBillingEdge",
-          "possibleTypes": null
-        },
-        {
           "description": "Add product quantity, plus delivery method in cart input object",
           "enumValues": null,
           "fields": null,
@@ -31057,6 +31751,72 @@
           "possibleTypes": null
         },
         {
+          "description": "Attribute Type",
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": "String type. Can represent enums, bool, int and strings.",
+              "isDeprecated": false,
+              "name": "STR"
+            },
+            {
+              "deprecationReason": null,
+              "description": "Float type.",
+              "isDeprecated": false,
+              "name": "FLOAT"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "AttributeType",
+          "possibleTypes": null
+        },
+        {
+          "description": "OrderBilling Edge",
+          "enumValues": null,
+          "fields": [
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "cursor",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "node",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "OrderBilling",
+                  "ofType": null
+                }
+              }
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "OrderBillingEdge",
+          "possibleTypes": null
+        },
+        {
           "description": "Password reset request input object",
           "enumValues": null,
           "fields": null,
@@ -31116,32 +31876,46 @@
           "possibleTypes": null
         },
         {
-          "description": null,
-          "enumValues": [
+          "description": "Users Roles info.",
+          "enumValues": null,
+          "fields": [
             {
+              "args": [],
               "deprecationReason": null,
-              "description": null,
+              "description": "User id",
               "isDeprecated": false,
-              "name": "NOT_PAID"
+              "name": "userId",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
             },
             {
+              "args": [],
               "deprecationReason": null,
-              "description": null,
+              "description": "User Roles",
               "isDeprecated": false,
-              "name": "PAID"
-            },
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "FAIL"
+              "name": "name",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "BillingMicroserviceRole",
+                  "ofType": null
+                }
+              }
             }
           ],
-          "fields": null,
           "inputFields": null,
-          "interfaces": null,
-          "kind": "ENUM",
-          "name": "FeeStatus",
+          "interfaces": [],
+          "kind": "OBJECT",
+          "name": "BillingRoles",
           "possibleTypes": null
         }
       ]
