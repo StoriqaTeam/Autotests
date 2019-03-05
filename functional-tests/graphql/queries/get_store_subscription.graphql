@@ -1,0 +1,14 @@
+query getStoreSubscription($id: Int!, $visibility: Visibility) {
+  store(id: $id, visibility: $visibility) {
+      storeSubscription {
+            id
+            storeId
+            currency
+            value
+            walletAddress
+            trialStartDate
+            trialEndDate
+            status
+      }
+  }
+}

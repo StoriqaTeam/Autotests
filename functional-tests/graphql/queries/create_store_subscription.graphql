@@ -1,0 +1,12 @@
+mutation createStoreSubscription($input: CreateStoreSubscriptionInput!) {
+  createStoreSubscription(input: $input) {
+    id
+    storeId
+    currency
+    value
+    walletAddress
+    trialStartDate
+    trialEndDate
+    status
+  }
+}

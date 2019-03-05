@@ -1,0 +1,12 @@
+mutation updateStoreSubscription($input: UpdateStoreSubscriptionInput!) {
+  updateStoreSubscription(input: $input) {
+    id
+    storeId
+    currency
+    value
+    walletAddress
+    trialStartDate
+    trialEndDate
+    status
+  }
+}

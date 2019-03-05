@@ -10,5 +10,6 @@ mod common;
 mod a_check_schema;
 mod b_healthcheck;
 mod basic_tests;
+mod c_subscription;
 mod cart;
 mod user_address;
