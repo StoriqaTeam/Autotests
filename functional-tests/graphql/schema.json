@@ -2040,6 +2040,22 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            {
+              "args": [],
+              "deprecationReason": null,
+              "description": "Store subscription status",
+              "isDeprecated": false,
+              "name": "status",
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "ENUM",
+                  "name": "SubscriptionPaymentStatus",
+                  "ofType": null
+                }
+              }
             }
           ],
           "inputFields": null,
@@ -24702,29 +24718,6 @@
           "possibleTypes": null
         },
         {
-          "description": "Subscription payment status",
-          "enumValues": [
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "PAID"
-            },
-            {
-              "deprecationReason": null,
-              "description": null,
-              "isDeprecated": false,
-              "name": "FAILED"
-            }
-          ],
-          "fields": null,
-          "inputFields": null,
-          "interfaces": null,
-          "kind": "ENUM",
-          "name": "SubscriptionPaymentStatus",
-          "possibleTypes": null
-        },
-        {
           "description": "Warehouse info.",
           "enumValues": null,
           "fields": [
@@ -24978,6 +24971,35 @@
           ],
           "kind": "OBJECT",
           "name": "Warehouse",
+          "possibleTypes": null
+        },
+        {
+          "description": "Subscription payment status",
+          "enumValues": [
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "TRIAL"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "PAID"
+            },
+            {
+              "deprecationReason": null,
+              "description": null,
+              "isDeprecated": false,
+              "name": "FREE"
+            }
+          ],
+          "fields": null,
+          "inputFields": null,
+          "interfaces": null,
+          "kind": "ENUM",
+          "name": "SubscriptionPaymentStatus",
           "possibleTypes": null
         },
         {
