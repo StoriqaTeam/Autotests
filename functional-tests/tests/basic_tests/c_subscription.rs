@@ -150,3 +150,45 @@ pub fn update_store_subscription() {
         "trial_start_date in retrieved_store_subsciption"
     );
 }
+
+#[test]
+pub fn update_store_subscription_status() {
+    //given
+    let mut context = TestContext::new();
+    let (_user, token, store, _category) = set_up_store(&mut context).expect("set_up_user failed");
+    context.set_bearer(token);
+    let _created_store_subsciption = context
+        .request(CreateStoreSubscriptionInput {
+            store_id: store.raw_id,
+            currency: create_store_subscription::Currency::EUR,
+            ..default_create_store_subscription_input()
+        })
+        .expect("Create store subscription failed");
+    //when
+    context.as_superadmin();
+    let updated_store_subsciption = context
+        .request(UpdateStoreSubscriptionInput {
+            store_id: store.raw_id,
+            status: Some(update_store_subscription::SubscriptionPaymentStatus::FREE),
+            ..default_update_store_subscription_input()
+        })
+        .expect("Update store subscription failed");
+    let retrieved_store_subsciption = context
+        .request(GetStoreSubscriptionInput {
+            store_id: store.raw_id,
+        })
+        .expect("Get store subscription failed")
+        .expect("Get store subscription returned none");
+    //then
+    assert_eq!(
+        updated_store_subsciption.status,
+        update_store_subscription::SubscriptionPaymentStatus::FREE,
+        "status in updated_store_subsciption"
+    );
+
+    assert_eq!(
+        retrieved_store_subsciption.status,
+        get_store_subscription::SubscriptionPaymentStatus::FREE,
+        "status in retrieved_store_subsciption"
+    );
+}
